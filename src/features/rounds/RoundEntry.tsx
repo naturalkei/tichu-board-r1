@@ -113,6 +113,7 @@ export function RoundEntry(props: RoundEntryProps) {
                       id={`call-${player.id}`}
                       class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-[var(--color-fg)] outline-none focus:border-[var(--color-accent)]"
                       value={draft.tichuCalls[player.id]}
+                      data-testid={`tichu-call-${player.id}`}
                       onInput={(event) =>
                         setDraft('tichuCalls', player.id, event.currentTarget.value as TichuCall)
                       }
@@ -128,6 +129,7 @@ export function RoundEntry(props: RoundEntryProps) {
                     type="radio"
                     name="first-out-player"
                     checked={draft.firstOutPlayerId === player.id}
+                    data-testid={`first-out-${player.id}`}
                     onChange={() => setDraft('firstOutPlayerId', player.id)}
                   />
                   <span>{t('round.firstOut')}</span>
@@ -143,6 +145,7 @@ export function RoundEntry(props: RoundEntryProps) {
             <select
               class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-[var(--color-fg)] outline-none focus:border-[var(--color-accent)]"
               value={draft.doubleVictoryTeamId}
+              data-testid="double-victory-team"
               onInput={(event) =>
                 setDraft('doubleVictoryTeamId', event.currentTarget.value as TeamId | '')
               }
@@ -163,6 +166,7 @@ export function RoundEntry(props: RoundEntryProps) {
               disabled={Boolean(draft.doubleVictoryTeamId)}
               class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-[var(--color-fg)] outline-none transition-opacity focus:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-40"
               value={draft.cardPointsNorthSouth}
+              data-testid="card-points-north-south"
               onInput={(event) => setDraft('cardPointsNorthSouth', event.currentTarget.value)}
             />
           </label>
@@ -177,6 +181,7 @@ export function RoundEntry(props: RoundEntryProps) {
               disabled={Boolean(draft.doubleVictoryTeamId)}
               class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-[var(--color-fg)] outline-none transition-opacity focus:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-40"
               value={draft.cardPointsEastWest}
+              data-testid="card-points-east-west"
               onInput={(event) => setDraft('cardPointsEastWest', event.currentTarget.value)}
             />
           </label>
@@ -200,6 +205,7 @@ export function RoundEntry(props: RoundEntryProps) {
           <button
             type="submit"
             class="flex-1 rounded-2xl bg-[var(--color-accent)] px-4 py-3 text-sm font-semibold text-slate-950 transition-transform duration-150 motion-safe:hover:-translate-y-0.5"
+            data-testid="save-round"
           >
             {submitLabel()}
           </button>
