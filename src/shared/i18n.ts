@@ -6,6 +6,7 @@ const dictionaries = {
     app: {
       badge: 'Tichu score tracker',
       title: 'TichuBoard',
+      controlSubtitle: 'Compact round control for live table sessions',
       subtitle:
         'A fast, mobile-first score companion for live Tichu sessions with resilient local history.',
     },
@@ -73,6 +74,10 @@ const dictionaries = {
     settings: {
       language: 'Language',
       theme: 'Theme',
+      open: 'Open settings',
+      close: 'Close settings',
+      panelTitle: 'Table settings',
+      panelSubtitle: 'Adjust language, theme, and saved game controls without leaving the score view.',
       system: 'System',
       light: 'Light',
       dark: 'Dark',
@@ -96,6 +101,7 @@ const dictionaries = {
     app: {
       badge: '티츄 점수 트래커',
       title: 'TichuBoard',
+      controlSubtitle: '실전 테이블 진행에 맞춘 컴팩트 점수 컨트롤',
       subtitle:
         '실전 플레이를 위한 모바일 중심 티츄 점수 동반 앱으로, 로컬 기록을 안정적으로 유지합니다.',
     },
@@ -163,6 +169,10 @@ const dictionaries = {
     settings: {
       language: '언어',
       theme: '테마',
+      open: '설정 열기',
+      close: '설정 닫기',
+      panelTitle: '테이블 설정',
+      panelSubtitle: '점수 화면을 벗어나지 않고 언어, 테마, 저장된 게임 제어를 조정합니다.',
       system: '시스템',
       light: '라이트',
       dark: '다크',

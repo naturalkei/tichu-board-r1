@@ -12,17 +12,21 @@ describe('SettingsPanel', () => {
   it('switches language to Korean', async () => {
     render(() => <App />)
 
+    await fireEvent.click(screen.getByRole('button', { name: /open settings/i }))
     await fireEvent.click(screen.getByRole('button', { name: /korean/i }))
 
-    expect(screen.getByRole('heading', { name: /tichuboard/i })).toBeInTheDocument()
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(screen.getByText(/테이블 설정/i)).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /설정 닫기/i })).toHaveLength(2)
     expect(
-      screen.getByText(/실전 플레이를 위한 모바일 중심 티츄 점수 동반 앱으로, 로컬 기록을 안정적으로 유지합니다/i),
+      screen.getByText(/점수 화면을 벗어나지 않고 언어, 테마, 저장된 게임 제어를 조정합니다/i),
     ).toBeInTheDocument()
   })
 
   it('applies the selected theme to the document root', async () => {
     render(() => <App />)
 
+    await fireEvent.click(screen.getByRole('button', { name: /open settings/i }))
     await fireEvent.click(screen.getByRole('button', { name: /light/i }))
 
     expect(document.documentElement.dataset.theme).toBe('light')
