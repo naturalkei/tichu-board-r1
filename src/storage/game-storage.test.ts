@@ -12,6 +12,7 @@ import {
 function createMockState(): PersistedGameState {
   return {
     schemaVersion: 1,
+    hasStartedGame: true,
     players: createDefaultPlayers(),
     rounds: [],
     settings: createDefaultSettings(),
@@ -39,6 +40,20 @@ describe('game storage', () => {
 
   it('returns null for malformed serialized input', () => {
     expect(deserializeGameState('{not-json')).toBeNull()
+  })
+
+  it('hydrates older payloads without hasStartedGame by inferring from rounds', () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        players: createDefaultPlayers(),
+        rounds: [],
+        settings: createDefaultSettings(),
+      }),
+    )
+
+    expect(loadGameState(localStorage)).toEqual(createInitialGameState())
   })
 
   it('can clear the saved game state', () => {

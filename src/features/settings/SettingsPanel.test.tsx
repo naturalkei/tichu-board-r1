@@ -1,9 +1,11 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library'
 import App from '../../App'
+import { seedStartedGameState } from '../../test/game-state'
 
 describe('SettingsPanel', () => {
   beforeEach(() => {
     localStorage.clear()
+    seedStartedGameState()
     document.documentElement.dataset.theme = 'dark'
   })
 
