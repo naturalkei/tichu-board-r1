@@ -1,47 +1,52 @@
-function App() {
+import { createSignal } from 'solid-js'
+import { PartySetup } from './features/party-setup/PartySetup'
+import { RoundEntry } from './features/rounds/RoundEntry'
+import { Scoreboard } from './features/scoreboard/Scoreboard'
+import { SettingsPanel } from './features/settings/SettingsPanel'
+import { GameProvider, useGame } from './state/game-context'
+
+function AppContent() {
+  const { t } = useGame()
+  const [editingRoundId, setEditingRoundId] = createSignal<string | null>(null)
+
   return (
     <main class="min-h-screen bg-[var(--color-bg)] text-[var(--color-fg)]">
-      <section class="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center gap-6 px-5 py-12 sm:px-8">
-        <div class="inline-flex w-fit rounded-full border border-white/15 bg-white/8 px-3 py-1 text-xs uppercase tracking-[0.28em] text-[var(--color-accent)]">
-          Tichu Board R1
-        </div>
-        <div class="space-y-4">
-          <h1 class="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
-            Mobile-first Tichu scorekeeping with fast round entry and resilient local state
+      <section class="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <header class="rounded-[2.2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(255,191,105,0.16),rgba(255,255,255,0.04))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.2)] backdrop-blur-sm motion-safe:animate-[fade-in_260ms_ease-out] sm:p-7">
+          <div class="inline-flex rounded-full border border-white/12 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.26em] text-[var(--color-accent)]">
+            {t('app.badge')}
+          </div>
+          <h1 class="mt-4 max-w-3xl text-3xl font-semibold tracking-tight sm:text-5xl">
+            {t('app.title')}
           </h1>
-          <p class="max-w-2xl text-base leading-7 text-[var(--color-muted)] sm:text-lg">
-            The initial shell is ready. Next slices will add scoring, storage, bilingual UI, dark mode,
-            and round history on top of this baseline.
+          <p class="mt-3 max-w-2xl text-sm leading-7 text-[var(--color-muted)] sm:text-base">
+            {t('app.subtitle')}
           </p>
-        </div>
-        <div class="grid gap-3 sm:grid-cols-3">
-          <article class="rounded-3xl border border-white/12 bg-white/6 p-4 backdrop-blur-sm">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
-              Domain
-            </h2>
-            <p class="mt-3 text-sm leading-6 text-[var(--color-muted)]">
-              Pure scoring rules and validation will land in the next branch.
-            </p>
-          </article>
-          <article class="rounded-3xl border border-white/12 bg-white/6 p-4 backdrop-blur-sm">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
-              Interface
-            </h2>
-            <p class="mt-3 text-sm leading-6 text-[var(--color-muted)]">
-              The UI shell is set up for mobile-first layout, theme tokens, and animation-safe styling.
-            </p>
-          </article>
-          <article class="rounded-3xl border border-white/12 bg-white/6 p-4 backdrop-blur-sm">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
-              Quality
-            </h2>
-            <p class="mt-3 text-sm leading-6 text-[var(--color-muted)]">
-              Lint, tests, and build will validate every feature branch before merge.
-            </p>
-          </article>
+        </header>
+
+        <div class="grid gap-4 xl:grid-cols-[1.12fr_0.88fr]">
+          <div class="grid gap-4">
+            <PartySetup />
+            <RoundEntry
+              editingRoundId={editingRoundId()}
+              onEditingRoundIdChange={setEditingRoundId}
+            />
+          </div>
+          <div class="grid gap-4">
+            <Scoreboard onEditRound={setEditingRoundId} />
+            <SettingsPanel />
+          </div>
         </div>
       </section>
     </main>
+  )
+}
+
+function App() {
+  return (
+    <GameProvider>
+      <AppContent />
+    </GameProvider>
   )
 }
 
