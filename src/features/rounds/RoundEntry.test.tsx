@@ -1,9 +1,11 @@
 import { fireEvent, render, screen, within } from '@solidjs/testing-library'
 import App from '../../App'
+import { seedStartedGameState } from '../../test/game-state'
 
 describe('RoundEntry', () => {
   beforeEach(() => {
     localStorage.clear()
+    seedStartedGameState()
   })
 
   it('saves a round and updates cumulative totals', async () => {

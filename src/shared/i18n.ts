@@ -9,6 +9,18 @@ const dictionaries = {
       subtitle:
         'A fast, mobile-first score companion for live Tichu sessions with resilient local history.',
     },
+    landing: {
+      subtitle:
+        'Start a new table-ready score session, keep round history locally, and switch language or theme any time.',
+      start: 'Start scoring',
+      caption: 'Your game stays in this browser until you reset it.',
+      featureFastTitle: 'Fast round entry',
+      featureFastBody: 'Track Tichu calls, first-out, and team card points without breaking table flow.',
+      featureLocalTitle: 'Local persistence',
+      featureLocalBody: 'Player names, seats, rounds, and preferences stay available after reloads.',
+      featureBilingualTitle: 'Bilingual setup',
+      featureBilingualBody: 'English and Korean are available from the first session with dark mode included.',
+    },
     sections: {
       party: 'Party Setup',
       round: 'Round Entry',
@@ -86,6 +98,18 @@ const dictionaries = {
       title: 'TichuBoard',
       subtitle:
         '실전 플레이를 위한 모바일 중심 티츄 점수 동반 앱으로, 로컬 기록을 안정적으로 유지합니다.',
+    },
+    landing: {
+      subtitle:
+        '새 점수 세션을 시작하고, 라운드 기록을 로컬에 유지하며, 언어와 테마를 언제든 바꿀 수 있습니다.',
+      start: '시작하기',
+      caption: '게임 데이터는 초기화 전까지 이 브라우저에 유지됩니다.',
+      featureFastTitle: '빠른 라운드 입력',
+      featureFastBody: '티츄 콜, 첫 아웃, 팀 카드 점수를 끊김 없이 기록할 수 있습니다.',
+      featureLocalTitle: '로컬 저장',
+      featureLocalBody: '플레이어 이름, 자리, 라운드, 설정이 새로고침 후에도 유지됩니다.',
+      featureBilingualTitle: '이중 언어 지원',
+      featureBilingualBody: '첫 화면부터 영어와 한국어를 지원하고 다크 모드도 함께 제공합니다.',
     },
     sections: {
       party: '플레이어 설정',

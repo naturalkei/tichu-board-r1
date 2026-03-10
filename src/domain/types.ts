@@ -75,6 +75,7 @@ export type GameSettings = {
 
 export type PersistedGameState = {
   schemaVersion: 1
+  hasStartedGame: boolean
   players: Player[]
   rounds: RoundRecord[]
   settings: GameSettings

@@ -1,9 +1,11 @@
 import { fireEvent, render, screen, within } from '@solidjs/testing-library'
 import App from '../../App'
+import { seedStartedGameState } from '../../test/game-state'
 
 describe('PartySetup', () => {
   beforeEach(() => {
     localStorage.clear()
+    seedStartedGameState()
   })
 
   it('updates player names and swaps seats with drag and drop', async () => {

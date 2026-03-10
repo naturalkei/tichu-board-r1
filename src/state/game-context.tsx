@@ -41,6 +41,7 @@ type GameContextValue = {
   systemTheme: () => Exclude<ThemeMode, 'system'>
   effectiveTheme: () => Exclude<ThemeMode, 'system'>
   t: (key: TranslationKey, args?: Record<string, string | number | boolean>) => string
+  startGame: () => void
   updatePlayerName: (playerId: PlayerId, name: string) => void
   swapPlayerSeats: (sourcePlayerId: PlayerId, targetPlayerId: PlayerId) => void
   setLanguage: (language: PersistedGameState['settings']['language']) => void
@@ -117,6 +118,7 @@ export const GameProvider: ParentComponent = (props) => {
     systemTheme,
     effectiveTheme,
     t: (key, args) => translate()(key, args),
+    startGame: () => setState('hasStartedGame', true),
     updatePlayerName: (playerId, name) => {
       const trimmedName = name.trimStart().slice(0, 24)
 

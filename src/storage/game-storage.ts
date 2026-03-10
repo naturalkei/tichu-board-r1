@@ -7,6 +7,7 @@ export const CURRENT_SCHEMA_VERSION = 1 as const
 export function createInitialGameState(): PersistedGameState {
   return {
     schemaVersion: CURRENT_SCHEMA_VERSION,
+    hasStartedGame: false,
     players: createDefaultPlayers(),
     rounds: [],
     settings: createDefaultSettings(),
@@ -26,7 +27,11 @@ export function migratePersistedState(value: unknown): PersistedGameState | null
     return null
   }
 
-  return value as PersistedGameState
+  return {
+    ...(value as Omit<PersistedGameState, 'hasStartedGame'>),
+    hasStartedGame:
+      typeof value.hasStartedGame === 'boolean' ? value.hasStartedGame : value.rounds.length > 0,
+  }
 }
 
 export function deserializeGameState(value: string): PersistedGameState | null {
