@@ -5,7 +5,7 @@ import { seedStartedGameState } from '../../test/game-state'
 describe('SettingsPanel', () => {
   beforeEach(() => {
     localStorage.clear()
-    seedStartedGameState()
+    seedStartedGameState('round')
     document.documentElement.dataset.theme = 'dark'
   })
 

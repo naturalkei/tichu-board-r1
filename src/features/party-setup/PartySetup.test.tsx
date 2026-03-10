@@ -5,7 +5,7 @@ import { seedStartedGameState } from '../../test/game-state'
 describe('PartySetup', () => {
   beforeEach(() => {
     localStorage.clear()
-    seedStartedGameState()
+    seedStartedGameState('party')
   })
 
   it('updates player names and swaps seats with drag and drop', async () => {
