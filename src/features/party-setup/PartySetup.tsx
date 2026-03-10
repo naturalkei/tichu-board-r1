@@ -69,6 +69,7 @@ export function PartySetup() {
                     value={player.name}
                     onInput={(event) => updatePlayerName(player.id, event.currentTarget.value)}
                     placeholder={t(`seats.${player.seat}`)}
+                    data-testid={`player-name-${player.id}`}
                   />
                 </label>
               </article>
