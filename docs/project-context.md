@@ -66,12 +66,17 @@ Treat the scoring engine as a pure domain module. Keep UI concerns out of it.
 
 Key rules to encode:
 - Tichu calls are **per-player**, not per-team
-- `small` succeeds only if the calling player goes out first
-- `grand` succeeds only if the calling player goes out first
-- In a **double victory**, the winning team gets `+200`
+- `small` succeeds only if the calling player goes out first (+100); otherwise, it fails (-100)
+- `grand` succeeds only if the calling player goes out first (+200); otherwise, it fails (-200)
+- Multiple players (including teammates) can call Tichu; score each independently
+- In a **double victory**, the winning team gets `+200` and card points are ignored
 - In a normal round, card-point totals should validate to **100 total across both teams**
+- Card points distribution:
+  - 1st out: takes trick points won
+  - Last out (4th): gives remaining hand to the opponent team; gives won trick points to the 1st out player
 - Permit negative team totals when needed
 - UI should disable normal card-point entry when double victory is active
+- **Tie-breaking**: If both teams pass 1000 in the same round with the exact same score, play one more round to determine the winner.
 
 Use constants for rule values. Avoid magic numbers in UI components.
 
@@ -127,7 +132,7 @@ Animation principles:
 - `src/features/scoreboard/`
 - `src/features/settings/`
 - `src/shared/` — UI primitives, utils, constants, i18n, theme
-- `src/storage/` — persistence and migrations
+- `src/storage/` — persistence and migrations (e.g. `migrations.ts`)
 
 Keep domain logic pure and testable.
 
@@ -138,6 +143,8 @@ Keep domain logic pure and testable.
 - Support migration-friendly structure
 - Provide reset capability
 - Prefer derived values over storing redundant totals
+- **State Management**: Use SolidJS `createStore` with Context API for global game state.
+- **Internationalization**: Use `@solid-primitives/i18n` with dictionaries in `src/shared/i18n/`.
 
 ## 8. Code conventions
 - Conventional Commits required
