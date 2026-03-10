@@ -19,5 +19,6 @@ describe('App', () => {
     await fireEvent.click(screen.getByRole('button', { name: /start scoring/i }))
 
     expect(screen.getByText(/party setup/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /open settings/i })).toBeInTheDocument()
   })
 })
