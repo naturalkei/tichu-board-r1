@@ -24,4 +24,22 @@ describe('PartySetup', () => {
 
     expect(within(screen.getByTestId('seat-east')).getByDisplayValue('Alice')).toBeInTheDocument()
   })
+
+  it('can reroll a name and move the player with the seat picker', async () => {
+    render(() => <App />)
+
+    const northSeat = screen.getByTestId('seat-north')
+    const northNameBefore = (within(northSeat).getByRole('textbox') as HTMLInputElement).value
+
+    await fireEvent.click(within(northSeat).getByRole('button', { name: /reroll random name/i }))
+
+    const rerolledName = (within(northSeat).getByRole('textbox') as HTMLInputElement).value
+    expect(rerolledName).not.toBe(northNameBefore)
+
+    await fireEvent.change(screen.getByLabelText(/seat picker for north/i), {
+      target: { value: 'west' },
+    })
+
+    expect(within(screen.getByTestId('seat-west')).getByDisplayValue(rerolledName)).toBeInTheDocument()
+  })
 })

@@ -22,6 +22,7 @@ import type {
   PlayerId,
   RoundInput,
   RoundRecord,
+  Seat,
   TeamId,
   ThemeMode,
 } from '../domain/types'
@@ -43,6 +44,7 @@ type GameContextValue = {
   t: (key: TranslationKey, args?: Record<string, string | number | boolean>) => string
   startGame: () => void
   updatePlayerName: (playerId: PlayerId, name: string) => void
+  assignPlayerSeat: (playerId: PlayerId, seat: Seat) => void
   swapPlayerSeats: (sourcePlayerId: PlayerId, targetPlayerId: PlayerId) => void
   setLanguage: (language: PersistedGameState['settings']['language']) => void
   setTheme: (theme: ThemeMode) => void
@@ -127,6 +129,29 @@ export const GameProvider: ParentComponent = (props) => {
         (player) => player.id === playerId,
         'name',
         (currentName) => trimmedName || currentName,
+      )
+    },
+    assignPlayerSeat: (playerId, seat) => {
+      const sourcePlayer = state.players.find((player) => player.id === playerId)
+      const targetPlayer = state.players.find((player) => player.seat === seat)
+
+      if (!sourcePlayer || !targetPlayer || sourcePlayer.seat === seat) {
+        return
+      }
+
+      setState(
+        'players',
+        state.players.map((player) => {
+          if (player.id === playerId) {
+            return { ...player, seat }
+          }
+
+          if (player.id === targetPlayer.id) {
+            return { ...player, seat: sourcePlayer.seat }
+          }
+
+          return player
+        }),
       )
     },
     swapPlayerSeats: (sourcePlayerId, targetPlayerId) => {
