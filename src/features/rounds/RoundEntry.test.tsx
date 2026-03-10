@@ -5,7 +5,7 @@ import { seedStartedGameState } from '../../test/game-state'
 describe('RoundEntry', () => {
   beforeEach(() => {
     localStorage.clear()
-    seedStartedGameState()
+    seedStartedGameState('round')
   })
 
   it('saves a round and updates cumulative totals', async () => {
@@ -24,7 +24,10 @@ describe('RoundEntry', () => {
     await fireEvent.click(screen.getByRole('button', { name: /save round/i }))
 
     expect(screen.getByText(/round saved/i)).toBeInTheDocument()
-    expect(screen.getByText(/round history/i)).toBeInTheDocument()
+
+    await fireEvent.click(screen.getByRole('button', { name: /^results$/i }))
+
+    expect(screen.getByRole('heading', { name: /game results/i })).toBeInTheDocument()
     expect(within(screen.getByTestId('team-total-north-south')).getByText('60')).toBeInTheDocument()
     expect(within(screen.getByTestId('team-total-east-west')).getByText('40')).toBeInTheDocument()
   })

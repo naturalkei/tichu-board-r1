@@ -7,10 +7,17 @@ type ScoreboardProps = {
 }
 
 export function Scoreboard(props: ScoreboardProps) {
+  return (
+    <section class="space-y-4">
+      <ResultsSummary />
+      <HistoryPanel onEditRound={props.onEditRound} />
+    </section>
+  )
+}
+
+export function ResultsSummary() {
   const {
     cumulativeScores,
-    deleteRound,
-    duplicateRound,
     gameStatus,
     leadingTeamId,
     state,
@@ -56,14 +63,22 @@ export function Scoreboard(props: ScoreboardProps) {
           />
         </div>
       </section>
+    </section>
+  )
+}
+
+export function HistoryPanel(props: ScoreboardProps) {
+  const { deleteRound, duplicateRound, state, t } = useGame()
+
+  return (
+    <section class="rounded-[2rem] border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-6">
+      <div class="flex items-center justify-between gap-3">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
+          {t('scoreboard.history')}
+        </p>
+      </div>
 
       <section class="rounded-[2rem] border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-6">
-        <div class="flex items-center justify-between gap-3">
-          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-            {t('scoreboard.history')}
-          </p>
-        </div>
-
         <Show
           when={state.rounds.length > 0}
           fallback={
