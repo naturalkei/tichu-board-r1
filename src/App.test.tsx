@@ -11,7 +11,7 @@ describe('App', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: /fast tichu scoring for live table play/i,
+        name: /tichuboard/i,
       }),
     ).toBeInTheDocument()
   })
