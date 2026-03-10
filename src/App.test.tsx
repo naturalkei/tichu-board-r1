@@ -2,12 +2,16 @@ import { render, screen } from '@solidjs/testing-library'
 import App from './App'
 
 describe('App', () => {
-  it('renders the project shell headline', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('renders the application heading', () => {
     render(() => <App />)
 
     expect(
       screen.getByRole('heading', {
-        name: /mobile-first tichu scorekeeping/i,
+        name: /fast tichu scoring for live table play/i,
       }),
     ).toBeInTheDocument()
   })
