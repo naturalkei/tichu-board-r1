@@ -38,5 +38,11 @@ Read `docs/project-context.md` and treat it as the canonical project brief.
 - Split unrelated changes into separate commits
 - Use Conventional Commits
 
+## Multi-agent rules
+- Treat Codex as the final integrator for repository-wide decisions
+- Use Gemini outputs as proposals for review, copy, or asset generation, not as source-of-truth overrides
+- Avoid editing files currently owned by another active agent task
+- If generated assets are introduced, follow `docs/visual-asset-workflow.md`
+
 ## Delivery rules
 Before considering work complete, make sure applicable lint, test, and build checks pass.

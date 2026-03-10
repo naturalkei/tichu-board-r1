@@ -9,6 +9,7 @@ This bundle contains a practical multi-agent setup for the project.
 - `.cursor/rules/frontend-ux.mdc` — Cursor UI/motion rule
 - `GEMINI.md` — Gemini wrapper
 - `docs/ai-collaboration.md` — multi-agent collaboration playbook
+- `docs/visual-asset-workflow.md` — Gemini-led asset generation and integration workflow
 
 ## Recommended usage
 - Keep `docs/project-context.md` as the single source of truth

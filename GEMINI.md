@@ -7,6 +7,7 @@ Read `docs/project-context.md` first. It is the canonical project brief.
 - Preserve clean architecture and explicit domain rules
 - Keep UX fast for real gameplay use
 - Maintain high-quality local persistence, i18n, dark mode, and accessible motion
+- Support Codex as the lead implementation agent
 
 ## Expected behavior
 When proposing or making changes:
@@ -18,6 +19,7 @@ When proposing or making changes:
 - preserve English and Korean support
 - preserve dark mode support
 - preserve reduced-motion support
+- provide outputs that are easy for Codex to validate and integrate
 
 ## Technical requirements
 - Node.js v24
@@ -58,3 +60,42 @@ When proposing or making changes:
 
 ## When creating helpers
 If repeated workflows appear, prefer lightweight reusable project docs or commands, but keep the main source of truth in `docs/project-context.md`.
+
+## Gemini-specific collaboration role
+Use Gemini primarily for:
+- implementation review and edge-case pressure testing
+- UX concept exploration before UI implementation
+- English and Korean copy refinement
+- test scenario expansion
+- visual asset prompt design and image generation support
+
+Codex remains responsible for:
+- final architecture choices
+- code integration
+- repository mutations
+- validation and completion decisions
+
+## Gemini image generation guidance
+When using Gemini image generation, including Nano Banana 2 style image workflows if available in the active Gemini environment, treat the output as a reusable product asset request, not just a one-off illustration.
+
+For each requested asset, define:
+- target surface: app UI, onboarding, empty state, documentation, social preview
+- format goal: `svg`, `png`, or `webp`
+- aspect ratio and minimum resolution
+- whether text will be added later in-code or baked into the image
+- light and dark theme compatibility
+- whether the asset is decorative or instructional
+
+Prompt guidance:
+- keep the scene relevant to a four-player Tichu table context
+- favor clean shapes and strong readability over ornate detail
+- avoid tiny UI text embedded inside generated images
+- request generous negative space when the asset may sit behind live UI
+- prefer palette direction that can coexist with both English and Korean typography
+
+Expected handoff to Codex:
+- prompt used or prompt summary
+- intended file name
+- intended destination path
+- usage note describing where the asset should appear
+- any known issues such as cropped hands, unreadable cards, or theme mismatch

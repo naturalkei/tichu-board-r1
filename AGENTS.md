@@ -5,6 +5,8 @@ Read `docs/project-context.md` before doing any work. Treat that file as the pro
 ## Your role
 You are acting as the implementation agent for this repository.
 
+Codex is the lead implementation agent. If Gemini or Cursor outputs are introduced, validate and integrate them rather than treating them as authoritative by default.
+
 Priorities:
 1. Correctness of Tichu scoring logic
 2. Mobile-first UX quality
@@ -17,6 +19,7 @@ Priorities:
 - Prefer pure functions for domain logic
 - Keep UI logic separate from scoring logic
 - Respect all non-negotiable constraints from `docs/project-context.md`
+- Use supporting agents to accelerate work, but keep final architectural and integration decisions in Codex
 - Do not introduce SSR, backend services, auth, or remote storage
 - Do not replace `release-please` with another release tool
 - Do not add semicolons
@@ -57,6 +60,13 @@ For larger implementation work, prefer this sequence:
 6. tests
 7. GitHub workflows
 8. release automation
+
+## Multi-agent collaboration
+- Read `docs/ai-collaboration.md` when coordinating with Gemini or Cursor
+- Use Gemini primarily for review, prompt drafting, copy refinement, and visual asset generation planning
+- Use Cursor primarily for UI iteration, layout cleanup, and animation polish
+- Keep one agent on one file area at a time to avoid merge churn
+- If generated assets are introduced, make sure they follow the asset policy in `docs/project-context.md`
 
 ## Output expectations
 When reporting back:

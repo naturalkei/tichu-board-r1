@@ -23,6 +23,7 @@ Best fit for:
 - scoring engine implementation
 - test scaffolding
 - storage and migration logic
+- final integration and acceptance
 
 ### Cursor
 Best fit for:
@@ -32,6 +33,7 @@ Best fit for:
 - animation refinement
 - responsive layout cleanup
 - repeated in-editor refactors
+- integrating approved visual assets into the UI
 
 ### Gemini
 Best fit for:
@@ -41,6 +43,43 @@ Best fit for:
 - docs and explanatory content
 - i18n copy review
 - cross-checking release or workflow design
+- image prompt creation and visual asset generation
+
+## Codex-led operating model
+- Codex owns the executable plan, merge-ready edits, and final verification
+- Cursor and Gemini should work as bounded contributors with explicit deliverables
+- If another agent proposes structural changes, Codex should reconcile them against `docs/project-context.md` before adoption
+- Keep collaboration additive: proposals first, repository mutation second
+
+## Asset generation workflow
+Use Gemini image generation when custom visuals materially improve product clarity or presentation.
+
+### Good use cases
+- onboarding illustrations
+- empty-state artwork
+- social preview graphics
+- store-like mockup visuals for docs
+- lightweight thematic graphics that reinforce the table-game feel
+
+### Bad use cases
+- text-heavy score panels
+- critical controls
+- anything that replaces readable live UI with rasterized text
+- large unoptimized background images on score-entry screens
+
+### Required handoff for generated assets
+- asset objective
+- prompt or prompt summary
+- output dimensions and format
+- intended path in the repo
+- light/dark compatibility note
+- whether additional editing or compression is still required
+
+### Integration flow
+1. Gemini drafts the prompt and generates candidate assets
+2. Codex or the user selects the asset worth shipping
+3. Cursor may place and tune the asset in the UI
+4. Codex verifies payload size, accessibility impact, and final integration
 
 ## Handoff protocol
 Every handoff note should include:
@@ -56,6 +95,7 @@ Every handoff note should include:
 - Prefer one branch or one feature area per agent at a time
 - Re-read the latest source-of-truth docs after pulling new changes
 - Re-run relevant checks after resolving merge conflicts
+- Prefer handing generated assets to Codex before UI integration so naming and placement stay consistent
 
 ## Suggested phased workflow
 ### Phase 1 — bootstrap
@@ -76,6 +116,7 @@ Use Cursor heavily for:
 - mobile layout refinement
 - drag-and-drop polish
 - motion tuning
+- asset placement and responsive art direction
 
 ### Phase 3 — quality and docs
 Use Gemini for:
@@ -83,6 +124,7 @@ Use Gemini for:
 - docs cleanup
 - edge-case checklist
 - bilingual UX copy review
+- image prompt iteration and resource generation
 
 Then use Codex or Cursor to apply concrete fixes.
 
@@ -95,3 +137,6 @@ No agent should consider work complete unless the change still satisfies:
 - dark mode safety
 - reduced-motion safety
 - Conventional Commit readiness
+
+## Immediate next docs
+- Use `docs/implementation-readiness.md` as the first execution checklist before starting app scaffolding or asset production

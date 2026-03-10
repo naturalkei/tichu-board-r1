@@ -252,3 +252,75 @@ When making product decisions, prefer:
 - fast data entry over visual flourish
 - accessible animation over flashy animation
 - maintainable structure over premature abstraction
+
+## 14. Multi-agent execution model
+This repository may use multiple coding agents, but execution ownership stays clear.
+
+### 14.1 Lead agent model
+- Codex is the implementation lead and final integrator
+- Gemini and Cursor should be used as supporting agents, not competing sources of truth
+- Any agent-specific guidance must remain consistent with this file
+- When outputs conflict, keep this priority:
+  1. `docs/project-context.md`
+  2. implementation already merged into the repository
+  3. agent-specific wrapper docs
+  4. task-local prompts or drafts
+
+### 14.2 Recommended agent split
+- Codex:
+  - planning final task breakdown
+  - domain model and scoring engine decisions
+  - storage model and migrations
+  - repository setup, CI, GitHub Actions, release-please
+  - final code integration, verification, and commit preparation
+- Cursor:
+  - component structure iteration
+  - layout cleanup
+  - interaction and animation polish
+  - low-risk refactors within already approved architecture
+- Gemini:
+  - implementation review
+  - UI concept exploration
+  - bilingual copy review
+  - test scenario expansion
+  - visual asset prompt drafting and image generation support
+
+### 14.3 Collaboration guardrails
+- Avoid parallel edits to the same file
+- Keep one agent responsible for one feature slice at a time
+- Re-read this file after pulling or merging significant changes
+- Treat agent output as a proposal until it is validated in-repo
+- Record handoff notes with changed files, checks run, risks, and next step
+
+## 15. Visual asset generation policy
+Generated visual resources may be used, but they must stay subordinate to app usability.
+
+### 15.1 Asset principles
+- Core gameplay flows must work without decorative images
+- Prefer lightweight assets that do not slow mobile rendering
+- Generated assets should support atmosphere, onboarding, empty states, social previews, and documentation
+- Do not make score readability or interaction depend on image-heavy UI
+- Preserve strong contrast in light and dark themes
+
+### 15.2 Gemini image workflow
+- Use Gemini image generation when custom visuals are needed and a reusable local asset is justified
+- Default use case: themed illustrations, simple table-scene imagery, onboarding art, Open Graph images, and store-like preview assets
+- Keep prompts grounded in this product:
+  - mobile-first Tichu scorekeeping
+  - four-player table context
+  - clean modern game utility UI
+  - English and Korean support
+  - dark-mode-compatible color decisions
+- Before generating images, define:
+  - target surface
+  - aspect ratio
+  - safe text area
+  - whether the output is decorative or instructional
+
+### 15.3 Asset delivery constraints
+- Save source prompts or prompt summaries in project docs when the asset is expected to be reused
+- Prefer `webp`, `png`, or `svg` depending on the asset type
+- Use descriptive lowercase kebab-case filenames
+- Store shipped assets under a stable app-owned path such as `public/` or `src/assets/`
+- Optimize exported assets for mobile payload size before merging
+- Do not commit assets with unclear licensing or provenance

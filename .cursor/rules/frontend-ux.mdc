@@ -43,3 +43,9 @@ When there is a tradeoff, prefer:
 3. clear score visibility
 4. maintainable implementation
 5. visual flourish
+
+## Generated asset integration
+- Generated imagery must remain secondary to readable score entry UI
+- Prefer lightweight responsive placement over full-screen decorative backgrounds
+- Keep important text and controls outside busy image regions
+- Verify the screen still works well in dark mode and reduced-motion mode after adding imagery
