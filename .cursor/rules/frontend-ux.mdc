@@ -1,0 +1,45 @@
+---
+description: Frontend UX and motion rules for tichu-board-r1
+globs: "src/**/*.{ts,tsx,css}"
+alwaysApply: false
+---
+# Frontend UX and motion rules
+
+Apply these rules when editing UI, styling, state flow, or interaction behavior.
+
+## Mobile-first UI
+- Start with phone portrait layout
+- Prefer stacked card layouts over dense tables
+- Use large tap targets
+- Keep primary actions easy to reach with one hand
+- Use sticky score summary or sticky action bars when it improves round entry
+- Avoid layout jumps during input
+
+## Motion and feedback
+This product should feel alive during play.
+
+Use animation for:
+- entry transitions
+- drag-and-drop feedback
+- Tichu selection feedback
+- save success feedback
+- score update feedback
+- round history insertion / removal
+- error feedback
+- end-game winner state
+- dark mode transitions
+
+## Motion quality bar
+- Motion must clarify state changes
+- Keep transitions quick and responsive
+- Avoid heavy animation dependencies unless truly necessary
+- Preserve performance on mobile devices
+- Always provide reduced-motion fallback
+
+## UI decision heuristic
+When there is a tradeoff, prefer:
+1. input speed
+2. readability on small screens
+3. clear score visibility
+4. maintainable implementation
+5. visual flourish

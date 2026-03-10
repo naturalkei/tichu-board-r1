@@ -1,0 +1,42 @@
+---
+description: Core project rules for tichu-board-r1
+globs: []
+alwaysApply: true
+---
+# tichu-board-r1 core rules
+
+Read `docs/project-context.md` and treat it as the canonical project brief.
+
+## Core constraints
+- Build a **SolidJS SPA** only
+- Use **Node.js v24**, **Vite**, **Vitest**, **TypeScript**, **ESLint 9**, **Tailwind CSS v4**
+- **No semicolons**
+- Use **release-please** for releases
+- Use **localStorage** by default for persistence
+- Support **English + Korean** and **dark mode** from day one
+- Optimize for **mobile-first** use
+- Add strong but purposeful **animations** for key interactions
+- Respect `prefers-reduced-motion`
+
+## Product constraints
+- Exactly 4 players
+- Teams are opposite seats
+- Drag-and-drop seat changes must be supported
+- Tichu calls are per-player: `none | small | grand`
+- First-out player determines Tichu success
+- Support optional double victory
+- Compute round totals and cumulative totals automatically
+- End game at 1000+
+
+## Engineering rules
+- Keep scoring logic in pure functions
+- Keep UI code separate from domain logic
+- Keep files small and responsibilities clear
+- Use `kebab-case` for general files and folders
+- Use `PascalCase` for components
+- Avoid hardcoded strings; use i18n dictionaries
+- Split unrelated changes into separate commits
+- Use Conventional Commits
+
+## Delivery rules
+Before considering work complete, make sure applicable lint, test, and build checks pass.
