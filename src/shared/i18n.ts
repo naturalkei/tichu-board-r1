@@ -39,8 +39,13 @@ const dictionaries = {
       eastWest: 'East + West',
     },
     party: {
-      hint: 'Drag player cards onto another seat to swap positions.',
+      hint: 'Drag cards or use the seat picker to keep names fixed while swapping chairs.',
       nameLabel: '{{ seat }} player name',
+      rerollName: 'Reroll random name',
+      seatPicker: 'Seat picker for {{ seat }}',
+      seatPickerLabel: 'Move {{ seat }} player',
+      tableLabel: 'Table overview',
+      tableCenter: 'Tabletop setup',
       teamLabel: 'Team {{ team }}',
     },
     round: {
@@ -134,8 +139,13 @@ const dictionaries = {
       eastWest: '동 + 서',
     },
     party: {
-      hint: '플레이어 카드를 다른 자리로 드래그하면 자리가 서로 바뀝니다.',
+      hint: '카드를 드래그하거나 자리 선택기를 사용해 이름을 유지한 채 좌석을 바꿀 수 있습니다.',
       nameLabel: '{{ seat }} 플레이어 이름',
+      rerollName: '랜덤 이름 다시 뽑기',
+      seatPicker: '{{ seat }} 자리 선택기',
+      seatPickerLabel: '{{ seat }} 플레이어 자리 변경',
+      tableLabel: '테이블 개요',
+      tableCenter: '테이블탑 배치',
       teamLabel: '{{ team }} 팀',
     },
     round: {
