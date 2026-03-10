@@ -12,8 +12,9 @@ describe('SettingsPanel', () => {
 
     await fireEvent.click(screen.getByRole('button', { name: /korean/i }))
 
+    expect(screen.getByRole('heading', { name: /tichuboard/i })).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: /실전 플레이를 위한 빠른 티츄 점수 계산기/i }),
+      screen.getByText(/실전 플레이를 위한 모바일 중심 티츄 점수 동반 앱으로, 로컬 기록을 안정적으로 유지합니다/i),
     ).toBeInTheDocument()
   })
 

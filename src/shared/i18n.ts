@@ -4,10 +4,10 @@ import type { Language } from '../domain/types'
 const dictionaries = {
   en: flatten({
     app: {
-      badge: 'Tichu Board R1',
-      title: 'Fast Tichu scoring for live table play',
+      badge: 'Tichu score tracker',
+      title: 'TichuBoard',
       subtitle:
-        'Set the party, enter rounds quickly, and keep cumulative scores stable across reloads.',
+        'A fast, mobile-first score companion for live Tichu sessions with resilient local history.',
     },
     sections: {
       party: 'Party Setup',
@@ -82,10 +82,10 @@ const dictionaries = {
   }),
   ko: flatten({
     app: {
-      badge: 'Tichu Board R1',
-      title: '실전 플레이를 위한 빠른 티츄 점수 계산기',
+      badge: '티츄 점수 트래커',
+      title: 'TichuBoard',
       subtitle:
-        '플레이어를 배치하고, 라운드를 빠르게 입력하고, 새로고침 후에도 누적 점수를 안정적으로 유지합니다.',
+        '실전 플레이를 위한 모바일 중심 티츄 점수 동반 앱으로, 로컬 기록을 안정적으로 유지합니다.',
     },
     sections: {
       party: '플레이어 설정',
