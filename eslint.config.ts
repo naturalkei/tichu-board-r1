@@ -1,8 +1,11 @@
 import js from '@eslint/js'
 import solid from 'eslint-plugin-solid/configs/typescript'
 import { defineConfig } from 'eslint/config'
+import type { Linter } from 'eslint'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
+
+const solidFlatConfig = solid as unknown as Linter.FlatConfig
 
 export default defineConfig(
   {
@@ -10,7 +13,7 @@ export default defineConfig(
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  solid,
+  solidFlatConfig,
   {
     files: ['**/*.{ts,tsx,js,mjs}'],
     languageOptions: {
