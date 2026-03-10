@@ -1,11 +1,10 @@
-import { defineConfig } from 'eslint/config'
 import js from '@eslint/js'
 import solid from 'eslint-plugin-solid/configs/typescript'
+import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig(
-  ...tseslint.config(
   {
     ignores: ['dist', 'coverage', '.tmp-bootstrap'],
   },
@@ -26,5 +25,4 @@ export default defineConfig(
       semi: ['error', 'never'],
     },
   },
-  ),
 )
