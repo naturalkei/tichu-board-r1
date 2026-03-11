@@ -86,6 +86,7 @@ pnpm build
 - [Gemini UI briefs](docs/gemini-ui-brief.md)
 - [Cursor UI briefs](docs/cursor-ui-brief.md)
 - [party setup requirements](docs/party-setup-requirements.md)
+- [party setup v2 requirements](docs/party-setup-v2-requirements.md)
 - [visual asset workflow](docs/visual-asset-workflow.md)
 - [implementation readiness](docs/implementation-readiness.md)
 
