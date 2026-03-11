@@ -27,11 +27,12 @@ type SeatMapBoardProps = {
 export function SeatMapBoard(props: SeatMapBoardProps) {
   return (
     <div
-      class="grid min-h-96 grid-cols-[minmax(0,1fr)_4.5rem_minmax(0,1fr)] grid-rows-[auto_minmax(6rem,1fr)_auto] gap-3"
+      class="grid min-h-96 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] grid-rows-[auto_minmax(6rem,1fr)_auto] gap-3"
       aria-label={props.tableLabel}
+      data-testid="seat-map-board"
     >
       <div class="col-start-2 row-start-2 flex items-center justify-center">
-        <div class="flex h-full w-full items-center justify-center rounded-4xl border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.18),rgba(15,23,42,0.94))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+        <div class="flex h-full w-full max-w-18 items-center justify-center rounded-4xl border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.18),rgba(15,23,42,0.94))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
           <div class="grid place-items-center gap-2">
             <div class="h-12 w-12 rounded-full border border-white/12 bg-black/18 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]" />
             <p class="text-[10px] uppercase tracking-[0.3em] text-(--color-muted)">Tichu</p>
@@ -53,7 +54,7 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               type="button"
               class={clsx(
                 entry.className,
-                'relative flex min-h-28 flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-(--color-surface) p-3 text-left',
+                'relative flex min-h-28 w-full min-w-0 justify-self-stretch flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-(--color-surface) p-3 text-left',
                 'ring-1 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5',
                 colors.ring,
                 colors.glow,
