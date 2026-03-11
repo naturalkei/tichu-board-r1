@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { For } from 'solid-js'
+import { isTeamColorSelectable } from '@/domain/team-colors'
 import type { TeamColor, TeamId } from '@/domain/types'
 import { teamColorClasses, teamColorOptions } from './party-setup.shared'
 
@@ -68,7 +69,7 @@ export function TeamSetupCard(props: TeamSetupCardProps) {
                     'h-3.5 w-3.5 rounded-full border border-white/10 ring-1 ring-transparent',
                     teamColorClasses[color].chip,
                     props.selectedColor === color && 'scale-110 border-white/50 ring-white/50',
-                    props.selectedColor !== color && props.oppositeColor === color && 'opacity-25',
+                    !isTeamColorSelectable(color, props.oppositeColor, props.selectedColor) && props.selectedColor !== color && 'opacity-25',
                   )}
                 />
               )}

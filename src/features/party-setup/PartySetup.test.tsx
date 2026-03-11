@@ -48,14 +48,15 @@ describe('PartySetup', () => {
     expect(screen.getByText(/adjust alpha team name and color/i)).toBeInTheDocument()
     await fireEvent.click(screen.getByTestId('team-editor-color-violet'))
     await waitFor(() => {
-      expect(screen.getByTestId('team-name-north-south').className).toContain('ring-violet-300/55')
+      expect(screen.getByTestId('team-name-north-south').className).toContain('ring-fuchsia-300/60')
     })
     expect(screen.getByTestId('team-editor-color-violet').className).toContain('ring-2')
-    expect(screen.getByTestId('team-editor-dialog').firstElementChild?.className).toContain('from-violet-300/18')
+    expect(screen.getByTestId('team-editor-dialog').firstElementChild?.className).toContain('from-fuchsia-400/22')
+    expect(screen.getByTestId('team-editor-close-button').className).toContain('bg-fuchsia-400')
 
     expect(screen.getByTestId('team-label-north-south')).toHaveTextContent('Alpha Team')
     expect(screen.getByTestId('team-name-north-south')).toHaveTextContent('Alpha Team')
-    expect(screen.getByTestId('team-name-north-south').className).toContain('ring-violet-300/55')
+    expect(screen.getByTestId('team-name-north-south').className).toContain('ring-fuchsia-300/60')
     expect(screen.getByTestId('bench-recent-Morgan')).toBeInTheDocument()
     expect(screen.getByTestId('bench-recent-Nova')).toBeInTheDocument()
     expect(screen.getByTestId('team-editor-color-teal')).toBeInTheDocument()
@@ -82,10 +83,11 @@ describe('PartySetup', () => {
 
     await fireEvent.click(screen.getByTestId('team-name-east-west'))
     expect(screen.getByTestId('team-editor-color-violet')).toBeDisabled()
-    expect(screen.getByTestId('team-editor-color-amber')).not.toBeDisabled()
+    expect(screen.getByTestId('team-editor-color-amber')).toBeDisabled()
+    expect(screen.getByTestId('team-editor-color-sky')).not.toBeDisabled()
     await fireEvent.click(screen.getByTestId('team-editor-color-rose'))
     await waitFor(() => {
-      expect(screen.getByTestId('team-name-east-west').className).toContain('ring-rose-300/55')
+      expect(screen.getByTestId('team-name-east-west').className).toContain('ring-rose-300/60')
     })
     await fireEvent.click(within(screen.getByTestId('team-editor-dialog')).getByText(/close team editor/i))
 

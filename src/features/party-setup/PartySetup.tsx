@@ -110,6 +110,8 @@ export function PartySetup() {
           closeLabel={controller.t('party.closeTeamEditor')}
           nameFieldLabel={controller.t('party.teamNameField')}
           teamColorsLabel={controller.t('party.teamColors')}
+          teamColorBlockedLabel={controller.t('party.teamColorUnavailable')}
+          teamColorApplyLabel={controller.t('party.tapToApplyColor')}
           onNameInput={controller.setTeamEditorName}
           onColorSelect={controller.setTeamEditorColor}
           onClose={controller.closeTeamEditor}
