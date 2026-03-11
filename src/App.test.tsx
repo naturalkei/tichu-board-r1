@@ -20,6 +20,15 @@ describe('App', () => {
     expect(screen.getByTestId('app-shell').className).toContain('overflow-hidden')
   })
 
+  it('keeps an explicit party route on direct entry even without a started game', () => {
+    window.history.replaceState(null, '', getPathForRoute('party'))
+
+    render(() => <App />)
+
+    expect(screen.getByRole('heading', { name: /party setup/i })).toBeInTheDocument()
+    expect(window.location.pathname).toBe(getPathForRoute('party'))
+  })
+
   it('enters the scoring screen after pressing start', async () => {
     render(() => <App />)
 

@@ -20,9 +20,10 @@ describe('routes', () => {
     expect(getRouteFromPath(getAppBasePath(), true)).toBe(getDefaultRoute(true))
   })
 
-  it('keeps in-game paths only when a game has started', () => {
+  it('keeps explicit in-game paths even when no game has started', () => {
     expect(getRouteFromPath(getPathForRoute('round'), true)).toBe('round')
-    expect(getRouteFromPath(getPathForRoute('round'), false)).toBe('start')
+    expect(getRouteFromPath(getPathForRoute('round'), false)).toBe('round')
+    expect(getRouteFromPath(getPathForRoute('party'), false)).toBe('party')
   })
 
   it('falls back to the default route for unknown paths', () => {
