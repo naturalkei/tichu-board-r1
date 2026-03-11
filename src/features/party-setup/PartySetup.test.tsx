@@ -225,4 +225,55 @@ describe('PartySetup', () => {
     expect(within(screen.getByTestId('seat-east')).queryByText(/drop or tap to place here/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument()
   })
+
+  it('smoothly scrolls the seat map into view when seat move mode starts off-screen', async () => {
+    render(() => <App />)
+
+    const seatMapAnchor = screen.getByTestId('seat-map-scroll-anchor')
+    const originalInnerHeight = window.innerHeight
+    const originalMatchMedia = window.matchMedia
+    const originalScrollIntoView = seatMapAnchor.scrollIntoView
+
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: 700,
+    })
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }))
+    seatMapAnchor.getBoundingClientRect = () =>
+      ({
+        top: 520,
+        bottom: 920,
+        left: 0,
+        right: 320,
+        width: 320,
+        height: 400,
+        x: 0,
+        y: 520,
+        toJSON: () => ({}),
+      }) as DOMRect
+    seatMapAnchor.scrollIntoView = vi.fn()
+
+    await fireEvent.click(screen.getByTestId('bench-player-player-1'))
+
+    expect(seatMapAnchor.scrollIntoView).toHaveBeenCalledWith({
+      behavior: 'smooth',
+      block: 'center',
+    })
+
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: originalInnerHeight,
+    })
+    window.matchMedia = originalMatchMedia
+    seatMapAnchor.scrollIntoView = originalScrollIntoView
+  })
 })

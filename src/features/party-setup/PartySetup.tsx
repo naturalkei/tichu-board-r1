@@ -1,4 +1,4 @@
-import { Show } from 'solid-js'
+import { Show, createEffect } from 'solid-js'
 
 import { PartyBench } from './PartyBench'
 import { PlayerEditorDialog, TeamEditorDialog } from './PartySetupDialogs'
@@ -8,6 +8,32 @@ import { usePartySetupController } from './use-party-setup-controller'
 
 export function PartySetup() {
   const controller = usePartySetupController()
+  let seatMapContainerRef: HTMLDivElement | undefined
+
+  createEffect(() => {
+    const armedPlayerId = controller.armedPlayerId()
+    const seatMapElement = seatMapContainerRef
+
+    if (!armedPlayerId || !seatMapElement || typeof window === 'undefined') {
+      return
+    }
+
+    const { top, bottom } = seatMapElement.getBoundingClientRect()
+    const viewportHeight = window.innerHeight
+    const isFullyVisible = top >= 0 && bottom <= viewportHeight
+
+    if (isFullyVisible) {
+      return
+    }
+
+    const prefersReducedMotion =
+      typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    seatMapElement.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'center',
+    })
+  })
 
   return (
     <section class="grid gap-4 rounded-4xl border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-5">
@@ -64,19 +90,21 @@ export function PartySetup() {
         clearLabel={controller.t('party.clearSelection')}
       />
 
-      <SeatMapBoard
-        entries={controller.seatEntries()}
-        teamColors={controller.state.settings.teamColors}
-        teamNames={controller.teamNames()}
-        armedPlayerId={controller.armedPlayerId()}
-        draggingPlayerId={controller.draggingPlayerId()}
-        armedRecentName={controller.armedRecentName()}
-        draggingRecentName={controller.draggingRecentName()}
-        onSeatAssign={controller.handleSeatAssign}
-        tableLabel={controller.t('party.tableLabel')}
-        dropToSeatLabel={controller.t('party.dropToSeat')}
-        seatActionLabel={(seat, name) => controller.t('party.seatAction', { seat: controller.t(`seats.${seat}`), name })}
-      />
+      <div ref={seatMapContainerRef} data-testid="seat-map-scroll-anchor">
+        <SeatMapBoard
+          entries={controller.seatEntries()}
+          teamColors={controller.state.settings.teamColors}
+          teamNames={controller.teamNames()}
+          armedPlayerId={controller.armedPlayerId()}
+          draggingPlayerId={controller.draggingPlayerId()}
+          armedRecentName={controller.armedRecentName()}
+          draggingRecentName={controller.draggingRecentName()}
+          onSeatAssign={controller.handleSeatAssign}
+          tableLabel={controller.t('party.tableLabel')}
+          dropToSeatLabel={controller.t('party.dropToSeat')}
+          seatActionLabel={(seat, name) => controller.t('party.seatAction', { seat: controller.t(`seats.${seat}`), name })}
+        />
+      </div>
 
       <Show when={controller.editorDraft() && controller.activePlayer()}>
         <PlayerEditorDialog
