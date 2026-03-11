@@ -1,5 +1,6 @@
 import js from '@eslint/js'
 import solid from 'eslint-plugin-solid/configs/typescript'
+import tailwindCanonicalClasses from 'eslint-plugin-tailwind-canonical-classes'
 import { defineConfig } from 'eslint/config'
 import type { Linter } from 'eslint'
 import globals from 'globals'
@@ -22,10 +23,20 @@ export default defineConfig(
         ...globals.node,
       },
     },
+    plugins: {
+      'tailwind-canonical-classes': tailwindCanonicalClasses,
+    },
     rules: {
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       'no-extra-semi': 'error',
       semi: ['error', 'never'],
+      'tailwind-canonical-classes/tailwind-canonical-classes': [
+        'error',
+        {
+          cssPath: './src/index.css',
+          rootFontSize: 16,
+        },
+      ],
     },
   },
 )

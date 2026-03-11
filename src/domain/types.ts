@@ -6,6 +6,7 @@ export type TeamId = (typeof TEAM_IDS)[number]
 export type TichuCall = 'none' | 'small' | 'grand'
 export type Language = 'en' | 'ko'
 export type ThemeMode = 'system' | 'light' | 'dark'
+export type TeamColor = 'amber' | 'emerald' | 'sky' | 'rose' | 'violet' | 'teal' | 'orange'
 
 export type Player = {
   id: PlayerId
@@ -54,6 +55,11 @@ export type RoundRecord = {
   id: string
   input: RoundInput
   result: RoundScoreBreakdown
+  timing: {
+    startedAt: string
+    completedAt: string
+    elapsedMs: number
+  }
 }
 
 export type GameStatus =
@@ -71,12 +77,17 @@ export type GameStatus =
 export type GameSettings = {
   language: Language
   theme: ThemeMode
+  teamColors: Record<TeamId, TeamColor>
+  teamNames: Record<TeamId, string>
 }
 
 export type PersistedGameState = {
   schemaVersion: 1
+  hasStartedGame: boolean
   players: Player[]
   rounds: RoundRecord[]
+  activeRoundStartedAt: string | null
+  recentPlayerNames: string[]
   settings: GameSettings
 }
 

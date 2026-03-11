@@ -1,0 +1,20 @@
+import { createDefaultPlayers, createDefaultSettings } from '@/domain/defaults'
+import { getPathForRoute, type AppRoute } from '@/shared/routes'
+import { STORAGE_KEY } from '@/storage/game-storage'
+
+export function seedStartedGameState(route: AppRoute = 'party') {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      schemaVersion: 1,
+      hasStartedGame: true,
+      players: createDefaultPlayers(),
+      rounds: [],
+      activeRoundStartedAt: null,
+      recentPlayerNames: [],
+      settings: createDefaultSettings(),
+    }),
+  )
+
+  window.history.replaceState(null, '', getPathForRoute(route))
+}

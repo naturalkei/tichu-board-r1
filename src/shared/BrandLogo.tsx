@@ -1,0 +1,33 @@
+type BrandLogoProps = {
+  class?: string
+}
+
+export function BrandLogo(props: BrandLogoProps) {
+  return (
+    <svg
+      viewBox="0 0 96 96"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class={props.class}
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="board-glow" x1="18" y1="16" x2="82" y2="84" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#FFBF69" />
+          <stop offset="1" stop-color="#FF7A59" />
+        </linearGradient>
+      </defs>
+      <rect x="8" y="8" width="80" height="80" rx="24" fill="#0F1A2F" />
+      <rect x="14" y="14" width="68" height="68" rx="20" fill="url(#board-glow)" fill-opacity="0.18" />
+      <path
+        d="M31 28H65C69.4183 28 73 31.5817 73 36V41C73 45.4183 69.4183 49 65 49H51V68H42V49H31C26.5817 49 23 45.4183 23 41V36C23 31.5817 26.5817 28 31 28Z"
+        fill="url(#board-glow)"
+      />
+      <path
+        d="M36 34H60C62.7614 34 65 36.2386 65 39V39C65 41.7614 62.7614 44 60 44H36C33.2386 44 31 41.7614 31 39V39C31 36.2386 33.2386 34 36 34Z"
+        fill="#F8F2E8"
+      />
+      <circle cx="48" cy="62" r="6" fill="#F8F2E8" />
+    </svg>
+  )
+}

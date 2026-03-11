@@ -1,82 +1,122 @@
-import { For, createSignal } from 'solid-js'
-import { useGame } from '../../state/game-context'
-import type { PlayerId } from '../../domain/types'
+import { Show } from 'solid-js'
 
-const seatOrder = ['north', 'east', 'south', 'west'] as const
+import { PartyBench } from './PartyBench'
+import { PlayerEditorDialog, TeamEditorDialog } from './PartySetupDialogs'
+import { SeatMapBoard } from './SeatMapBoard'
+import { TeamSetupCard } from './TeamSetupCard'
+import { usePartySetupController } from './use-party-setup-controller'
 
 export function PartySetup() {
-  const { state, swapPlayerSeats, updatePlayerName, t } = useGame()
-  const [draggingPlayerId, setDraggingPlayerId] = createSignal<PlayerId | null>(null)
-
-  const playersBySeat = () =>
-    seatOrder
-      .map((seat) => state.players.find((player) => player.seat === seat))
-      .filter((player): player is NonNullable<typeof player> => Boolean(player))
+  const controller = usePartySetupController()
 
   return (
-    <section class="rounded-[2rem] border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-6">
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-            {t('sections.party')}
-          </p>
-          <p class="mt-2 text-sm leading-6 text-[var(--color-muted)]">{t('party.hint')}</p>
+    <section class="grid gap-4 rounded-4xl border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-5">
+      <div class="grid gap-3">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">{controller.t('sections.party')}</p>
+            <p class="mt-2 text-xs leading-5 text-(--color-muted) sm:text-sm">{controller.t('party.hintCompact')}</p>
+          </div>
+          <Show when={controller.interactionHint()}>
+            <span class="inline-flex max-w-40 rounded-full border border-white/10 bg-black/18 px-3 py-1 text-[11px] leading-5 text-(--color-fg)">
+              {controller.interactionHint()}
+            </span>
+          </Show>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <TeamSetupCard
+            teamId="north-south"
+            label={controller.teamNames()['north-south']}
+            subtitle={controller.teamLineups()['north-south']}
+            selectedColor={controller.state.settings.teamColors['north-south']}
+            oppositeColor={controller.state.settings.teamColors['east-west']}
+            editLabel={controller.t('party.editTeam')}
+            onOpenEditor={controller.openTeamEditor}
+          />
+          <TeamSetupCard
+            teamId="east-west"
+            label={controller.teamNames()['east-west']}
+            subtitle={controller.teamLineups()['east-west']}
+            selectedColor={controller.state.settings.teamColors['east-west']}
+            oppositeColor={controller.state.settings.teamColors['north-south']}
+            editLabel={controller.t('party.editTeam')}
+            onOpenEditor={controller.openTeamEditor}
+          />
         </div>
       </div>
-      <div class="mt-5 grid gap-3 sm:grid-cols-2">
-        <For each={playersBySeat()}>
-          {(player) => {
-            const teamKey = player.seat === 'north' || player.seat === 'south' ? 'northSouth' : 'eastWest'
 
-            return (
-              <article
-                class="group rounded-[1.6rem] border border-white/10 bg-[var(--color-surface)] p-4 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5"
-                draggable="true"
-                onDragStart={() => setDraggingPlayerId(player.id)}
-                onDragEnd={() => setDraggingPlayerId(null)}
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={() => {
-                  const sourceId = draggingPlayerId()
+      <PartyBench
+        players={controller.rosterPlayers()}
+        recentNames={controller.recentNames()}
+        armedPlayerId={controller.armedPlayerId()}
+        armedRecentName={controller.armedRecentName()}
+        onArmPlayer={controller.armPlayer}
+        onDragPlayerStart={controller.startDraggingPlayer}
+        onDragPlayerEnd={controller.stopDraggingPlayer}
+        onRecentNameClick={controller.selectRecentName}
+        onRecentNameDragStart={controller.startDraggingRecentName}
+        onRecentNameDragEnd={controller.stopDraggingRecentName}
+        onClearSelection={controller.clearArmedState}
+        title={controller.t('party.playerBench')}
+        hint={controller.t('party.playerBenchHint')}
+        clearLabel={controller.t('party.clearSelection')}
+      />
 
-                  if (!sourceId) {
-                    return
-                  }
+      <SeatMapBoard
+        entries={controller.seatEntries()}
+        teamColors={controller.state.settings.teamColors}
+        teamNames={controller.teamNames()}
+        armedPlayerId={controller.armedPlayerId()}
+        draggingPlayerId={controller.draggingPlayerId()}
+        armedRecentName={controller.armedRecentName()}
+        draggingRecentName={controller.draggingRecentName()}
+        onSeatAssign={controller.handleSeatAssign}
+        tableLabel={controller.t('party.tableLabel')}
+        dropToSeatLabel={controller.t('party.dropToSeat')}
+        seatActionLabel={(seat, name) => controller.t('party.seatAction', { seat: controller.t(`seats.${seat}`), name })}
+      />
 
-                  swapPlayerSeats(sourceId, player.id)
-                  setDraggingPlayerId(null)
-                }}
-                data-testid={`seat-${player.seat}`}
-              >
-                <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <p class="text-xs uppercase tracking-[0.22em] text-[var(--color-accent)]">
-                      {t(`seats.${player.seat}`)}
-                    </p>
-                    <p class="mt-2 text-sm text-[var(--color-muted)]">
-                      {t('party.teamLabel', { team: t(`teams.${teamKey}`) })}
-                    </p>
-                  </div>
-                  <span class="rounded-full border border-white/10 px-3 py-1 text-xs text-[var(--color-muted)]">
-                    {player.id}
-                  </span>
-                </div>
-                <label class="mt-4 block">
-                  <span class="sr-only">
-                    {t('party.nameLabel', { seat: t(`seats.${player.seat}`) })}
-                  </span>
-                  <input
-                    class="w-full rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-base text-[var(--color-fg)] outline-none transition-colors placeholder:text-[var(--color-muted)] focus:border-[var(--color-accent)]"
-                    value={player.name}
-                    onInput={(event) => updatePlayerName(player.id, event.currentTarget.value)}
-                    placeholder={t(`seats.${player.seat}`)}
-                    data-testid={`player-name-${player.id}`}
-                  />
-                </label>
-              </article>
-            )
-          }}
-        </For>
-      </div>
+      <Show when={controller.editorDraft() && controller.activePlayer()}>
+        <PlayerEditorDialog
+          draft={controller.editorDraft()!}
+          errorMessage={controller.errorMessage()}
+          recentNames={controller.recentNames()}
+          title={controller.t('party.editorTitle')}
+          subtitle={controller.t('party.editorSubtitle', { seat: controller.t(`seats.${controller.activePlayer()!.seat}`) })}
+          nameFieldLabel={controller.t('party.nameField')}
+          quickActionsLabel={controller.t('party.quickActions')}
+          rerollLabel={controller.t('party.rerollName')}
+          moveSeatLabel={controller.t('party.moveSeat')}
+          closeLabel={controller.t('party.closeEditor')}
+          applyLabel={controller.t('party.applyChanges')}
+          cancelLabel={controller.t('round.cancel')}
+          onNameInput={controller.setEditorName}
+          onRecentNameClick={controller.selectRecentName}
+          onReroll={controller.rerollEditorName}
+          onMoveSeat={controller.moveEditorPlayerToSeatMode}
+          onClose={controller.closePlayerEditor}
+          onApply={controller.commitPlayerEditor}
+        />
+      </Show>
+
+      <Show when={controller.teamEditorDraft()}>
+        <TeamEditorDialog
+          draft={controller.teamEditorDraft()!}
+          oppositeTeamColor={controller.state.settings.teamColors[controller.activeTeamId(controller.teamEditorDraft()!.teamId)]}
+          title={controller.t('party.teamEditorTitle')}
+          subtitle={controller.t('party.teamEditorSubtitle', {
+            team: controller.teamEditorDraft()!.name.trim() || (controller.teamEditorDraft()!.teamId === 'north-south' ? 'Team 1' : 'Team 2'),
+          })}
+          closeLabel={controller.t('party.closeTeamEditor')}
+          nameFieldLabel={controller.t('party.teamNameField')}
+          teamColorsLabel={controller.t('party.teamColors')}
+          teamColorBlockedLabel={controller.t('party.teamColorUnavailable')}
+          onNameInput={controller.setTeamEditorName}
+          onColorSelect={controller.setTeamEditorColor}
+          onClose={controller.closeTeamEditor}
+        />
+      </Show>
     </section>
   )
 }

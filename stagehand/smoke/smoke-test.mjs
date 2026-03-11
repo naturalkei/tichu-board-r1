@@ -30,27 +30,52 @@ try {
 
   await page.goto(baseUrl, { waitUntil: 'networkidle' })
 
-  const frame = page.mainFrame()
-  const heading = await frame.locator('h1').innerText()
+  const heading = await page.locator('h1').innerText()
 
   if (!heading.toLowerCase().includes('tichu')) {
     throw new Error(`Unexpected heading: ${heading}`)
   }
 
-  await frame.locator('[data-testid="player-name-player-1"]').fill('Stagehand')
+  await page.locator('xpath=//button[contains(., "Start scoring") or contains(., "Continue game")]').click()
 
-  const updatedName = await frame.locator('[data-testid="player-name-player-1"]').inputValue()
+  await page.waitForSelector('[data-testid="seat-north"]')
+  await page.evaluate(() => {
+    const seat = document.querySelector('[data-testid="seat-north"]')
+    if (!(seat instanceof HTMLElement)) {
+      throw new Error('North seat button not found')
+    }
+    seat.click()
+  })
+  await page.waitForSelector('[data-testid="party-editor-dialog"]')
+  await page.locator('[data-testid="party-editor-dialog"] input').fill('Stagehand')
+  await page.locator('xpath=//button[contains(., "Apply changes")]').click()
+  await page.waitForSelector('[data-testid="seat-north"] p')
 
-  if (updatedName !== 'Stagehand') {
+  const updatedName = await page.locator('[data-testid="seat-north"] p').nth(0).innerText()
+
+  if (!updatedName.includes('Stagehand')) {
     throw new Error(`Player rename did not stick: ${updatedName}`)
   }
 
-  await frame.locator('[data-testid="card-points-north-south"]').fill('60')
-  await frame.locator('[data-testid="card-points-east-west"]').fill('40')
-  await frame.locator('[data-testid="first-out-player-1"]').click()
-  await frame.locator('[data-testid="save-round"]').click()
+  await page.locator('xpath=//button[normalize-space()="Round"]').click()
+  await page.waitForSelector('[data-testid="page-round"]')
+  await page.locator('xpath=//button[contains(., "Start first round") or contains(., "Start next round")]').click()
+  await page.locator('[data-testid="card-points-north-south"]').fill('60')
+  await page.locator('[data-testid="card-points-east-west"]').fill('40')
+  await page.locator('[data-testid="first-out-player-1"]').click()
+  await page.evaluate(() => {
+    const saveButton = document.querySelector('[data-testid="save-round"]')
+    if (!(saveButton instanceof HTMLElement)) {
+      throw new Error('Save round button not found')
+    }
+    saveButton.click()
+  })
+  await page.waitForSelector('[data-testid="global-score-summary"]')
 
-  const northSouthTotal = await frame.locator('[data-testid="team-total-north-south"]').innerText()
+  await page.locator('xpath=//button[normalize-space()="Results"]').click()
+  await page.waitForSelector('[data-testid="team-total-north-south"]')
+
+  const northSouthTotal = await page.locator('[data-testid="team-total-north-south"]').innerText()
 
   if (!northSouthTotal.includes('60')) {
     throw new Error(`Expected north-south total to include 60, got: ${northSouthTotal}`)
