@@ -6,6 +6,29 @@ export type InGameRoute = (typeof inGameRoutes)[number]
 
 const appBasePath = normalizeBasePath(import.meta.env.BASE_URL ?? '/')
 
+export const routeDefinitions = {
+  start: {
+    segment: 'start',
+    path: buildRoutePath('start'),
+  },
+  party: {
+    segment: 'party',
+    path: buildRoutePath('party'),
+  },
+  round: {
+    segment: 'round',
+    path: buildRoutePath('round'),
+  },
+  results: {
+    segment: 'results',
+    path: buildRoutePath('results'),
+  },
+  history: {
+    segment: 'history',
+    path: buildRoutePath('history'),
+  },
+} as const
+
 export function isAppRoute(value: string): value is AppRoute {
   return appRoutes.includes(value as AppRoute)
 }
@@ -29,7 +52,15 @@ export function getRouteFromPath(pathname: string, hasStartedGame: boolean): App
 }
 
 export function getPathForRoute(route: AppRoute) {
-  return `${appBasePath}${route}`
+  return routeDefinitions[route].path
+}
+
+export function getRouteSegment(route: AppRoute) {
+  return routeDefinitions[route].segment
+}
+
+export function getAppBasePath() {
+  return appBasePath
 }
 
 export function getAdjacentRoute(route: InGameRoute, direction: 'next' | 'previous'): InGameRoute {
@@ -46,6 +77,10 @@ function normalizeBasePath(basePath: string) {
   const trimmed = basePath.replace(/^\/+|\/+$/g, '')
 
   return trimmed.length > 0 ? `/${trimmed}/` : '/'
+}
+
+function buildRoutePath(route: AppRoute) {
+  return `${appBasePath}${route}`
 }
 
 function trimBasePath(pathname: string) {
