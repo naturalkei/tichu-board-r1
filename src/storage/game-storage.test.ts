@@ -15,6 +15,7 @@ function createMockState(): PersistedGameState {
     hasStartedGame: true,
     players: createDefaultPlayers(),
     rounds: [],
+    recentPlayerNames: ['Avery'],
     settings: createDefaultSettings(),
   }
 }
@@ -54,6 +55,27 @@ describe('game storage', () => {
     )
 
     expect(loadGameState(localStorage)).toEqual(createInitialGameState())
+  })
+
+  it('hydrates older payloads without recent names or team colors', () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        hasStartedGame: true,
+        players: createDefaultPlayers(),
+        rounds: [],
+        settings: {
+          language: 'en',
+          theme: 'system',
+        },
+      }),
+    )
+
+    expect(loadGameState(localStorage)).toEqual({
+      ...createInitialGameState(),
+      hasStartedGame: true,
+    })
   })
 
   it('can clear the saved game state', () => {

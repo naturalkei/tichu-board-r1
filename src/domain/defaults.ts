@@ -1,5 +1,5 @@
 import { PLAYER_IDS, SEATS } from './constants'
-import type { GameSettings, Language, Player, PlayerTichuCallMap } from './types'
+import type { GameSettings, Language, Player, PlayerTichuCallMap, TeamColor, TeamId } from './types'
 
 const ENGLISH_PLAYER_NAMES = [
   'Avery',
@@ -130,7 +130,22 @@ export function createDefaultSettings(): GameSettings {
   return {
     language: 'en',
     theme: 'system',
+    teamColors: createDefaultTeamColors(),
   }
+}
+
+export function createDefaultTeamColors(): Record<TeamId, TeamColor> {
+  return {
+    'north-south': 'amber',
+    'east-west': 'sky',
+  }
+}
+
+export function mergeRecentPlayerNames(existingNames: string[], nextNames: string[]) {
+  const merged = [...nextNames, ...existingNames]
+  const uniqueNames = merged.filter((name, index) => merged.indexOf(name) === index)
+
+  return uniqueNames.slice(0, 12)
 }
 
 export function getRandomPlayerName(language: Language, currentName?: string) {
