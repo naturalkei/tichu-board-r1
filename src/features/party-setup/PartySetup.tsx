@@ -40,6 +40,13 @@ const seatLayouts: { seat: Seat; className: string }[] = [
   { seat: 'south', className: 'col-start-2 row-start-3' },
 ]
 
+const seatOverlayLabels: Record<Seat, string> = {
+  north: 'N',
+  west: 'W',
+  east: 'E',
+  south: 'S',
+}
+
 type EditorDraft = {
   playerId: PlayerId
   name: string
@@ -215,17 +222,19 @@ export function PartySetup() {
         <div class="grid gap-2 sm:grid-cols-2">
           <TeamSetupCard
             teamId="north-south"
-            label={teamNames()['north-south']}
-            subtitle={teamLineups()['north-south']}
-            selectedColor={state.settings.teamColors['north-south']}
+            label={() => teamNames()['north-south']}
+            subtitle={() => teamLineups()['north-south']}
+            selectedColor={() => state.settings.teamColors['north-south']}
+            oppositeColor={() => state.settings.teamColors['east-west']}
             onSelectColor={setTeamColor}
             onNameChange={setTeamName}
           />
           <TeamSetupCard
             teamId="east-west"
-            label={teamNames()['east-west']}
-            subtitle={teamLineups()['east-west']}
-            selectedColor={state.settings.teamColors['east-west']}
+            label={() => teamNames()['east-west']}
+            subtitle={() => teamLineups()['east-west']}
+            selectedColor={() => state.settings.teamColors['east-west']}
+            oppositeColor={() => state.settings.teamColors['north-south']}
             onSelectColor={setTeamColor}
             onNameChange={setTeamName}
           />
@@ -318,16 +327,14 @@ export function PartySetup() {
       </section>
 
       <div
-        class="grid min-h-96 grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)] grid-rows-[auto_minmax(6rem,1fr)_auto] gap-3"
+        class="grid min-h-96 grid-cols-[minmax(0,1fr)_4.5rem_minmax(0,1fr)] grid-rows-[auto_minmax(6rem,1fr)_auto] gap-3"
         aria-label={t('party.tableLabel')}
       >
         <div class="col-start-2 row-start-2 flex items-center justify-center">
-          <div class="flex h-full w-full items-center justify-center rounded-5xl border border-white/12 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.24),rgba(15,23,42,0.92))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-            <div class="grid gap-2">
-              <p class="text-[10px] uppercase tracking-[0.26em] text-(--color-accent)">
-                {t('party.tableCenter')}
-              </p>
-              <p class="text-xs text-(--color-muted)">{t('party.tableDropHint')}</p>
+          <div class="flex h-full w-full items-center justify-center rounded-4xl border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.18),rgba(15,23,42,0.94))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <div class="grid place-items-center gap-2">
+              <div class="h-12 w-12 rounded-full border border-white/12 bg-black/18 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]" />
+              <p class="text-[10px] uppercase tracking-[0.3em] text-(--color-muted)">Tichu</p>
             </div>
           </div>
         </div>
@@ -365,22 +372,27 @@ export function PartySetup() {
                     colors.surface,
                   )}
                 />
+                <span
+                  class="pointer-events-none absolute inset-0 flex items-center justify-center text-[clamp(3.5rem,20vw,5.25rem)] font-black tracking-[-0.08em] text-white/6"
+                  aria-hidden="true"
+                  data-testid={`seat-overlay-${entry.seat}`}
+                >
+                  {seatOverlayLabels[entry.seat]}
+                </span>
                 <div class="relative flex items-start justify-between gap-2">
-                  <div class="flex items-center gap-2">
+                  <span class="rounded-full border border-white/10 bg-black/18 px-2 py-1 text-[10px] uppercase tracking-[0.26em] text-(--color-muted)">
+                    {seatOverlayLabels[entry.seat]}
+                  </span>
+                  <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/18 px-2 py-1 text-[10px] text-(--color-muted)">
                     <TeamBadge teamId={teamId} />
-                    <span class="text-[11px] uppercase tracking-[0.24em] text-(--color-muted)">
-                      {t(`seats.${entry.seat}`)}
-                    </span>
-                  </div>
-                  <span class="rounded-full border border-white/10 bg-black/15 px-2 py-1 text-[10px] text-(--color-muted)">
-                    {t(`teams.${teamId === 'north-south' ? 'northSouth' : 'eastWest'}`)}
+                    {teamId === 'north-south' ? teamNames()['north-south'] : teamNames()['east-west']}
                   </span>
                 </div>
 
-                <div class="relative">
-                  <p class="text-base font-semibold text-(--color-fg)">{player?.name}</p>
-                  <p class="mt-1 text-[11px] text-(--color-muted)">
-                    {isActiveDropTarget ? t('party.dropToSeat') : t('party.tapToEdit')}
+                <div class="relative grid gap-1">
+                  <p class="text-lg font-semibold tracking-[-0.02em] text-(--color-fg)">{player?.name}</p>
+                  <p class="text-[11px] text-(--color-muted)">
+                    {isActiveDropTarget ? t('party.dropToSeat') : t(`seats.${entry.seat}`)}
                   </p>
                 </div>
               </button>
@@ -390,7 +402,7 @@ export function PartySetup() {
       </div>
 
       <Show when={editorDraft() && activePlayer()}>
-        <div class="fixed inset-0 z-40 flex items-end bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center sm:justify-center">
+        <div class="fixed inset-0 z-50 bg-slate-950/78 backdrop-blur-md">
           <button
             type="button"
             class="absolute inset-0"
@@ -399,95 +411,98 @@ export function PartySetup() {
           />
 
           <div
-            class="relative z-10 w-full max-w-md rounded-4xl border border-white/12 bg-[color-mix(in_srgb,var(--color-surface)_96%,#020617)] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.42)]"
+            class="relative z-10 flex min-h-dvh w-full flex-col border-white/12 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] shadow-[0_28px_90px_rgba(0,0,0,0.42)] sm:mx-auto sm:mt-6 sm:min-h-0 sm:max-w-md sm:rounded-4xl sm:border"
             data-testid="party-editor-dialog"
           >
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">
-                  {t('party.editorTitle')}
-                </p>
-                <p class="mt-2 text-sm text-(--color-muted)">
-                  {t('party.editorSubtitle', {
-                    seat: t(`seats.${activePlayer()!.seat}`),
-                  })}
-                </p>
+            <div class="flex-1 overflow-y-auto px-5 pb-6 pt-6 sm:p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">
+                    {t('party.editorTitle')}
+                  </p>
+                  <p class="mt-2 text-sm text-(--color-muted)">
+                    {t('party.editorSubtitle', {
+                      seat: t(`seats.${activePlayer()!.seat}`),
+                    })}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-(--color-fg)"
+                  aria-label={t('party.closeEditor')}
+                  onClick={closeEditor}
+                >
+                  ×
+                </button>
               </div>
-              <button
-                type="button"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/15 text-(--color-fg)"
-                aria-label={t('party.closeEditor')}
-                onClick={closeEditor}
-              >
-                ×
-              </button>
-            </div>
 
-            <div class="mt-5 grid gap-4">
-              <label class="grid gap-2 text-sm">
-                <span class="text-(--color-muted)">{t('party.nameField')}</span>
-                <input
-                  class="w-full rounded-2xl border border-white/14 bg-slate-950/70 px-4 py-3 text-(--color-fg) outline-none placeholder:text-(--color-muted) focus:border-(--color-accent)"
-                  value={editorDraft()!.name}
-                  onInput={(event) =>
-                    setEditorDraft((current) =>
-                      current ? { ...current, name: event.currentTarget.value } : current,
-                    )
-                  }
-                />
-              </label>
-
-              <div class="grid gap-2">
-                <span class="text-sm text-(--color-muted)">{t('party.quickActions')}</span>
-                <div class="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    class="rounded-full border border-white/12 bg-slate-950/70 px-3 py-2 text-sm text-(--color-fg)"
-                    onClick={() =>
+              <div class="mt-5 grid gap-4">
+                <label class="grid gap-2 text-sm">
+                  <span class="text-(--color-muted)">{t('party.nameField')}</span>
+                  <input
+                    class="w-full rounded-2xl border border-white/14 bg-slate-950/85 px-4 py-3 text-(--color-fg) outline-none placeholder:text-(--color-muted) focus:border-(--color-accent)"
+                    value={editorDraft()!.name}
+                    onInput={(event) =>
                       setEditorDraft((current) =>
-                        current
-                          ? {
-                              ...current,
-                              name: getUniqueRandomName(state.players, state.settings.language, current),
-                            }
-                          : current,
+                        current ? { ...current, name: event.currentTarget.value } : current,
                       )
                     }
-                  >
-                    {t('party.rerollName')}
-                  </button>
-                  <button
-                    type="button"
-                    class="rounded-full border border-white/12 bg-slate-950/70 px-3 py-2 text-sm text-(--color-fg)"
-                    onClick={() => {
-                      setArmedPlayerId(activePlayer()!.id)
-                      setArmedRecentName(null)
-                      closeEditor()
-                    }}
-                  >
-                    {t('party.moveSeat')}
-                  </button>
-                  <For each={recentNames()}>
-                    {(name) => (
-                      <button
-                        type="button"
-                        class="rounded-full border border-white/12 bg-slate-950/70 px-3 py-2 text-sm text-(--color-fg)"
-                        onClick={() => applyRecentName(name)}
-                      >
-                        {name}
-                      </button>
-                    )}
-                  </For>
+                  />
+                </label>
+
+                <div class="grid gap-2">
+                  <span class="text-sm text-(--color-muted)">{t('party.quickActions')}</span>
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      class="rounded-full border border-white/12 bg-slate-950/85 px-3 py-2 text-sm text-(--color-fg)"
+                      onClick={() =>
+                        setEditorDraft((current) =>
+                          current
+                            ? {
+                                ...current,
+                                name: getUniqueRandomName(state.players, state.settings.language, current),
+                              }
+                            : current,
+                        )
+                      }
+                    >
+                      {t('party.rerollName')}
+                    </button>
+                    <button
+                      type="button"
+                      class="rounded-full border border-white/12 bg-slate-950/85 px-3 py-2 text-sm text-(--color-fg)"
+                      onClick={() => {
+                        setArmedPlayerId(activePlayer()!.id)
+                        setArmedRecentName(null)
+                        closeEditor()
+                      }}
+                    >
+                      {t('party.moveSeat')}
+                    </button>
+                    <For each={recentNames()}>
+                      {(name) => (
+                        <button
+                          type="button"
+                          class="rounded-full border border-dashed border-white/14 bg-slate-950/80 px-3 py-2 text-sm text-(--color-fg) opacity-70"
+                          onClick={() => applyRecentName(name)}
+                        >
+                          {name}
+                        </button>
+                      )}
+                    </For>
+                  </div>
                 </div>
+
+                <Show when={errorMessage()}>
+                  <p class="rounded-2xl border border-rose-300/35 bg-rose-300/10 px-4 py-3 text-sm text-rose-50">
+                    {errorMessage()}
+                  </p>
+                </Show>
               </div>
+            </div>
 
-              <Show when={errorMessage()}>
-                <p class="rounded-2xl border border-rose-300/35 bg-rose-300/10 px-4 py-3 text-sm text-rose-50">
-                  {errorMessage()}
-                </p>
-              </Show>
-
-              <div class="flex gap-3">
+            <div class="sticky bottom-0 flex gap-3 border-t border-white/10 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-4 sm:rounded-b-4xl sm:px-5 sm:pb-5">
                 <button
                   type="button"
                   class="flex-1 rounded-2xl bg-(--color-accent) px-4 py-3 text-sm font-semibold text-slate-950"
@@ -502,7 +517,6 @@ export function PartySetup() {
                 >
                   {t('round.cancel')}
                 </button>
-              </div>
             </div>
           </div>
         </div>
@@ -527,14 +541,19 @@ function TeamBadge(props: { teamId: TeamId }) {
 
 function TeamSetupCard(props: {
   teamId: TeamId
-  label: string
-  subtitle: string
-  selectedColor: TeamColor
+  label: () => string
+  subtitle: () => string
+  selectedColor: () => TeamColor
+  oppositeColor: () => TeamColor
   onSelectColor: (teamId: TeamId, color: TeamColor) => void
   onNameChange: (teamId: TeamId, name: string) => void
 }) {
-  const { state, t } = useGame()
-  const oppositeTeamId = () => (props.teamId === 'north-south' ? 'east-west' : 'north-south')
+  const { t } = useGame()
+  const unavailableColors = createMemo(() => {
+    return Object.fromEntries(
+      teamColorOptions.map((color) => [color, color !== props.selectedColor() && props.oppositeColor() === color]),
+    ) as Record<TeamColor, boolean>
+  })
 
   return (
     <div
@@ -545,17 +564,16 @@ function TeamSetupCard(props: {
         <div>
           <input
             class="w-full border-b border-dashed border-white/18 bg-transparent pb-1 text-sm font-medium text-(--color-fg) outline-none focus:border-(--color-accent)"
-            value={props.label}
+            value={props.label()}
             data-testid={`team-label-${props.teamId}`}
             onInput={(event) => props.onNameChange(props.teamId, event.currentTarget.value)}
           />
-          <p class="mt-1 text-[11px] text-(--color-muted)">{props.subtitle}</p>
+          <p class="mt-1 text-[11px] text-(--color-muted)">{props.subtitle()}</p>
         </div>
         <div class="flex flex-wrap justify-end gap-1">
           <For each={teamColorOptions}>
             {(color) => {
-              const isDisabled =
-                color !== props.selectedColor && state.settings.teamColors[oppositeTeamId()] === color
+              const isDisabled = () => unavailableColors()[color]
 
               return (
                 <button
@@ -563,17 +581,17 @@ function TeamSetupCard(props: {
                   class={clsx(
                     'h-7 w-7 rounded-full border-2 transition-transform',
                     teamColorClasses[color].chip,
-                    props.selectedColor === color ? 'border-white' : 'border-transparent',
-                    isDisabled
+                    props.selectedColor() === color ? 'border-white' : 'border-transparent',
+                    isDisabled()
                       ? 'cursor-not-allowed opacity-35'
                       : 'motion-safe:hover:scale-105',
                   )}
-                  aria-label={`${props.label} ${color}`}
-                  aria-disabled={isDisabled}
-                  aria-pressed={props.selectedColor === color}
+                  aria-label={`${props.label()} ${color}`}
+                  aria-disabled={isDisabled()}
+                  aria-pressed={props.selectedColor() === color}
                   data-testid={`team-color-${props.teamId}-${color}`}
-                  disabled={isDisabled}
-                  title={isDisabled ? t('party.teamColorUnavailable') : undefined}
+                  disabled={isDisabled()}
+                  title={isDisabled() ? t('party.teamColorUnavailable') : undefined}
                   onClick={() => props.onSelectColor(props.teamId, color)}
                 />
               )
