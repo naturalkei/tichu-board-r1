@@ -38,16 +38,20 @@ describe('PartySetup', () => {
     render(() => <App />)
 
     await fireEvent.click(screen.getByTestId('team-name-north-south'))
+    expect(screen.getByText(/adjust team 1 name and color/i)).toBeInTheDocument()
     await fireEvent.input(screen.getByTestId('team-editor-name-north-south'), {
       target: { value: 'Alpha Team' },
     })
     await waitFor(() => {
       expect(screen.getByTestId('team-label-north-south')).toHaveTextContent('Alpha Team')
     })
+    expect(screen.getByText(/adjust alpha team name and color/i)).toBeInTheDocument()
     await fireEvent.click(screen.getByTestId('team-editor-color-violet'))
     await waitFor(() => {
       expect(screen.getByTestId('team-name-north-south').className).toContain('ring-violet-300/55')
     })
+    expect(screen.getByTestId('team-editor-color-violet').className).toContain('ring-2')
+    expect(screen.getByTestId('team-editor-dialog').firstElementChild?.className).toContain('from-violet-300/18')
 
     expect(screen.getByTestId('team-label-north-south')).toHaveTextContent('Alpha Team')
     expect(screen.getByTestId('team-name-north-south')).toHaveTextContent('Alpha Team')
