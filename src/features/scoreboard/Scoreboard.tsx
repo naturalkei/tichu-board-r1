@@ -146,6 +146,9 @@ export function HistoryPanel(props: ScoreboardProps) {
                         {t('scoreboard.bonuses')}: {round.result.tichuBonuses['north-south']} /{' '}
                         {round.result.tichuBonuses['east-west']}
                       </p>
+                      <p class="text-sm text-(--color-muted)">
+                        {t('scoreboard.elapsed')}: {formatElapsedMs(round.timing.elapsedMs)}
+                      </p>
                     </div>
                     <div class="grid gap-2 text-right">
                       <span class="text-lg font-semibold text-(--color-fg)">
@@ -352,4 +355,12 @@ function createScoreSummarySvg({
   <text x="664" y="360" fill="#c5c0b5" font-family="Space Grotesk, sans-serif" font-size="22">${escape(eastWestLabel)}</text>
   <text x="664" y="446" fill="#f5efe5" font-family="Space Grotesk, sans-serif" font-size="92" font-weight="700">${eastWestScore}</text>
 </svg>`
+}
+
+function formatElapsedMs(value: number) {
+  const totalSeconds = Math.max(0, Math.floor(value / 1000))
+  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0')
+  const seconds = String(totalSeconds % 60).padStart(2, '0')
+
+  return `${minutes}:${seconds}`
 }

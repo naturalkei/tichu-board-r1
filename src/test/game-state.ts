@@ -10,6 +10,7 @@ export function seedStartedGameState(route: AppRoute = 'party') {
       hasStartedGame: true,
       players: createDefaultPlayers(),
       rounds: [],
+      activeRoundStartedAt: null,
       recentPlayerNames: [],
       settings: createDefaultSettings(),
     }),
