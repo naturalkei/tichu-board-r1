@@ -151,4 +151,36 @@ describe('game storage', () => {
       theme: 'dark',
     })
   })
+
+  it('normalizes an invalid recent player history limit back to default', () => {
+    expect(
+      normalizeSettings({
+        language: 'en',
+        theme: 'system',
+        recentPlayerHistoryLimit: 99,
+      }),
+    ).toEqual({
+      ...createDefaultSettings(),
+    })
+  })
+
+  it('trims recent player names using the persisted history limit', () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        hasStartedGame: true,
+        players: createDefaultPlayers(),
+        rounds: [],
+        activeRoundStartedAt: null,
+        recentPlayerNames: ['Morgan', 'Nova', 'Riley', 'Jordan', 'Casey', 'Taylor'],
+        settings: {
+          ...createDefaultSettings(),
+          recentPlayerHistoryLimit: 3,
+        },
+      }),
+    )
+
+    expect(loadGameState(localStorage).recentPlayerNames).toEqual(['Morgan', 'Nova', 'Riley'])
+  })
 })

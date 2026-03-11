@@ -38,6 +38,7 @@ export type GameContextValue = {
   setTeamName: (teamId: TeamId, name: string) => void
   setLanguage: (language: PersistedGameState['settings']['language']) => void
   setTheme: (theme: ThemeMode) => void
+  setRecentPlayerHistoryLimit: (limit: PersistedGameState['settings']['recentPlayerHistoryLimit']) => void
   clearRecentPlayerNames: () => void
   addRound: (input: RoundInput) => void
   updateRound: (roundId: string, input: RoundInput) => void
@@ -134,6 +135,7 @@ export function createResetState(state: PersistedGameState) {
   const recentPlayerNames = mergeRecentPlayerNames(
     state.recentPlayerNames,
     state.players.map((player) => player.name.trim()).filter(Boolean),
+    state.settings.recentPlayerHistoryLimit,
   )
 
   return {

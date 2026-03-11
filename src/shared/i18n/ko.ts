@@ -139,6 +139,9 @@ export const koDictionary = flatten({
   settings: {
     language: '언어',
     theme: '테마',
+    recentPlayerHistoryLimit: '최근 플레이어 저장 개수',
+    recentPlayerHistoryLimitOption: '{{ count }}개까지 저장',
+    savedRecentPlayersCount: '현재 저장된 이름: {{ count }}개',
     open: '설정 열기',
     close: '설정 닫기',
     panelTitle: '테이블 설정',

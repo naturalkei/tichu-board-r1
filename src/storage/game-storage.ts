@@ -1,4 +1,9 @@
-import { createDefaultPlayers, createDefaultSettings } from '@/domain/defaults'
+import {
+  createDefaultPlayers,
+  createDefaultSettings,
+  DEFAULT_RECENT_PLAYER_HISTORY_LIMIT,
+  isRecentPlayerHistoryLimit,
+} from '@/domain/defaults'
 import type { GameSettings, PersistedGameState } from '@/domain/types'
 
 export const STORAGE_KEY = 'tichu-board-r1:v1'
@@ -39,7 +44,9 @@ export function migratePersistedState(value: unknown): PersistedGameState | null
         ? value.activeRoundStartedAt
         : null,
     recentPlayerNames: Array.isArray(value.recentPlayerNames)
-      ? value.recentPlayerNames.filter((name): name is string => typeof name === 'string').slice(0, 12)
+      ? value.recentPlayerNames
+          .filter((name): name is string => typeof name === 'string')
+          .slice(0, normalizeSettings(value.settings).recentPlayerHistoryLimit)
       : [],
     settings: {
       ...normalizeSettings(value.settings),
@@ -57,6 +64,9 @@ export function normalizeSettings(value: unknown): GameSettings {
   return {
     ...defaults,
     ...(value as GameSettings),
+    recentPlayerHistoryLimit: isRecentPlayerHistoryLimit((value as GameSettings).recentPlayerHistoryLimit)
+      ? (value as GameSettings).recentPlayerHistoryLimit
+      : DEFAULT_RECENT_PLAYER_HISTORY_LIMIT,
     teamColors: {
       ...defaults.teamColors,
       ...(isRecord((value as GameSettings).teamColors)

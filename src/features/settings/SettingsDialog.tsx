@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { For, Show } from 'solid-js'
+import { RECENT_PLAYER_HISTORY_LIMIT_OPTIONS } from '@/domain/defaults'
 import type { ThemeMode } from '@/domain/types'
 import { DialogCloseButton } from '@/shared/DialogCloseButton'
 import { useGame } from '@/state/game-context'
@@ -13,7 +14,7 @@ type SettingsDialogProps = {
 }
 
 export function SettingsDialog(props: SettingsDialogProps) {
-  const { clearRecentPlayerNames, resetGame, setLanguage, setTheme, state, t } = useGame()
+  const { clearRecentPlayerNames, resetGame, setLanguage, setRecentPlayerHistoryLimit, setTheme, state, t } = useGame()
 
   return (
     <Show when={props.isOpen}>
@@ -81,6 +82,24 @@ export function SettingsDialog(props: SettingsDialogProps) {
                   )}
                 </For>
               </div>
+            </div>
+
+            <div class="grid gap-2">
+              <span class="text-sm text-(--color-muted)">{t('settings.recentPlayerHistoryLimit')}</span>
+              <select
+                class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-(--color-fg) outline-none"
+                value={state.settings.recentPlayerHistoryLimit}
+                onChange={(event) =>
+                  setRecentPlayerHistoryLimit(Number(event.currentTarget.value) as (typeof RECENT_PLAYER_HISTORY_LIMIT_OPTIONS)[number])
+                }
+              >
+                <For each={RECENT_PLAYER_HISTORY_LIMIT_OPTIONS}>
+                  {(limit) => <option value={limit}>{t('settings.recentPlayerHistoryLimitOption', { count: limit })}</option>}
+                </For>
+              </select>
+              <p class="text-xs leading-5 text-(--color-muted)">
+                {t('settings.savedRecentPlayersCount', { count: state.recentPlayerNames.length })}
+              </p>
             </div>
 
             <button

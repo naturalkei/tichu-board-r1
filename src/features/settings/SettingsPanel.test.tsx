@@ -74,4 +74,27 @@ describe('SettingsPanel', () => {
       expect(localStorage.getItem('tichu-board-r1:v1')).toContain('"recentPlayerNames":[]')
     })
   })
+
+  it('updates the recent player history limit and shows the saved count', async () => {
+    const value = localStorage.getItem('tichu-board-r1:v1')
+
+    if (value) {
+      const nextState = JSON.parse(value) as { recentPlayerNames: string[] }
+      nextState.recentPlayerNames = ['Morgan', 'Nova', 'Riley', 'Jordan', 'Casey', 'Taylor']
+      localStorage.setItem('tichu-board-r1:v1', JSON.stringify(nextState))
+    }
+
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByRole('button', { name: /open settings/i }))
+
+    expect(screen.getByText(/currently saved names: 5/i)).toBeInTheDocument()
+
+    await fireEvent.change(screen.getByRole('combobox'), { target: { value: '3' } })
+
+    await waitFor(() => {
+      expect(localStorage.getItem(SETTINGS_STORAGE_KEY)).toContain('"recentPlayerHistoryLimit":3')
+      expect(localStorage.getItem('tichu-board-r1:v1')).toContain('"recentPlayerNames":["Morgan","Nova","Riley"]')
+    })
+  })
 })

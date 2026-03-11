@@ -1,5 +1,16 @@
 import { PLAYER_IDS, SEATS } from './constants'
-import type { GameSettings, Language, Player, PlayerTichuCallMap, TeamColor, TeamId } from './types'
+import type {
+  GameSettings,
+  Language,
+  Player,
+  PlayerTichuCallMap,
+  RecentPlayerHistoryLimit,
+  TeamColor,
+  TeamId,
+} from './types'
+
+export const DEFAULT_RECENT_PLAYER_HISTORY_LIMIT = 5 as const
+export const RECENT_PLAYER_HISTORY_LIMIT_OPTIONS = [3, 5, 10, 15] as const
 
 const ENGLISH_PLAYER_NAMES = [
   'Avery',
@@ -130,6 +141,7 @@ export function createDefaultSettings(): GameSettings {
   return {
     language: 'en',
     theme: 'system',
+    recentPlayerHistoryLimit: DEFAULT_RECENT_PLAYER_HISTORY_LIMIT,
     teamColors: createDefaultTeamColors(),
     teamNames: createDefaultTeamNames('en'),
   }
@@ -154,11 +166,19 @@ export function createDefaultTeamNames(language: Language): Record<TeamId, strin
       }
 }
 
-export function mergeRecentPlayerNames(existingNames: string[], nextNames: string[]) {
+export function isRecentPlayerHistoryLimit(value: unknown): value is RecentPlayerHistoryLimit {
+  return RECENT_PLAYER_HISTORY_LIMIT_OPTIONS.some((option) => option === value)
+}
+
+export function mergeRecentPlayerNames(
+  existingNames: string[],
+  nextNames: string[],
+  limit: RecentPlayerHistoryLimit = DEFAULT_RECENT_PLAYER_HISTORY_LIMIT,
+) {
   const merged = [...nextNames, ...existingNames]
   const uniqueNames = merged.filter((name, index) => merged.indexOf(name) === index)
 
-  return uniqueNames.slice(0, 12)
+  return uniqueNames.slice(0, limit)
 }
 
 export function getRandomPlayerName(language: Language, currentName?: string) {
