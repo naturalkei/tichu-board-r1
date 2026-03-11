@@ -201,7 +201,7 @@ export function RoundEntry(props: RoundEntryProps) {
           </div>
         </Show>
 
-        <div class="sticky bottom-3 z-10 flex gap-3 rounded-3xl border border-white/10 bg-[color:color-mix(in_srgb,var(--color-bg)_78%,transparent)] p-3 backdrop-blur">
+        <div class="sticky bottom-3 z-10 flex gap-3 rounded-3xl border border-white/10 bg-[color-mix(in_srgb,var(--color-bg)_78%,transparent)] p-3 backdrop-blur">
           <button
             type="submit"
             class="flex-1 rounded-2xl bg-(--color-accent) px-4 py-3 text-sm font-semibold text-slate-950 transition-transform duration-150 motion-safe:hover:-translate-y-0.5"

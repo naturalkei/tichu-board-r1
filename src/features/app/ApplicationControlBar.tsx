@@ -11,7 +11,7 @@ export function ApplicationControlBar(props: ApplicationControlBarProps) {
   return (
     <header class="sticky top-4 z-20 rounded-[1.8rem] border border-white/10 bg-[color-mix(in_srgb,var(--color-surface)_82%,transparent)] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.2)] backdrop-blur-xl motion-safe:animate-[fade-in_220ms_ease-out]">
       <div class="flex items-center gap-3">
-        <div class="flex h-11 w-11 items-center justify-center rounded-[1rem] border border-white/10 bg-slate-950/35 shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-slate-950/35 shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
           <BrandLogo class="h-8 w-8" />
         </div>
 
