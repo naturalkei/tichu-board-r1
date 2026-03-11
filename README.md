@@ -85,6 +85,7 @@ pnpm build
 - [AI collaboration guide](docs/ai-collaboration.md)
 - [Gemini UI briefs](docs/gemini-ui-brief.md)
 - [Cursor UI briefs](docs/cursor-ui-brief.md)
+- [party setup requirements](docs/party-setup-requirements.md)
 - [visual asset workflow](docs/visual-asset-workflow.md)
 - [implementation readiness](docs/implementation-readiness.md)
 
