@@ -74,7 +74,7 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
                     >
                       <span
                         class={clsx(
-                          'rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] backdrop-blur-[2px]',
+                          'rounded-sm px-1.5 text-xs font-semibold uppercase tracking-[0.14em] backdrop-blur-[2px]',
                           colors().labelBadge,
                           colors().solidText,
                           isDisabled() && 'opacity-70',
