@@ -19,6 +19,12 @@ const tabIcons: Record<InGameRoute | 'settings', string> = {
     'M12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5ZM19.4 15A1 1 0 0 0 19.6 16.1L19.7 16.2A1.2 1.2 0 0 1 18 17.9L17.9 17.8A1 1 0 0 0 16.8 17.6A1 1 0 0 0 16.2 18.5V18.8A1.2 1.2 0 0 1 13.8 18.8V18.7A1 1 0 0 0 13.2 17.8A1 1 0 0 0 12.1 17.9L12 18A1.2 1.2 0 0 1 10.3 16.3L10.4 16.2A1 1 0 0 0 10.6 15.1A1 1 0 0 0 9.7 14.5H9.4A1.2 1.2 0 0 1 9.4 12.1H9.5A1 1 0 0 0 10.4 11.5A1 1 0 0 0 10.2 10.4L10.1 10.3A1.2 1.2 0 0 1 11.8 8.6L11.9 8.7A1 1 0 0 0 13 8.9A1 1 0 0 0 13.6 8V7.7A1.2 1.2 0 0 1 16 7.7V7.8A1 1 0 0 0 16.6 8.7A1 1 0 0 0 17.7 8.5L17.8 8.4A1.2 1.2 0 0 1 19.5 10.1L19.4 10.2A1 1 0 0 0 19.2 11.3A1 1 0 0 0 20.1 11.9H20.4A1.2 1.2 0 0 1 20.4 14.3H20.3A1 1 0 0 0 19.4 15Z',
 }
 
+const tabButtonBaseClass =
+  'group relative flex min-h-20 flex-col items-center justify-center gap-1 rounded-3xl px-2 py-2 text-center transition-all duration-200 ease-out'
+
+const tabLabelClass =
+  'max-w-full truncate text-[10px] font-medium tracking-[0.08em] text-current/72 transition-opacity duration-200'
+
 export function GameTabBar(props: GameTabBarProps) {
   const { t } = useGame()
   const tabs = () => [...inGameRoutes, 'settings'] as const
@@ -28,22 +34,25 @@ export function GameTabBar(props: GameTabBarProps) {
       aria-label={t('nav.label')}
       class={clsx(
         'sticky bottom-4 z-20',
-        'rounded-[1.8rem] border border-white/10',
-        'bg-[color-mix(in_srgb,var(--color-surface)_88%,transparent)]',
-        'p-2 shadow-[0_22px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl',
+        'rounded-4xl border border-white/10',
+        'bg-[color-mix(in_srgb,var(--color-surface)_84%,transparent)]',
+        'px-2 py-2 shadow-[0_22px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl',
       )}
     >
-      <div class="grid grid-cols-5 gap-2">
+      <div class="grid grid-cols-[repeat(4,minmax(0,1fr))_auto] gap-2">
         <For each={tabs()}>
           {(route) => (
             <button
               type="button"
               class={clsx(
-                'flex min-h-16 flex-col items-center justify-center gap-1 rounded-[1.2rem] px-2 py-2',
-                'text-[11px] font-medium transition-colors',
+                tabButtonBaseClass,
+                route === 'settings' ? 'min-w-18 bg-black/16 text-(--color-fg)' : 'bg-black/10 text-(--color-fg)',
                 route !== 'settings' && props.activeRoute === route
-                  ? 'bg-(--color-accent) text-slate-950'
-                  : 'bg-black/10 text-(--color-fg)',
+                  ? 'bg-(--color-accent) text-slate-950 shadow-[0_10px_24px_rgba(255,191,105,0.26)]'
+                  : 'border border-white/6',
+                route === 'settings'
+                  ? 'before:absolute before:inset-y-2 before:-left-1 before:w-px before:bg-white/10'
+                  : 'motion-safe:hover:-translate-y-0.5 motion-safe:hover:bg-black/16',
               )}
               aria-current={route !== 'settings' && props.activeRoute === route ? 'page' : undefined}
               aria-label={route === 'settings' ? t('settings.open') : t(`nav.${route}`)}
@@ -58,7 +67,12 @@ export function GameTabBar(props: GameTabBarProps) {
             >
               <svg
                 aria-hidden="true"
-                class="h-4 w-4"
+                class={clsx(
+                  'h-6 w-6 transition-transform duration-200',
+                  route !== 'settings' && props.activeRoute === route
+                    ? 'scale-110'
+                    : 'group-active:scale-95',
+                )}
                 fill="none"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
@@ -68,10 +82,12 @@ export function GameTabBar(props: GameTabBarProps) {
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="1.8"
+                  stroke-width={route === 'settings' ? '1.7' : '2'}
                 />
               </svg>
-              <span>{route === 'settings' ? t('nav.settings') : t(`nav.${route}`)}</span>
+              <span class={tabLabelClass}>
+                {route === 'settings' ? t('nav.settings') : t(`nav.${route}`)}
+              </span>
             </button>
           )}
         </For>
