@@ -139,18 +139,6 @@ export function usePartySetupController() {
     closePlayerEditor()
   }
 
-  const commitTeamEditor = () => {
-    const draft = teamEditorDraft()
-
-    if (!draft) {
-      return
-    }
-
-    setTeamName(draft.teamId, draft.name)
-    setTeamColor(draft.teamId, draft.color)
-    setTeamEditorDraft(null)
-  }
-
   return {
     state,
     teamLineups,
@@ -174,9 +162,24 @@ export function usePartySetupController() {
     clearArmedState,
     activeTeamId: (teamId: TeamId) => (teamId === 'north-south' ? 'east-west' : 'north-south'),
     setEditorName: (name: string) => setEditorDraft((current) => (current ? { ...current, name } : current)),
-    setTeamEditorName: (name: string) => setTeamEditorDraft((current) => (current ? { ...current, name } : current)),
+    setTeamEditorName: (name: string) =>
+      setTeamEditorDraft((current) => {
+        if (!current) {
+          return current
+        }
+
+        setTeamName(current.teamId, name)
+        return { ...current, name }
+      }),
     setTeamEditorColor: (color: TeamEditorDraft['color']) =>
-      setTeamEditorDraft((current) => (current ? { ...current, color } : current)),
+      setTeamEditorDraft((current) => {
+        if (!current) {
+          return current
+        }
+
+        setTeamColor(current.teamId, color)
+        return { ...current, color }
+      }),
     armPlayer: (playerId: PlayerId) => {
       setArmedPlayerId(playerId)
       setArmedRecentName(null)
@@ -221,6 +224,5 @@ export function usePartySetupController() {
     closeTeamEditor: () => setTeamEditorDraft(null),
     handleSeatAssign,
     commitPlayerEditor,
-    commitTeamEditor,
   }
 }

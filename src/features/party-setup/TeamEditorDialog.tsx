@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { For } from 'solid-js'
 import type { TeamColor } from '@/domain/types'
 import { teamColorClasses, teamColorOptions, type TeamEditorDraft } from './party-setup.shared'
-import { DialogActions, DialogCloseButton, DialogShell } from './PartyDialogPrimitives'
+import { DialogCloseButton, DialogShell } from './PartyDialogPrimitives'
 
 type TeamEditorDialogProps = {
   draft: TeamEditorDraft
@@ -12,12 +12,9 @@ type TeamEditorDialogProps = {
   closeLabel: string
   nameFieldLabel: string
   teamColorsLabel: string
-  applyLabel: string
-  cancelLabel: string
   onNameInput: (name: string) => void
   onColorSelect: (color: TeamColor) => void
   onClose: () => void
-  onApply: () => void
 }
 
 export function TeamEditorDialog(props: TeamEditorDialogProps) {
@@ -29,7 +26,7 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">{props.title}</p>
             <p class="mt-2 text-sm text-(--color-muted)">{props.subtitle}</p>
           </div>
-          <DialogCloseButton closeLabel={props.closeLabel} onClose={props.onClose} />
+          <DialogCloseButton closeLabel={props.closeLabel} onClose={props.onClose} size="lg" />
         </div>
 
         <div class="mt-5 grid gap-5">
@@ -78,12 +75,15 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
         </div>
       </div>
 
-      <DialogActions
-        primaryLabel={props.applyLabel}
-        secondaryLabel={props.cancelLabel}
-        onPrimary={props.onApply}
-        onSecondary={props.onClose}
-      />
+      <div class="sticky bottom-0 border-t border-white/10 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-4 sm:px-5 sm:pb-5">
+        <button
+          type="button"
+          class="w-full rounded-2xl border border-white/10 px-4 py-3 text-sm text-(--color-fg)"
+          onClick={() => props.onClose()}
+        >
+          {props.closeLabel}
+        </button>
+      </div>
     </DialogShell>
   )
 }

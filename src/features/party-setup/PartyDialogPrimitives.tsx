@@ -24,11 +24,15 @@ export function DialogShell(props: ParentProps<{ closeLabel: string; onClose: ()
   )
 }
 
-export function DialogCloseButton(props: { closeLabel: string; onClose: () => void }) {
+export function DialogCloseButton(props: { closeLabel: string; onClose: () => void; size?: 'md' | 'lg' }) {
   return (
     <button
       type="button"
-      class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-(--color-fg)"
+      class={
+        props.size === 'lg'
+          ? 'inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/20 text-(--color-fg)'
+          : 'inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-(--color-fg)'
+      }
       aria-label={props.closeLabel}
       onClick={() => props.onClose()}
     >

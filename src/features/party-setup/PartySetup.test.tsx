@@ -41,13 +41,23 @@ describe('PartySetup', () => {
     await fireEvent.input(screen.getByTestId('team-editor-name-north-south'), {
       target: { value: 'Alpha Team' },
     })
+    await waitFor(() => {
+      expect(screen.getByTestId('team-label-north-south')).toHaveTextContent('Alpha Team')
+    })
     await fireEvent.click(screen.getByTestId('team-editor-color-violet'))
-    await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
+    await waitFor(() => {
+      expect(screen.getByTestId('team-name-north-south').className).toContain('ring-violet-300/55')
+    })
 
     expect(screen.getByTestId('team-label-north-south')).toHaveTextContent('Alpha Team')
     expect(screen.getByTestId('team-name-north-south')).toHaveTextContent('Alpha Team')
+    expect(screen.getByTestId('team-name-north-south').className).toContain('ring-violet-300/55')
     expect(screen.getByTestId('bench-recent-Morgan')).toBeInTheDocument()
     expect(screen.getByTestId('bench-recent-Nova')).toBeInTheDocument()
+    expect(screen.getByTestId('team-editor-color-teal')).toBeInTheDocument()
+    expect(screen.getByTestId('team-editor-color-orange')).toBeInTheDocument()
+    expect(screen.getAllByTestId(/team-editor-color-/)).toHaveLength(7)
+    await fireEvent.click(within(screen.getByTestId('team-editor-dialog')).getByText(/close team editor/i))
 
     const northSeat = screen.getByTestId('seat-north')
     await fireEvent.click(northSeat)
@@ -69,10 +79,11 @@ describe('PartySetup', () => {
     await fireEvent.click(screen.getByTestId('team-name-east-west'))
     expect(screen.getByTestId('team-editor-color-violet')).toBeDisabled()
     expect(screen.getByTestId('team-editor-color-amber')).not.toBeDisabled()
-    expect(screen.getByTestId('team-editor-color-teal')).toBeInTheDocument()
-    expect(screen.getByTestId('team-editor-color-orange')).toBeInTheDocument()
     await fireEvent.click(screen.getByTestId('team-editor-color-rose'))
-    await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
+    await waitFor(() => {
+      expect(screen.getByTestId('team-name-east-west').className).toContain('ring-rose-300/55')
+    })
+    await fireEvent.click(within(screen.getByTestId('team-editor-dialog')).getByText(/close team editor/i))
 
     await waitFor(() => {
       expect(screen.getByTestId('team-name-east-west')).toHaveTextContent('Team 2')
@@ -103,6 +114,7 @@ describe('PartySetup', () => {
 
     expect(screen.getByTestId('team-editor-dialog')).toBeInTheDocument()
     expect(screen.getByTestId('team-editor-dialog').className).toContain('max-h-dvh')
+    expect(within(screen.getByTestId('team-editor-dialog')).getByText(/close team editor/i)).toBeInTheDocument()
   })
 
   it('renders large seat overlays for every table target', async () => {
