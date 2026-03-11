@@ -1,9 +1,14 @@
 import clsx from 'clsx'
+import { Show } from 'solid-js'
 import { BrandLogo } from '@/shared/BrandLogo'
 import { useGame } from '@/state/game-context'
 
-export function LandingScreen() {
-  const { startGame, t } = useGame()
+type LandingScreenProps = {
+  onEnterGame: () => void
+}
+
+export function LandingScreen(props: LandingScreenProps) {
+  const { startGame, state, t } = useGame()
 
   return (
     <section class="flex min-h-screen items-center py-6">
@@ -55,10 +60,16 @@ export function LandingScreen() {
               'transition-transform duration-200 ease-out',
               'motion-safe:hover:-translate-y-0.5',
             )}
-            onClick={() => startGame()}
+            onClick={() => {
+              startGame()
+              props.onEnterGame()
+            }}
           >
-            {t('landing.start')}
+            {state.hasStartedGame ? t('landing.continue') : t('landing.start')}
           </button>
+          <Show when={state.hasStartedGame}>
+            <p class="text-sm text-(--color-muted)">{t('landing.resumeHint')}</p>
+          </Show>
           <p class="text-sm text-(--color-muted)">{t('landing.caption')}</p>
         </div>
       </div>

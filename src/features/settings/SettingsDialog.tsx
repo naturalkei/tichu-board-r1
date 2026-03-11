@@ -8,6 +8,7 @@ const themeModes: ThemeMode[] = ['system', 'light', 'dark']
 type SettingsDialogProps = {
   isOpen: boolean
   onClose: () => void
+  onShowLanding: () => void
 }
 
 export function SettingsDialog(props: SettingsDialogProps) {
@@ -101,6 +102,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
                 </For>
               </div>
             </div>
+
+            <button
+              type="button"
+              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-(--color-fg)"
+              onClick={() => {
+                props.onClose()
+                props.onShowLanding()
+              }}
+            >
+              {t('settings.showLanding')}
+            </button>
 
             <button
               type="button"

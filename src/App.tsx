@@ -98,19 +98,17 @@ function AppContent() {
   createEffect(() => {
     if (!state.hasStartedGame && route() !== 'start') {
       navigate('start', { replace: true })
-      return
-    }
-
-    if (state.hasStartedGame && route() === 'start') {
-      navigate(getDefaultRoute(true), { replace: true })
     }
   })
 
   return (
     <main class="min-h-screen bg-(--color-bg) text-(--color-fg)">
       <section class="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-4 px-4 py-6 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] sm:px-6 sm:py-8 lg:px-8">
-        <Show when={state.hasStartedGame} fallback={<LandingScreen />}>
-          <ApplicationControlBar onOpenSettings={() => setIsSettingsOpen(true)} />
+        <Show
+          when={route() !== 'start'}
+          fallback={<LandingScreen onEnterGame={() => navigate(getDefaultRoute(true))} />}
+        >
+          <ApplicationControlBar />
 
           <div class="min-h-[calc(100vh-15rem)]" data-testid={`page-${route()}`}>
             <GameplayPages
@@ -124,11 +122,16 @@ function AppContent() {
             />
           </div>
 
-          <GameTabBar activeRoute={currentGameRoute()} onNavigate={navigate} />
+          <GameTabBar
+            activeRoute={currentGameRoute()}
+            onNavigate={navigate}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+          />
 
           <SettingsDialog
             isOpen={isSettingsOpen()}
             onClose={() => setIsSettingsOpen(false)}
+            onShowLanding={() => navigate('start')}
           />
         </Show>
       </section>
