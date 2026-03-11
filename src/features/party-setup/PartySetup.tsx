@@ -87,6 +87,8 @@ export function PartySetup() {
           subtitle={controller.t('party.editorSubtitle', { seat: controller.t(`seats.${controller.activePlayer()!.seat}`) })}
           nameFieldLabel={controller.t('party.nameField')}
           quickActionsLabel={controller.t('party.quickActions')}
+          recentNamesLabel={controller.t('party.recentPlayers')}
+          recentNamesHint={controller.t('party.recentPlayersHint')}
           rerollLabel={controller.t('party.rerollName')}
           moveSeatLabel={controller.t('party.moveSeat')}
           closeLabel={controller.t('party.closeEditor')}

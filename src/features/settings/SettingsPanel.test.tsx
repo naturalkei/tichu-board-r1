@@ -55,4 +55,23 @@ describe('SettingsPanel', () => {
     await fireEvent.click(screen.getByRole('button', { name: /설정 열기/i }))
     expect(screen.getByText(/테이블 설정/i)).toBeInTheDocument()
   })
+
+  it('clears recent player history from settings', async () => {
+    const value = localStorage.getItem('tichu-board-r1:v1')
+
+    if (value) {
+      const nextState = JSON.parse(value) as { recentPlayerNames: string[] }
+      nextState.recentPlayerNames = ['Morgan', 'Nova', 'Riley']
+      localStorage.setItem('tichu-board-r1:v1', JSON.stringify(nextState))
+    }
+
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByRole('button', { name: /open settings/i }))
+    await fireEvent.click(screen.getByRole('button', { name: /clear recent players/i }))
+
+    await waitFor(() => {
+      expect(localStorage.getItem('tichu-board-r1:v1')).toContain('"recentPlayerNames":[]')
+    })
+  })
 })

@@ -13,7 +13,7 @@ type SettingsDialogProps = {
 }
 
 export function SettingsDialog(props: SettingsDialogProps) {
-  const { resetGame, setLanguage, setTheme, state, t } = useGame()
+  const { clearRecentPlayerNames, resetGame, setLanguage, setTheme, state, t } = useGame()
 
   return (
     <Show when={props.isOpen}>
@@ -92,6 +92,14 @@ export function SettingsDialog(props: SettingsDialogProps) {
               }}
             >
               {t('settings.showLanding')}
+            </button>
+
+            <button
+              type="button"
+              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-(--color-fg)"
+              onClick={() => clearRecentPlayerNames()}
+            >
+              {t('settings.clearRecentPlayers')}
             </button>
 
             <button

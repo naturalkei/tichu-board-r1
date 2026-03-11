@@ -10,7 +10,7 @@ describe('PartySetup', () => {
 
     if (value) {
       const nextState = JSON.parse(value) as { recentPlayerNames: string[] }
-      nextState.recentPlayerNames = ['Morgan', 'Nova']
+      nextState.recentPlayerNames = ['Morgan', 'Nova', 'Riley', 'Jordan', 'Casey', 'Taylor']
       localStorage.setItem('tichu-board-r1:v1', JSON.stringify(nextState))
     }
   })
@@ -94,6 +94,10 @@ describe('PartySetup', () => {
     expect(screen.getByTestId('team-name-north-south').className).toContain('ring-fuchsia-300/60')
     expect(screen.getByTestId('bench-recent-Morgan')).toBeInTheDocument()
     expect(screen.getByTestId('bench-recent-Nova')).toBeInTheDocument()
+    expect(screen.getByTestId('bench-recent-Riley')).toBeInTheDocument()
+    expect(screen.getByTestId('bench-recent-Jordan')).toBeInTheDocument()
+    expect(screen.getByTestId('bench-recent-Casey')).toBeInTheDocument()
+    expect(screen.queryByTestId('bench-recent-Taylor')).not.toBeInTheDocument()
     expect(screen.getByTestId('team-editor-color-teal')).toBeInTheDocument()
     expect(screen.getByTestId('team-editor-color-orange')).toBeInTheDocument()
     expect(screen.getAllByTestId(/team-editor-color-/)).toHaveLength(7)
@@ -181,6 +185,16 @@ describe('PartySetup', () => {
     await fireEvent.click(screen.getByTestId('seat-west'))
 
     expect(within(screen.getByTestId('seat-west')).getByText('Morgan')).toBeInTheDocument()
+  })
+
+  it('shows recent player names in a separate editor section', async () => {
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByTestId('seat-north'))
+
+    expect(screen.getByText(/recent players|최근 플레이어/i)).toBeInTheDocument()
+    expect(screen.getByText(/drag onto a seat|좌석에 드래그/i)).toBeInTheDocument()
+    expect(within(screen.getByTestId('party-editor-dialog')).getByRole('button', { name: 'Morgan' })).toBeInTheDocument()
   })
 
   it('shows stronger drop targets on other seats when a bench player is armed', async () => {

@@ -10,6 +10,8 @@ type PlayerEditorDialogProps = {
   subtitle: string
   nameFieldLabel: string
   quickActionsLabel: string
+  recentNamesLabel: string
+  recentNamesHint: string
   rerollLabel: string
   moveSeatLabel: string
   closeLabel: string
@@ -62,6 +64,15 @@ export function PlayerEditorDialog(props: PlayerEditorDialogProps) {
               >
                 {props.moveSeatLabel}
               </button>
+            </div>
+          </div>
+
+          <div class="grid gap-3 rounded-3xl border border-white/10 bg-black/12 p-4">
+            <div class="grid gap-1">
+              <span class="text-sm text-(--color-muted)">{props.recentNamesLabel}</span>
+              <p class="text-xs leading-5 text-(--color-muted)">{props.recentNamesHint}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
               <For each={props.recentNames}>
                 {(name) => (
                   <button
