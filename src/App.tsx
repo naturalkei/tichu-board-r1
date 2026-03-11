@@ -66,7 +66,6 @@ function AppContent() {
           when={!isStartRoute()}
           fallback={<LandingScreen onEnterGame={() => navigate(getDefaultRoute(true))} />}
         >
-          <ApplicationControlBar />
           <GlobalScoreSummary />
 
           <div class="min-h-[calc(100vh-15rem)]" data-testid={`page-${route()}`}>
@@ -80,6 +79,8 @@ function AppContent() {
               }}
             />
           </div>
+          
+          <ApplicationControlBar />
 
           <GameTabBar
             activeRoute={currentGameRoute()}
