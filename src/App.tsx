@@ -3,6 +3,7 @@ import { ApplicationControlBar } from '@/features/app/ApplicationControlBar'
 import { GameTabBar } from '@/features/app/GameTabBar'
 import { GameplayPages } from '@/features/app/GameplayPages'
 import { LandingScreen } from '@/features/landing/LandingScreen'
+import { GlobalScoreSummary } from '@/features/scoreboard/Scoreboard'
 import { SettingsDialog } from '@/features/settings/SettingsDialog'
 import { GameProvider, useGame } from '@/state/game-context'
 import {
@@ -109,6 +110,7 @@ function AppContent() {
           fallback={<LandingScreen onEnterGame={() => navigate(getDefaultRoute(true))} />}
         >
           <ApplicationControlBar />
+          <GlobalScoreSummary />
 
           <div class="min-h-[calc(100vh-15rem)]" data-testid={`page-${route()}`}>
             <GameplayPages

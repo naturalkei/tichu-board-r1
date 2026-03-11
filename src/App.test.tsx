@@ -67,4 +67,21 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: /party setup/i })).toBeInTheDocument()
     expect(window.location.hash).toBe('#/party')
   })
+
+  it('shows the floating score summary after the first round is saved', async () => {
+    seedStartedGameState('round')
+    render(() => <App />)
+
+    await fireEvent.input(screen.getByTestId('card-points-north-south'), {
+      target: { value: '60' },
+    })
+    await fireEvent.input(screen.getByTestId('card-points-east-west'), {
+      target: { value: '40' },
+    })
+    await fireEvent.click(screen.getAllByRole('radio', { name: /first out/i })[0]!)
+    await fireEvent.click(screen.getByTestId('save-round'))
+
+    expect(screen.getByTestId('global-score-summary')).toBeInTheDocument()
+    expect(screen.getAllByTestId('share-score-summary').length).toBeGreaterThan(0)
+  })
 })

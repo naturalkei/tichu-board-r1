@@ -101,6 +101,7 @@ const dictionaries = {
     scoreboard: {
       total: 'Total',
       rounds: 'Rounds',
+      floatingLabel: 'Live score summary',
       empty: 'No rounds yet. Enter the first round to start the scoreboard.',
       history: 'Round History',
       roundLabel: 'Round {{ round }}',
@@ -110,6 +111,10 @@ const dictionaries = {
       cardPoints: 'Card points',
       bonuses: 'Tichu bonuses',
       leading: 'Leading',
+      share: 'Share snapshot',
+      shareSubtitle: 'Current score summary',
+      shareReady: 'Share sheet opened.',
+      shareDownloaded: 'Score summary downloaded.',
     },
     settings: {
       language: 'Language',
@@ -237,6 +242,7 @@ const dictionaries = {
     scoreboard: {
       total: '총점',
       rounds: '라운드',
+      floatingLabel: '실시간 점수 요약',
       empty: '아직 라운드가 없습니다. 첫 라운드를 입력해 주세요.',
       history: '라운드 기록',
       roundLabel: '{{ round }}라운드',
@@ -246,6 +252,10 @@ const dictionaries = {
       cardPoints: '카드 점수',
       bonuses: '티츄 보너스',
       leading: '선두',
+      share: '요약 공유',
+      shareSubtitle: '현재 점수 요약',
+      shareReady: '공유 시트를 열었습니다.',
+      shareDownloaded: '점수 요약 파일을 내려받았습니다.',
     },
     settings: {
       language: '언어',
