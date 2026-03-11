@@ -10,6 +10,7 @@ import { SettingsDialog } from '@/features/settings/SettingsDialog'
 import { GameProvider, useGame } from '@/state/game-context'
 import {
   getDefaultRoute,
+  getHashForRoute,
   type InGameRoute,
 } from '@/shared/routes'
 
@@ -34,6 +35,18 @@ function AppContent() {
   createEffect(() => {
     if (!state.hasStartedGame && route() !== 'start') {
       navigate('start', { replace: true })
+    }
+  })
+
+  createEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const expectedHash = getHashForRoute(route())
+
+    if (window.location.hash !== expectedHash) {
+      navigate(route(), { replace: true })
     }
   })
 
