@@ -16,6 +16,7 @@ describe('App', () => {
     expect(window.location.hash).toBe('#/start')
     expect(screen.getByTestId('landing-layout')).toBeInTheDocument()
     expect(screen.getByTestId('landing-content').className).toContain('overflow-y-auto')
+    expect(screen.getByTestId('app-shell').className).toContain('overflow-hidden')
   })
 
   it('enters the scoring screen after pressing start', async () => {
