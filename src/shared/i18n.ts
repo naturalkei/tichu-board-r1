@@ -14,7 +14,9 @@ const dictionaries = {
       subtitle:
         'Start a new table-ready score session, keep round history locally, and switch language or theme any time.',
       start: 'Start scoring',
+      continue: 'Continue game',
       caption: 'Your game stays in this browser until you reset it.',
+      resumeHint: 'You can revisit this intro any time from the bottom dock settings.',
       featureFastTitle: 'Fast round entry',
       featureFastBody: 'Track Tichu calls, first-out, and team card points without breaking table flow.',
       featureLocalTitle: 'Local persistence',
@@ -44,6 +46,7 @@ const dictionaries = {
       round: 'Round',
       results: 'Results',
       history: 'History',
+      settings: 'Settings',
     },
     seats: {
       north: 'North',
@@ -103,6 +106,7 @@ const dictionaries = {
       system: 'System',
       light: 'Light',
       dark: 'Dark',
+      showLanding: 'Show Start Screen',
       reset: 'Reset Game',
       resetConfirm: 'Reset the saved game state?',
     },
@@ -131,7 +135,9 @@ const dictionaries = {
       subtitle:
         '새 점수 세션을 시작하고, 라운드 기록을 로컬에 유지하며, 언어와 테마를 언제든 바꿀 수 있습니다.',
       start: '시작하기',
+      continue: '게임 계속하기',
       caption: '게임 데이터는 초기화 전까지 이 브라우저에 유지됩니다.',
+      resumeHint: '하단 독의 설정에서 이 시작 화면을 다시 볼 수 있습니다.',
       featureFastTitle: '빠른 라운드 입력',
       featureFastBody: '티츄 콜, 첫 아웃, 팀 카드 점수를 끊김 없이 기록할 수 있습니다.',
       featureLocalTitle: '로컬 저장',
@@ -161,6 +167,7 @@ const dictionaries = {
       round: '라운드',
       results: '결과',
       history: '히스토리',
+      settings: '설정',
     },
     seats: {
       north: '북',
@@ -220,6 +227,7 @@ const dictionaries = {
       system: '시스템',
       light: '라이트',
       dark: '다크',
+      showLanding: '시작 화면 보기',
       reset: '게임 초기화',
       resetConfirm: '저장된 게임 상태를 초기화할까요?',
     },

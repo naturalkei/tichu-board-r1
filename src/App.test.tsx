@@ -51,4 +51,20 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: /round entry/i })).toBeInTheDocument()
     expect(window.location.hash).toBe('#/round')
   })
+
+  it('can revisit the landing screen and continue the current game', async () => {
+    seedStartedGameState('results')
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByRole('button', { name: /open settings/i }))
+    await fireEvent.click(screen.getByRole('button', { name: /show start screen/i }))
+
+    expect(screen.getByRole('button', { name: /continue game/i })).toBeInTheDocument()
+    expect(window.location.hash).toBe('#/start')
+
+    await fireEvent.click(screen.getByRole('button', { name: /continue game/i }))
+
+    expect(screen.getByRole('heading', { name: /party setup/i })).toBeInTheDocument()
+    expect(window.location.hash).toBe('#/party')
+  })
 })
