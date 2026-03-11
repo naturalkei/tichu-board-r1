@@ -110,3 +110,21 @@ Ask Cursor to review:
 - add explicit team-name state and drag/hover UI state instead of overloading player state
 - keep disabled color logic in pure functions and surface only disabled flags to the UI
 - prioritize domain tests for invariants first, then UI tests for drag, disabled colors, and fullscreen editing
+
+## Latest Review Notes
+### Gemini follow-up
+- simplify each seat to seat marker, player name, and one team cue only
+- keep the table center decorative and mostly silent
+- render recent bench names as muted ghosts with dashed borders
+- raise editor opacity to a near-opaque surface and keep action buttons pinned to the bottom
+
+### Cursor follow-up
+- short implementation prompts timed out in this environment during the latest retry
+- the previous Cursor guidance above remains the implementation baseline for component split and test focus
+
+## Applied Decisions
+- keep team naming editable as `Team 1` and `Team 2` defaults, with pair composition shown only as secondary metadata
+- limit the seat cards to a large directional overlay, player name, and one small team-name pill
+- keep exactly two recent inactive names visible on the bench
+- use a fixed fullscreen editor on mobile with a sticky action bar so the bottom dock never occludes the save action
+- validate disabled team colors with tests that re-check the opposite team's available colors after changes

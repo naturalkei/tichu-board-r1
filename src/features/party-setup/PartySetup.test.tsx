@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@solidjs/testing-library'
+import { fireEvent, render, screen, waitFor, within } from '@solidjs/testing-library'
 import App from '@/App'
 import { seedStartedGameState } from '@/test/game-state'
 
@@ -67,6 +67,14 @@ describe('PartySetup', () => {
     expect(screen.getByTestId('team-color-east-west-sky')).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByTestId('team-color-north-south-amber')).toHaveAttribute('aria-pressed', 'true')
 
+    await fireEvent.click(screen.getByTestId('team-color-east-west-rose'))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('team-color-east-west-rose')).toHaveAttribute('aria-pressed', 'true')
+      expect(screen.getByTestId('team-color-north-south-rose')).toBeDisabled()
+      expect(screen.getByTestId('team-color-north-south-rose')).toHaveAttribute('aria-disabled', 'true')
+    })
+
     await fireEvent.click(screen.getByTestId('seat-east'))
     await fireEvent.input(within(screen.getByTestId('party-editor-dialog')).getByRole('textbox'), {
       target: { value: rerolledName },
@@ -82,6 +90,16 @@ describe('PartySetup', () => {
     await fireEvent.click(screen.getByTestId('seat-north'))
 
     expect(screen.getByTestId('party-editor-dialog')).toBeInTheDocument()
+    expect(screen.getByTestId('party-editor-dialog').className).toContain('min-h-dvh')
+  })
+
+  it('renders large seat overlays for every table target', async () => {
+    render(() => <App />)
+
+    expect(screen.getByTestId('seat-overlay-north')).toHaveTextContent('N')
+    expect(screen.getByTestId('seat-overlay-west')).toHaveTextContent('W')
+    expect(screen.getByTestId('seat-overlay-east')).toHaveTextContent('E')
+    expect(screen.getByTestId('seat-overlay-south')).toHaveTextContent('S')
   })
 
   it('applies an armed recent player to a seat target', async () => {
