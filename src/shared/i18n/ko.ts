@@ -3,6 +3,7 @@ import { flatten } from '@solid-primitives/i18n'
 export const koDictionary = flatten({
   app: {
     badge: '티츄 점수 트래커',
+    credit: 'designed by naturalkei',
     title: 'TichuBoard',
     controlSubtitle: '실전 테이블 진행에 맞춘 컴팩트 점수 컨트롤',
     subtitle: '실전 플레이를 위한 모바일 중심 티츄 점수 동반 앱으로, 로컬 기록을 안정적으로 유지합니다.',

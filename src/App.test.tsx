@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@solidjs/testing-library'
-import App from '@/App'
+import App, { getBottomDockRecoveryTarget } from '@/App'
 import { getPathForRoute } from '@/shared/routes'
 import { seedStartedGameState } from '@/test/game-state'
 
@@ -115,5 +115,19 @@ describe('App', () => {
 
     expect(screen.getByTestId('global-score-summary')).toBeInTheDocument()
     expect(screen.getAllByTestId('share-score-summary').length).toBeGreaterThan(0)
+  })
+
+  it('shows the bottom credit and recovers scroll near the page bottom after release', async () => {
+    seedStartedGameState('party')
+    render(() => <App />)
+
+    const credit = screen.getByTestId('bottom-credit')
+    expect(credit).toHaveTextContent(/designed by naturalkei/i)
+    expect(getBottomDockRecoveryTarget({
+      currentTop: 950,
+      viewportHeight: 800,
+      documentHeight: 1800,
+      footerHeight: 56,
+    })).toBe(962)
   })
 })
