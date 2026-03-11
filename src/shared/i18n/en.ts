@@ -141,6 +141,9 @@ export const enDictionary = flatten({
   settings: {
     language: 'Language',
     theme: 'Theme',
+    recentPlayerHistoryLimit: 'Recent player history size',
+    recentPlayerHistoryLimitOption: 'Keep {{ count }} names',
+    savedRecentPlayersCount: 'Currently saved names: {{ count }}',
     open: 'Open settings',
     close: 'Close settings',
     panelTitle: 'Table settings',

@@ -34,6 +34,7 @@ export const GameProvider: ParentComponent = (props) => {
   const persistedSettings = createMemo(() => ({
     language: state.settings.language,
     theme: state.settings.theme,
+    recentPlayerHistoryLimit: state.settings.recentPlayerHistoryLimit,
     teamColors: {
       'north-south': state.settings.teamColors['north-south'],
       'east-west': state.settings.teamColors['east-west'],
