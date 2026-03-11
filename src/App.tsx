@@ -107,7 +107,7 @@ function AppContent() {
   })
 
   return (
-    <main class="min-h-screen bg-[var(--color-bg)] text-[var(--color-fg)]">
+    <main class="min-h-screen bg-(--color-bg) text-(--color-fg)">
       <section class="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-4 px-4 py-6 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] sm:px-6 sm:py-8 lg:px-8">
         <Show when={state.hasStartedGame} fallback={<LandingScreen />}>
           <ApplicationControlBar onOpenSettings={() => setIsSettingsOpen(true)} />

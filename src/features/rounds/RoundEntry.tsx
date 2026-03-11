@@ -52,13 +52,13 @@ export function RoundEntry(props: RoundEntryProps) {
   const submitLabel = () => (props.editingRoundId ? t('round.update') : t('round.save'))
 
   return (
-    <section class="rounded-[2rem] border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-6">
+    <section class="rounded-4xl border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-6">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
+          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">
             {t('sections.round')}
           </p>
-          <p class="mt-2 text-sm leading-6 text-[var(--color-muted)]">{t('round.cardPointsHint')}</p>
+          <p class="mt-2 text-sm leading-6 text-(--color-muted)">{t('round.cardPointsHint')}</p>
         </div>
         <Show when={props.editingRoundId && editingRoundIndex() >= 0}>
           <span class="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
@@ -97,21 +97,21 @@ export function RoundEntry(props: RoundEntryProps) {
         <div class="grid gap-3">
           <For each={state.players}>
             {(player) => (
-              <article class="rounded-[1.5rem] border border-white/10 bg-[var(--color-surface)] p-4">
+              <article class="rounded-3xl border border-white/10 bg-(--color-surface) p-4">
                 <div class="flex items-center justify-between gap-3">
                   <div>
-                    <p class="text-sm font-semibold text-[var(--color-fg)]">{player.name}</p>
-                    <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
+                    <p class="text-sm font-semibold text-(--color-fg)">{player.name}</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-(--color-muted)">
                       {t(`seats.${player.seat}`)}
                     </p>
                   </div>
                   <div class="flex items-center gap-2">
-                    <label class="text-xs text-[var(--color-muted)]" for={`call-${player.id}`}>
+                    <label class="text-xs text-(--color-muted)" for={`call-${player.id}`}>
                       {t('round.tichu')}
                     </label>
                     <select
                       id={`call-${player.id}`}
-                      class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-[var(--color-fg)] outline-none focus:border-[var(--color-accent)]"
+                      class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-(--color-fg) outline-none focus:border-(--color-accent)"
                       value={draft.tichuCalls[player.id]}
                       data-testid={`tichu-call-${player.id}`}
                       onInput={(event) =>
@@ -124,7 +124,7 @@ export function RoundEntry(props: RoundEntryProps) {
                     </select>
                   </div>
                 </div>
-                <label class="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-[var(--color-fg)]">
+                <label class="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-(--color-fg)">
                   <input
                     type="radio"
                     name="first-out-player"
@@ -139,11 +139,11 @@ export function RoundEntry(props: RoundEntryProps) {
           </For>
         </div>
 
-        <div class="grid gap-4 rounded-[1.5rem] border border-white/10 bg-[var(--color-surface)] p-4 sm:grid-cols-3">
+        <div class="grid gap-4 rounded-3xl border border-white/10 bg-(--color-surface) p-4 sm:grid-cols-3">
           <label class="grid gap-2 text-sm">
-            <span class="text-[var(--color-muted)]">{t('round.doubleVictory')}</span>
+            <span class="text-(--color-muted)">{t('round.doubleVictory')}</span>
             <select
-              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-[var(--color-fg)] outline-none focus:border-[var(--color-accent)]"
+              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-(--color-fg) outline-none focus:border-(--color-accent)"
               value={draft.doubleVictoryTeamId}
               data-testid="double-victory-team"
               onInput={(event) =>
@@ -157,14 +157,14 @@ export function RoundEntry(props: RoundEntryProps) {
           </label>
 
           <label class="grid gap-2 text-sm">
-            <span class="text-[var(--color-muted)]">{t('teams.northSouth')}</span>
+            <span class="text-(--color-muted)">{t('teams.northSouth')}</span>
             <input
               inputMode="numeric"
               type="number"
               min="0"
               max="100"
               disabled={Boolean(draft.doubleVictoryTeamId)}
-              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-[var(--color-fg)] outline-none transition-opacity focus:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-40"
+              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-(--color-fg) outline-none transition-opacity focus:border-(--color-accent) disabled:cursor-not-allowed disabled:opacity-40"
               value={draft.cardPointsNorthSouth}
               data-testid="card-points-north-south"
               onInput={(event) => setDraft('cardPointsNorthSouth', event.currentTarget.value)}
@@ -172,14 +172,14 @@ export function RoundEntry(props: RoundEntryProps) {
           </label>
 
           <label class="grid gap-2 text-sm">
-            <span class="text-[var(--color-muted)]">{t('teams.eastWest')}</span>
+            <span class="text-(--color-muted)">{t('teams.eastWest')}</span>
             <input
               inputMode="numeric"
               type="number"
               min="0"
               max="100"
               disabled={Boolean(draft.doubleVictoryTeamId)}
-              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-[var(--color-fg)] outline-none transition-opacity focus:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-40"
+              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-(--color-fg) outline-none transition-opacity focus:border-(--color-accent) disabled:cursor-not-allowed disabled:opacity-40"
               value={draft.cardPointsEastWest}
               data-testid="card-points-east-west"
               onInput={(event) => setDraft('cardPointsEastWest', event.currentTarget.value)}
@@ -201,10 +201,10 @@ export function RoundEntry(props: RoundEntryProps) {
           </div>
         </Show>
 
-        <div class="sticky bottom-3 z-10 flex gap-3 rounded-[1.5rem] border border-white/10 bg-[color:color-mix(in_srgb,var(--color-bg)_78%,transparent)] p-3 backdrop-blur">
+        <div class="sticky bottom-3 z-10 flex gap-3 rounded-3xl border border-white/10 bg-[color:color-mix(in_srgb,var(--color-bg)_78%,transparent)] p-3 backdrop-blur">
           <button
             type="submit"
-            class="flex-1 rounded-2xl bg-[var(--color-accent)] px-4 py-3 text-sm font-semibold text-slate-950 transition-transform duration-150 motion-safe:hover:-translate-y-0.5"
+            class="flex-1 rounded-2xl bg-(--color-accent) px-4 py-3 text-sm font-semibold text-slate-950 transition-transform duration-150 motion-safe:hover:-translate-y-0.5"
             data-testid="save-round"
           >
             {submitLabel()}
@@ -212,7 +212,7 @@ export function RoundEntry(props: RoundEntryProps) {
           <Show when={props.editingRoundId}>
             <button
               type="button"
-              class="rounded-2xl border border-white/12 px-4 py-3 text-sm text-[var(--color-fg)]"
+              class="rounded-2xl border border-white/12 px-4 py-3 text-sm text-(--color-fg)"
               onClick={() => {
                 props.onEditingRoundIdChange(null)
                 setDraft(replaceDraft(createDraft(state.players)))

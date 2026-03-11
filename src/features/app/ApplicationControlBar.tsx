@@ -17,19 +17,19 @@ export function ApplicationControlBar(props: ApplicationControlBarProps) {
 
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
-            <p class="truncate text-sm font-semibold tracking-[0.08em] text-[var(--color-fg)]">
+            <p class="truncate text-sm font-semibold tracking-[0.08em] text-(--color-fg)">
               {t('app.title')}
             </p>
-            <span class="rounded-full border border-white/10 bg-white/8 px-2 py-0.5 text-[10px] uppercase tracking-[0.22em] text-[var(--color-accent)]">
+            <span class="rounded-full border border-white/10 bg-white/8 px-2 py-0.5 text-[10px] uppercase tracking-[0.22em] text-(--color-accent)">
               {t('app.badge')}
             </span>
           </div>
-          <p class="mt-1 truncate text-xs text-[var(--color-muted)]">{t('app.controlSubtitle')}</p>
+          <p class="mt-1 truncate text-xs text-(--color-muted)">{t('app.controlSubtitle')}</p>
         </div>
 
         <button
           type="button"
-          class="inline-flex h-11 min-w-11 items-center justify-center rounded-full border border-white/10 bg-slate-950/35 px-4 text-sm font-medium text-[var(--color-fg)] transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5"
+          class="inline-flex h-11 min-w-11 items-center justify-center rounded-full border border-white/10 bg-slate-950/35 px-4 text-sm font-medium text-(--color-fg) transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5"
           aria-label={t('settings.open')}
           onClick={() => props.onOpenSettings()}
         >

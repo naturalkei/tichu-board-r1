@@ -26,13 +26,13 @@ export function PartySetup() {
   )
 
   return (
-    <section class="rounded-[2rem] border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-5">
+    <section class="rounded-4xl border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-5">
       <div class="flex items-center justify-between gap-3">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
+          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">
             {t('sections.party')}
           </p>
-          <p class="mt-2 text-xs leading-5 text-[var(--color-muted)] sm:text-sm">{t('party.hint')}</p>
+          <p class="mt-2 text-xs leading-5 text-(--color-muted) sm:text-sm">{t('party.hint')}</p>
         </div>
       </div>
       <div
@@ -42,11 +42,11 @@ export function PartySetup() {
         <div class="col-start-2 row-start-2 flex items-center justify-center">
           <div class="flex h-full min-h-28 w-full max-w-32 items-center justify-center rounded-[2.2rem] border border-white/12 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.24),rgba(15,23,42,0.9))] p-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             <div>
-              <p class="text-[10px] uppercase tracking-[0.26em] text-[var(--color-accent)]">
+              <p class="text-[10px] uppercase tracking-[0.26em] text-(--color-accent)">
                 {t('party.tableCenter')}
               </p>
-              <p class="mt-2 text-xs leading-5 text-[var(--color-muted)]">{t('teams.northSouth')}</p>
-              <p class="text-xs leading-5 text-[var(--color-muted)]">{t('teams.eastWest')}</p>
+              <p class="mt-2 text-xs leading-5 text-(--color-muted)">{t('teams.northSouth')}</p>
+              <p class="text-xs leading-5 text-(--color-muted)">{t('teams.eastWest')}</p>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@ export function PartySetup() {
 
             return (
             <article
-              class={`${entry.className} group rounded-[1.5rem] border border-white/10 bg-[var(--color-surface)] p-3 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5`}
+              class={`${entry.className} group rounded-3xl border border-white/10 bg-(--color-surface) p-3 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5`}
               draggable="true"
               onDragStart={() => setDraggingPlayerId(entry.player.id)}
               onDragEnd={() => setDraggingPlayerId(null)}
@@ -79,17 +79,17 @@ export function PartySetup() {
             >
               <div class="flex items-start justify-between gap-2">
                 <div>
-                  <p class="text-[11px] uppercase tracking-[0.22em] text-[var(--color-accent)]">
+                  <p class="text-[11px] uppercase tracking-[0.22em] text-(--color-accent)">
                     {t(`seats.${entry.player.seat}`)}
                   </p>
-                  <p class="mt-1 text-xs text-[var(--color-muted)]">
+                  <p class="mt-1 text-xs text-(--color-muted)">
                     {t('party.teamLabel', { team: t(`teams.${teamKey}`) })}
                   </p>
                 </div>
                 <div class="flex items-center gap-2">
                   <button
                     type="button"
-                    class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/15 text-[var(--color-fg)]"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/15 text-(--color-fg)"
                     aria-label={t('party.rerollName')}
                     onClick={() =>
                       updatePlayerName(
@@ -114,7 +114,7 @@ export function PartySetup() {
                       />
                     </svg>
                   </button>
-                  <span class="rounded-full border border-white/10 px-2 py-1 text-[10px] text-[var(--color-muted)]">
+                  <span class="rounded-full border border-white/10 px-2 py-1 text-[10px] text-(--color-muted)">
                     {entry.player.id}
                   </span>
                 </div>
@@ -125,7 +125,7 @@ export function PartySetup() {
                   {t('party.nameLabel', { seat: t(`seats.${entry.player.seat}`) })}
                 </span>
                 <input
-                  class="w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5 text-sm text-[var(--color-fg)] outline-none transition-colors placeholder:text-[var(--color-muted)] focus:border-[var(--color-accent)]"
+                  class="w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5 text-sm text-(--color-fg) outline-none transition-colors placeholder:text-(--color-muted) focus:border-(--color-accent)"
                   value={entry.player.name}
                   onInput={(event) => updatePlayerName(entry.player.id, event.currentTarget.value)}
                   placeholder={t(`seats.${entry.player.seat}`)}
@@ -138,7 +138,7 @@ export function PartySetup() {
                   {t('party.seatPickerLabel', { seat: t(`seats.${entry.player.seat}`) })}
                 </span>
                 <select
-                  class="w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5 text-sm text-[var(--color-fg)] outline-none focus:border-[var(--color-accent)]"
+                  class="w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5 text-sm text-(--color-fg) outline-none focus:border-(--color-accent)"
                   aria-label={t('party.seatPicker', { seat: t(`seats.${entry.player.seat}`) })}
                   value={entry.player.seat}
                   onChange={(event) => assignPlayerSeat(entry.player.id, event.currentTarget.value as Seat)}

@@ -23,8 +23,8 @@ export function GameTabBar(props: GameTabBarProps) {
               type="button"
               class={`rounded-[1.2rem] px-3 py-3 text-xs font-medium transition-colors ${
                 props.activeRoute === route
-                  ? 'bg-[var(--color-accent)] text-slate-950'
-                  : 'bg-black/10 text-[var(--color-fg)]'
+                  ? 'bg-(--color-accent) text-slate-950'
+                  : 'bg-black/10 text-(--color-fg)'
               }`}
               aria-current={props.activeRoute === route ? 'page' : undefined}
               onClick={() => props.onNavigate(route)}
