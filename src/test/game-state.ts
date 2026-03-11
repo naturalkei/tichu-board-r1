@@ -1,5 +1,5 @@
 import { createDefaultPlayers, createDefaultSettings } from '@/domain/defaults'
-import { getHashForRoute, type AppRoute } from '@/shared/routes'
+import { getPathForRoute, type AppRoute } from '@/shared/routes'
 import { STORAGE_KEY } from '@/storage/game-storage'
 
 export function seedStartedGameState(route: AppRoute = 'party') {
@@ -16,5 +16,5 @@ export function seedStartedGameState(route: AppRoute = 'party') {
     }),
   )
 
-  window.location.hash = getHashForRoute(route)
+  window.history.replaceState(null, '', getPathForRoute(route))
 }
