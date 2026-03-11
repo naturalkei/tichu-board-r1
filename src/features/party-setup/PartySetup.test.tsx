@@ -25,7 +25,7 @@ describe('PartySetup', () => {
     expect(within(screen.getByTestId('seat-east')).getByText('Alice')).toBeInTheDocument()
   })
 
-  it('can reroll a unique name, keep team colors distinct, and block duplicate names', async () => {
+  it('can reroll a unique name, disable used team colors, and block duplicate names', async () => {
     render(() => <App />)
 
     const northSeat = screen.getByTestId('seat-north')
@@ -41,15 +41,23 @@ describe('PartySetup', () => {
 
     expect(screen.getByTestId('team-name-north-south')).toHaveTextContent(rerolledName)
 
-    await fireEvent.click(screen.getByTestId('team-color-east-west-amber'))
-
-    expect(screen.getByTestId('team-color-east-west-amber')).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByTestId('team-color-north-south-sky')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByTestId('team-color-east-west-amber')).toBeDisabled()
+    expect(screen.getByTestId('team-color-east-west-amber')).toHaveAttribute('aria-disabled', 'true')
+    expect(screen.getByTestId('team-color-east-west-sky')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByTestId('team-color-north-south-amber')).toHaveAttribute('aria-pressed', 'true')
 
     await fireEvent.click(screen.getByTestId('seat-east'))
     await fireEvent.input(screen.getByRole('textbox'), { target: { value: rerolledName } })
     await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
 
     expect(screen.getByText(/player names must be unique/i)).toBeInTheDocument()
+  })
+
+  it('uses a higher-contrast editor sheet', async () => {
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByTestId('seat-north'))
+
+    expect(screen.getByTestId('party-editor-dialog')).toBeInTheDocument()
   })
 })

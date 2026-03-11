@@ -193,11 +193,9 @@ export const GameProvider: ParentComponent = (props) => {
     },
     setTeamColor: (teamId, color) => {
       const oppositeTeamId: TeamId = teamId === 'north-south' ? 'east-west' : 'north-south'
-      const currentColor = state.settings.teamColors[teamId]
-      const oppositeColor = state.settings.teamColors[oppositeTeamId]
 
-      if (oppositeColor === color) {
-        setState('settings', 'teamColors', oppositeTeamId, currentColor)
+      if (state.settings.teamColors[oppositeTeamId] === color) {
+        return
       }
 
       setState('settings', 'teamColors', teamId, color)
