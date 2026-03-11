@@ -26,7 +26,7 @@ export function usePartySetupController() {
   })
   const recentNames = createMemo(() => {
     const seatedNames = new Set(state.players.map((player) => player.name.trim().toLowerCase()))
-    return state.recentPlayerNames.filter((name) => !seatedNames.has(name.trim().toLowerCase())).slice(0, 2)
+    return state.recentPlayerNames.filter((name) => !seatedNames.has(name.trim().toLowerCase())).slice(0, 5)
   })
   const rosterPlayers = createMemo(() =>
     state.players.map((player) => ({
@@ -181,8 +181,10 @@ export function usePartySetupController() {
         return { ...current, color }
       }),
     armPlayer: (playerId: PlayerId) => {
-      setArmedPlayerId(playerId)
+      setArmedPlayerId((current) => (current === playerId ? null : playerId))
+      setDraggingPlayerId(null)
       setArmedRecentName(null)
+      setDraggingRecentName(null)
     },
     startDraggingPlayer: (playerId: PlayerId) => {
       setDraggingPlayerId(playerId)

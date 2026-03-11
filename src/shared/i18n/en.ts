@@ -3,6 +3,7 @@ import { flatten } from '@solid-primitives/i18n'
 export const enDictionary = flatten({
   app: {
     badge: 'Tichu score tracker',
+    credit: 'designed by naturalkei',
     title: 'TichuBoard',
     controlSubtitle: 'Compact round control for live table sessions',
     subtitle:
@@ -141,6 +142,9 @@ export const enDictionary = flatten({
   settings: {
     language: 'Language',
     theme: 'Theme',
+    recentPlayerHistoryLimit: 'Recent player history size',
+    recentPlayerHistoryLimitOption: 'Keep {{ count }} names',
+    savedRecentPlayersCount: 'Currently saved names: {{ count }}',
     open: 'Open settings',
     close: 'Close settings',
     panelTitle: 'Table settings',
@@ -149,6 +153,7 @@ export const enDictionary = flatten({
     light: 'Light',
     dark: 'Dark',
     showLanding: 'Show Start Screen',
+    clearRecentPlayers: 'Clear Recent Players',
     reset: 'Reset Game',
     resetConfirm: 'Reset the saved game state?',
   },

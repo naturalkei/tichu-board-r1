@@ -7,6 +7,7 @@ export type TichuCall = 'none' | 'small' | 'grand'
 export type Language = 'en' | 'ko'
 export type ThemeMode = 'system' | 'light' | 'dark'
 export type TeamColor = 'amber' | 'emerald' | 'sky' | 'rose' | 'violet' | 'teal' | 'orange'
+export type RecentPlayerHistoryLimit = 3 | 5 | 10 | 15
 
 export type Player = {
   id: PlayerId
@@ -77,6 +78,7 @@ export type GameStatus =
 export type GameSettings = {
   language: Language
   theme: ThemeMode
+  recentPlayerHistoryLimit: RecentPlayerHistoryLimit
   teamColors: Record<TeamId, TeamColor>
   teamNames: Record<TeamId, string>
 }

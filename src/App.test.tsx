@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from '@solidjs/testing-library'
-import App from '@/App'
+import { fireEvent, render, screen, waitFor } from '@solidjs/testing-library'
+import App, { getBottomDockRecoveryTarget } from '@/App'
 import { getPathForRoute } from '@/shared/routes'
 import { seedStartedGameState } from '@/test/game-state'
 
@@ -57,6 +57,9 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: /game results/i })).toBeInTheDocument()
     expect(window.location.pathname).toBe(getPathForRoute('results'))
+    expect(screen.getByTestId('game-tab-grid').className).toContain('grid-cols-5')
+    expect(screen.getByTestId('game-tab-results').className).toContain('aspect-square')
+    expect(screen.getByTestId('game-tab-results').className).toContain('ring-2')
   })
 
   it('moves to the next page with a left swipe gesture', async () => {
@@ -74,6 +77,9 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: /round entry/i })).toBeInTheDocument()
     expect(window.location.pathname).toBe(getPathForRoute('round'))
+    await waitFor(() => {
+      expect(screen.getByTestId('page-transition-round').className).toContain('page-slide-forward')
+    })
   })
 
   it('can revisit the landing screen and continue the current game', async () => {
@@ -109,5 +115,19 @@ describe('App', () => {
 
     expect(screen.getByTestId('global-score-summary')).toBeInTheDocument()
     expect(screen.getAllByTestId('share-score-summary').length).toBeGreaterThan(0)
+  })
+
+  it('shows the bottom credit and recovers scroll near the page bottom after release', async () => {
+    seedStartedGameState('party')
+    render(() => <App />)
+
+    const credit = screen.getByTestId('bottom-credit')
+    expect(credit).toHaveTextContent(/designed by naturalkei/i)
+    expect(getBottomDockRecoveryTarget({
+      currentTop: 950,
+      viewportHeight: 800,
+      documentHeight: 1800,
+      footerHeight: 56,
+    })).toBe(962)
   })
 })

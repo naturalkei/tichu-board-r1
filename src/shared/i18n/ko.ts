@@ -3,6 +3,7 @@ import { flatten } from '@solid-primitives/i18n'
 export const koDictionary = flatten({
   app: {
     badge: '티츄 점수 트래커',
+    credit: 'designed by naturalkei',
     title: 'TichuBoard',
     controlSubtitle: '실전 테이블 진행에 맞춘 컴팩트 점수 컨트롤',
     subtitle: '실전 플레이를 위한 모바일 중심 티츄 점수 동반 앱으로, 로컬 기록을 안정적으로 유지합니다.',
@@ -139,6 +140,9 @@ export const koDictionary = flatten({
   settings: {
     language: '언어',
     theme: '테마',
+    recentPlayerHistoryLimit: '최근 플레이어 저장 개수',
+    recentPlayerHistoryLimitOption: '{{ count }}개까지 저장',
+    savedRecentPlayersCount: '현재 저장된 이름: {{ count }}개',
     open: '설정 열기',
     close: '설정 닫기',
     panelTitle: '테이블 설정',
@@ -147,6 +151,7 @@ export const koDictionary = flatten({
     light: '라이트',
     dark: '다크',
     showLanding: '시작 화면 보기',
+    clearRecentPlayers: '최근 플레이어 지우기',
     reset: '게임 초기화',
     resetConfirm: '저장된 게임 상태를 초기화할까요?',
   },

@@ -29,6 +29,8 @@ export function createGameActions(options: CreateGameActionsOptions): Pick<
   | 'setTeamName'
   | 'setLanguage'
   | 'setTheme'
+  | 'setRecentPlayerHistoryLimit'
+  | 'clearRecentPlayerNames'
   | 'startRound'
   | 'cancelActiveRound'
   | 'addRound'
@@ -49,7 +51,9 @@ export function createGameActions(options: CreateGameActionsOptions): Pick<
       setState('players', (player) => player.id === playerId, 'name', (currentName) => trimmedName || currentName)
 
       if (previousName && trimmedName && previousName !== trimmedName) {
-        setState('recentPlayerNames', (names) => mergeRecentPlayerNames(names, [previousName]))
+        setState('recentPlayerNames', (names) =>
+          mergeRecentPlayerNames(names, [previousName], state.settings.recentPlayerHistoryLimit),
+        )
       }
     },
     assignPlayerSeat: (playerId, seat) => {
@@ -94,6 +98,11 @@ export function createGameActions(options: CreateGameActionsOptions): Pick<
         teamNames: applyLanguageTeamNameDefaults(current.teamNames, state.settings.language, language),
       })),
     setTheme: (theme) => setState('settings', 'theme', theme),
+    setRecentPlayerHistoryLimit: (limit) => {
+      setState('settings', 'recentPlayerHistoryLimit', limit)
+      setState('recentPlayerNames', (names) => names.slice(0, limit))
+    },
+    clearRecentPlayerNames: () => setState('recentPlayerNames', []),
     startRound: () => {
       if (!state.activeRoundStartedAt) {
         setState('activeRoundStartedAt', new Date().toISOString())

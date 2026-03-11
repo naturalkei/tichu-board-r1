@@ -1,6 +1,8 @@
 import clsx from 'clsx'
 import { For, Show } from 'solid-js'
+import { RECENT_PLAYER_HISTORY_LIMIT_OPTIONS } from '@/domain/defaults'
 import type { ThemeMode } from '@/domain/types'
+import { DialogCloseButton } from '@/shared/DialogCloseButton'
 import { useGame } from '@/state/game-context'
 
 const themeModes: ThemeMode[] = ['system', 'light', 'dark']
@@ -12,7 +14,7 @@ type SettingsDialogProps = {
 }
 
 export function SettingsDialog(props: SettingsDialogProps) {
-  const { resetGame, setLanguage, setTheme, state, t } = useGame()
+  const { clearRecentPlayerNames, resetGame, setLanguage, setRecentPlayerHistoryLimit, setTheme, state, t } = useGame()
 
   return (
     <Show when={props.isOpen}>
@@ -47,28 +49,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               </p>
             </div>
 
-            <button
-              type="button"
-              class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/15 text-(--color-fg)"
-              aria-label={t('settings.close')}
-              onClick={() => props.onClose()}
-            >
-              <svg
-                aria-hidden="true"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 6L18 18M18 6L6 18"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.8"
-                />
-              </svg>
-            </button>
+            <DialogCloseButton closeLabel={t('settings.close')} onClose={() => props.onClose()} />
           </div>
 
           <div class="mt-6 grid gap-5">
@@ -103,6 +84,24 @@ export function SettingsDialog(props: SettingsDialogProps) {
               </div>
             </div>
 
+            <div class="grid gap-2">
+              <span class="text-sm text-(--color-muted)">{t('settings.recentPlayerHistoryLimit')}</span>
+              <select
+                class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-(--color-fg) outline-none"
+                value={state.settings.recentPlayerHistoryLimit}
+                onChange={(event) =>
+                  setRecentPlayerHistoryLimit(Number(event.currentTarget.value) as (typeof RECENT_PLAYER_HISTORY_LIMIT_OPTIONS)[number])
+                }
+              >
+                <For each={RECENT_PLAYER_HISTORY_LIMIT_OPTIONS}>
+                  {(limit) => <option value={limit}>{t('settings.recentPlayerHistoryLimitOption', { count: limit })}</option>}
+                </For>
+              </select>
+              <p class="text-xs leading-5 text-(--color-muted)">
+                {t('settings.savedRecentPlayersCount', { count: state.recentPlayerNames.length })}
+              </p>
+            </div>
+
             <button
               type="button"
               class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-(--color-fg)"
@@ -112,6 +111,14 @@ export function SettingsDialog(props: SettingsDialogProps) {
               }}
             >
               {t('settings.showLanding')}
+            </button>
+
+            <button
+              type="button"
+              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-(--color-fg)"
+              onClick={() => clearRecentPlayerNames()}
+            >
+              {t('settings.clearRecentPlayers')}
             </button>
 
             <button
