@@ -320,7 +320,10 @@ export function PartySetup() {
             onClick={closeEditor}
           />
 
-          <div class="relative z-10 w-full max-w-md rounded-4xl border border-white/10 bg-(--color-surface) p-5 shadow-[0_28px_90px_rgba(0,0,0,0.3)]">
+          <div
+            class="relative z-10 w-full max-w-md rounded-4xl border border-white/12 bg-[color-mix(in_srgb,var(--color-surface)_96%,#020617)] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.42)]"
+            data-testid="party-editor-dialog"
+          >
             <div class="flex items-start justify-between gap-3">
               <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">
@@ -346,7 +349,7 @@ export function PartySetup() {
               <label class="grid gap-2 text-sm">
                 <span class="text-(--color-muted)">{t('party.nameField')}</span>
                 <input
-                  class="w-full rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-(--color-fg) outline-none placeholder:text-(--color-muted) focus:border-(--color-accent)"
+                  class="w-full rounded-2xl border border-white/14 bg-slate-950/70 px-4 py-3 text-(--color-fg) outline-none placeholder:text-(--color-muted) focus:border-(--color-accent)"
                   value={editorDraft()!.name}
                   onInput={(event) =>
                     setEditorDraft((current) =>
@@ -361,7 +364,7 @@ export function PartySetup() {
                 <div class="flex flex-wrap gap-2">
                   <button
                     type="button"
-                    class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-(--color-fg)"
+                    class="rounded-full border border-white/12 bg-slate-950/70 px-3 py-2 text-sm text-(--color-fg)"
                     onClick={() =>
                       setEditorDraft((current) =>
                         current
@@ -377,7 +380,7 @@ export function PartySetup() {
                   </button>
                   <button
                     type="button"
-                    class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-(--color-fg)"
+                    class="rounded-full border border-white/12 bg-slate-950/70 px-3 py-2 text-sm text-(--color-fg)"
                     onClick={() => {
                       setSeatMoveSourceId(activePlayer()!.id)
                       setPendingRecentName(null)
@@ -390,7 +393,7 @@ export function PartySetup() {
                     {(name) => (
                       <button
                         type="button"
-                        class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-(--color-fg)"
+                        class="rounded-full border border-white/12 bg-slate-950/70 px-3 py-2 text-sm text-(--color-fg)"
                         onClick={() => applyRecentName(name)}
                       >
                         {name}
@@ -473,6 +476,9 @@ function TeamSetupCard(props: {
   selectedColor: TeamColor
   onSelectColor: (teamId: TeamId, color: TeamColor) => void
 }) {
+  const { state, t } = useGame()
+  const oppositeTeamId = () => (props.teamId === 'north-south' ? 'east-west' : 'north-south')
+
   return (
     <div
       class="rounded-3xl border border-white/10 bg-black/10 p-3"
@@ -485,20 +491,31 @@ function TeamSetupCard(props: {
         </div>
         <div class="flex flex-wrap justify-end gap-1">
           <For each={teamColorOptions}>
-            {(color) => (
-              <button
-                type="button"
-                class={clsx(
-                  'h-7 w-7 rounded-full border-2 transition-transform motion-safe:hover:scale-105',
-                  teamColorClasses[color].chip,
-                  props.selectedColor === color ? 'border-white' : 'border-transparent',
-                )}
-                aria-label={`${props.label} ${color}`}
-                aria-pressed={props.selectedColor === color}
-                data-testid={`team-color-${props.teamId}-${color}`}
-                onClick={() => props.onSelectColor(props.teamId, color)}
-              />
-            )}
+            {(color) => {
+              const isDisabled =
+                color !== props.selectedColor && state.settings.teamColors[oppositeTeamId()] === color
+
+              return (
+                <button
+                  type="button"
+                  class={clsx(
+                    'h-7 w-7 rounded-full border-2 transition-transform',
+                    teamColorClasses[color].chip,
+                    props.selectedColor === color ? 'border-white' : 'border-transparent',
+                    isDisabled
+                      ? 'cursor-not-allowed opacity-35'
+                      : 'motion-safe:hover:scale-105',
+                  )}
+                  aria-label={`${props.label} ${color}`}
+                  aria-disabled={isDisabled}
+                  aria-pressed={props.selectedColor === color}
+                  data-testid={`team-color-${props.teamId}-${color}`}
+                  disabled={isDisabled}
+                  title={isDisabled ? t('party.teamColorUnavailable') : undefined}
+                  onClick={() => props.onSelectColor(props.teamId, color)}
+                />
+              )
+            }}
           </For>
         </div>
       </div>
