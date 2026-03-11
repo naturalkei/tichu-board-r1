@@ -15,6 +15,7 @@ export const teamColorClasses: Record<
     solidText: string
     picker: string
     pickerEdge: string
+    labelBadge: string
     label: string
   }
 > = {
@@ -27,6 +28,7 @@ export const teamColorClasses: Record<
     solidText: 'text-yellow-950',
     picker: 'bg-linear-to-br from-yellow-300 to-amber-400',
     pickerEdge: 'border-yellow-200/80',
+    labelBadge: 'bg-white/72 shadow-[0_8px_18px_rgba(120,53,15,0.12)]',
     label: 'Solar',
   },
   emerald: {
@@ -38,6 +40,7 @@ export const teamColorClasses: Record<
     solidText: 'text-emerald-950',
     picker: 'bg-linear-to-br from-emerald-400 to-lime-300',
     pickerEdge: 'border-emerald-200/80',
+    labelBadge: 'bg-white/72 shadow-[0_8px_18px_rgba(6,95,70,0.12)]',
     label: 'Emerald',
   },
   sky: {
@@ -49,6 +52,7 @@ export const teamColorClasses: Record<
     solidText: 'text-blue-950',
     picker: 'bg-linear-to-br from-blue-400 to-indigo-400',
     pickerEdge: 'border-blue-200/80',
+    labelBadge: 'bg-white/72 shadow-[0_8px_18px_rgba(30,64,175,0.12)]',
     label: 'Royal',
   },
   rose: {
@@ -60,6 +64,7 @@ export const teamColorClasses: Record<
     solidText: 'text-rose-950',
     picker: 'bg-linear-to-br from-rose-400 to-red-400',
     pickerEdge: 'border-rose-200/80',
+    labelBadge: 'bg-white/72 shadow-[0_8px_18px_rgba(159,18,57,0.12)]',
     label: 'Ruby',
   },
   violet: {
@@ -71,6 +76,7 @@ export const teamColorClasses: Record<
     solidText: 'text-fuchsia-950',
     picker: 'bg-linear-to-br from-fuchsia-400 to-violet-400',
     pickerEdge: 'border-fuchsia-200/80',
+    labelBadge: 'bg-white/72 shadow-[0_8px_18px_rgba(134,25,143,0.12)]',
     label: 'Amethyst',
   },
   teal: {
@@ -82,6 +88,7 @@ export const teamColorClasses: Record<
     solidText: 'text-cyan-950',
     picker: 'bg-linear-to-br from-cyan-300 to-sky-400',
     pickerEdge: 'border-cyan-100/80',
+    labelBadge: 'bg-white/72 shadow-[0_8px_18px_rgba(14,116,144,0.12)]',
     label: 'Cyan',
   },
   orange: {
@@ -93,6 +100,7 @@ export const teamColorClasses: Record<
     solidText: 'text-orange-950',
     picker: 'bg-linear-to-br from-orange-400 to-amber-400',
     pickerEdge: 'border-orange-200/80',
+    labelBadge: 'bg-white/72 shadow-[0_8px_18px_rgba(154,52,18,0.12)]',
     label: 'Orange',
   },
 }
