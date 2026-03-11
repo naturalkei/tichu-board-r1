@@ -50,9 +50,12 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
           const player = entry.player
           const teamId = player ? getTeamId(player.seat) : getTeamId(entry.seat)
           const colors = teamColorClasses[props.teamColors[teamId]]
-          const isActiveDropTarget = Boolean(
-            props.armedPlayerId || props.draggingPlayerId || props.armedRecentName || props.draggingRecentName,
-          )
+          const isActiveDropTarget = () =>
+            Boolean(props.armedPlayerId || props.draggingPlayerId || props.armedRecentName || props.draggingRecentName)
+          const isSourceSeat = () =>
+            Boolean(props.armedPlayerId && player?.id === props.armedPlayerId) ||
+            Boolean(props.draggingPlayerId && player?.id === props.draggingPlayerId)
+          const showDropLabel = () => isActiveDropTarget() && !isSourceSeat()
 
           return (
             <button
@@ -60,13 +63,14 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               class={clsx(
                 entry.className,
                 'relative flex aspect-square w-full min-w-0',
-                'flex-col overflow-hidden justify-center items-center',
-                // 'justify-between justify-self-stretch',
-                'rounded-3xl border border-white/10 bg-(--color-surface) p-2',
+                'flex-col items-center justify-center overflow-hidden rounded-3xl bg-(--color-surface) p-2',
                 'ring-1 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5',
+                isActiveDropTarget()
+                  ? 'border-2 border-(--color-accent) ring-2 ring-(--color-accent)/45 shadow-[0_0_0_1px_rgba(255,191,105,0.16),0_20px_36px_rgba(255,191,105,0.14)]'
+                  : 'border border-white/10',
                 colors.ring,
                 colors.glow,
-                isActiveDropTarget && 'border-dashed border-(--color-accent)',
+                isSourceSeat() && 'border-white/18 ring-1 ring-white/20 shadow-none',
               )}
               aria-label={props.seatActionLabel(entry.seat, player?.name ?? '')}
               onClick={() => props.onSeatAssign(entry.seat)}
@@ -75,28 +79,15 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               data-testid={`seat-${entry.seat}`}
               >
               <div class={clsx('pointer-events-none absolute inset-0 bg-linear-to-br opacity-70', colors.surface)} />
-              {/* Seat overlay label */}
               <span
-                class={clsx([
-                  'pointer-events-none absolute inset-0',
-                  'flex items-center justify-center',
-                  'text-[clamp(3.5rem,20vw,5.25rem)] font-black tracking-[-0.08em] text-white/6'
-                ])}
+                class="pointer-events-none absolute inset-0 flex items-center justify-center text-[clamp(3.5rem,20vw,5.25rem)] font-black tracking-[-0.08em] text-white/6"
                 aria-hidden="true"
                 data-testid={`seat-overlay-${entry.seat}`}
               >
                 {seatOverlayLabels[entry.seat]}
               </span>
-              {/* Team badge */}
-              <div class={clsx([
-                // 'relative flex items-start justify-start gap-2'
-                'absolute top-2 left-2'
-              ])}>
-                <span class={clsx([
-                  'inline-flex items-center gap-1',
-                  // 'rounded-full border border-white/8 bg-black/10',
-                  'px-2 py-1 text-[10px] text-(--color-muted)'
-                ])}>
+              <div class="absolute top-2 left-2">
+                <span class="inline-flex items-center gap-1 rounded-full border border-white/8 bg-black/10 px-2 py-1 text-[10px] text-(--color-muted)">
                   <TeamBadge color={props.teamColors[teamId]} />
                   {props.teamNames[teamId]}
                 </span>
@@ -105,12 +96,13 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               <div class="relative grid gap-1">
                 <p class="text-lg font-semibold tracking-[-0.02em] text-(--color-fg)">{player?.name}</p>
               </div>
-              <Show when={isActiveDropTarget}>
+              <Show when={showDropLabel()}>
                 <div class="absolute bottom-2">
-                  <p class="text-[9px] tracking-[0.2em] text-(--color-muted)">{props.dropToSeatLabel}</p>
+                  <p class="rounded-full bg-black/24 px-2 py-1 text-[9px] font-medium tracking-[0.2em] text-(--color-accent)">
+                    {props.dropToSeatLabel}
+                  </p>
                 </div>
               </Show>
-              
             </button>
           )
         }}

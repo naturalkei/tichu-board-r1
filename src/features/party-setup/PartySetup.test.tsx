@@ -147,4 +147,17 @@ describe('PartySetup', () => {
 
     expect(within(screen.getByTestId('seat-west')).getByText('Morgan')).toBeInTheDocument()
   })
+
+  it('shows stronger drop targets on other seats when a bench player is armed', async () => {
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByTestId('bench-player-player-1'))
+
+    expect(screen.getByTestId('seat-east').className).toContain('border-2')
+    expect(screen.getByTestId('seat-west').className).toContain('border-2')
+    expect(screen.getByTestId('seat-south').className).toContain('border-2')
+    expect(within(screen.getByTestId('seat-east')).getByText(/drop or tap to place here/i)).toBeInTheDocument()
+    expect(within(screen.getByTestId('seat-west')).getByText(/drop or tap to place here/i)).toBeInTheDocument()
+    expect(within(screen.getByTestId('seat-north')).queryByText(/drop or tap to place here/i)).not.toBeInTheDocument()
+  })
 })
