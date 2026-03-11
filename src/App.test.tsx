@@ -13,6 +13,7 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: /tichuboard/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start scoring/i })).toBeInTheDocument()
+    expect(window.location.hash).toBe('#/start')
   })
 
   it('enters the scoring screen after pressing start', async () => {
