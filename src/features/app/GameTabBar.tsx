@@ -1,8 +1,8 @@
 import clsx from 'clsx'
 import { For } from 'solid-js'
-import type { InGameRoute } from '../../shared/routes'
-import { inGameRoutes } from '../../shared/routes'
-import { useGame } from '../../state/game-context'
+import type { InGameRoute } from '@/shared/routes'
+import { inGameRoutes } from '@/shared/routes'
+import { useGame } from '@/state/game-context'
 
 type GameTabBarProps = {
   activeRoute: InGameRoute

@@ -1,5 +1,5 @@
-import { createDefaultPlayers, createDefaultSettings } from '../domain/defaults'
-import type { PersistedGameState } from '../domain/types'
+import { createDefaultPlayers, createDefaultSettings } from '@/domain/defaults'
+import type { PersistedGameState } from '@/domain/types'
 
 export const STORAGE_KEY = 'tichu-board-r1:v1'
 export const CURRENT_SCHEMA_VERSION = 1 as const

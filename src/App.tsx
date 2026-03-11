@@ -1,10 +1,10 @@
 import { Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
-import { ApplicationControlBar } from './features/app/ApplicationControlBar'
-import { GameTabBar } from './features/app/GameTabBar'
-import { GameplayPages } from './features/app/GameplayPages'
-import { LandingScreen } from './features/landing/LandingScreen'
-import { SettingsDialog } from './features/settings/SettingsDialog'
-import { GameProvider, useGame } from './state/game-context'
+import { ApplicationControlBar } from '@/features/app/ApplicationControlBar'
+import { GameTabBar } from '@/features/app/GameTabBar'
+import { GameplayPages } from '@/features/app/GameplayPages'
+import { LandingScreen } from '@/features/landing/LandingScreen'
+import { SettingsDialog } from '@/features/settings/SettingsDialog'
+import { GameProvider, useGame } from '@/state/game-context'
 import {
   getAdjacentRoute,
   getDefaultRoute,
@@ -13,7 +13,7 @@ import {
   isInGameRoute,
   type AppRoute,
   type InGameRoute,
-} from './shared/routes'
+} from '@/shared/routes'
 
 function AppContent() {
   const { state } = useGame()

@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { For, Show } from 'solid-js'
-import type { ThemeMode } from '../../domain/types'
-import { useGame } from '../../state/game-context'
+import type { ThemeMode } from '@/domain/types'
+import { useGame } from '@/state/game-context'
 
 const themeModes: ThemeMode[] = ['system', 'light', 'dark']
 

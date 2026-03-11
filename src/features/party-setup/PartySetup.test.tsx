@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@solidjs/testing-library'
-import App from '../../App'
-import { seedStartedGameState } from '../../test/game-state'
+import App from '@/App'
+import { seedStartedGameState } from '@/test/game-state'
 
 describe('PartySetup', () => {
   beforeEach(() => {

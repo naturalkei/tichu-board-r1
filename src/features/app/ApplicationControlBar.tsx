@@ -1,6 +1,6 @@
 import clsx from 'clsx'
-import { BrandLogo } from '../../shared/BrandLogo'
-import { useGame } from '../../state/game-context'
+import { BrandLogo } from '@/shared/BrandLogo'
+import { useGame } from '@/state/game-context'
 
 type ApplicationControlBarProps = {
   onOpenSettings: () => void

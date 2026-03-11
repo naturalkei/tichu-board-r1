@@ -1,5 +1,5 @@
 import { flatten, resolveTemplate, translator } from '@solid-primitives/i18n'
-import type { Language } from '../domain/types'
+import type { Language } from '@/domain/types'
 
 const dictionaries = {
   en: flatten({

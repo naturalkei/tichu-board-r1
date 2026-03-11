@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library'
-import App from './App'
-import { seedStartedGameState } from './test/game-state'
+import App from '@/App'
+import { seedStartedGameState } from '@/test/game-state'
 
 describe('App', () => {
   beforeEach(() => {

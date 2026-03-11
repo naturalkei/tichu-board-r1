@@ -1,6 +1,6 @@
-import { createDefaultPlayers, createDefaultSettings } from '../domain/defaults'
-import { getHashForRoute, type AppRoute } from '../shared/routes'
-import { STORAGE_KEY } from '../storage/game-storage'
+import { createDefaultPlayers, createDefaultSettings } from '@/domain/defaults'
+import { getHashForRoute, type AppRoute } from '@/shared/routes'
+import { STORAGE_KEY } from '@/storage/game-storage'
 
 export function seedStartedGameState(route: AppRoute = 'party') {
   localStorage.setItem(

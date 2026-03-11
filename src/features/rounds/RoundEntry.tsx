@@ -1,10 +1,10 @@
 import clsx from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
-import { createDefaultTichuCalls } from '../../domain/defaults'
-import { validateRoundInput } from '../../domain/scoring'
-import type { Player, RoundInput, TeamId, TichuCall } from '../../domain/types'
-import { useGame } from '../../state/game-context'
+import { createDefaultTichuCalls } from '@/domain/defaults'
+import { validateRoundInput } from '@/domain/scoring'
+import type { Player, RoundInput, TeamId, TichuCall } from '@/domain/types'
+import { useGame } from '@/state/game-context'
 
 type RoundEntryProps = {
   editingRoundId: string | null
