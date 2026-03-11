@@ -7,7 +7,7 @@ import {
   useContext,
   type ParentComponent,
 } from 'solid-js'
-import { createStore, unwrap } from 'solid-js/store'
+import { createStore } from 'solid-js/store'
 import { calculateCumulativeScores, getGameStatus, getLeadingTeamId } from '@/domain/scoring'
 import { saveGameState, saveSettings } from '@/storage/game-storage'
 import { createTranslator } from '@/shared/i18n'
@@ -43,6 +43,34 @@ export const GameProvider: ParentComponent = (props) => {
       'east-west': state.settings.teamNames['east-west'],
     },
   }))
+  const persistedGameState = createMemo(() => ({
+    schemaVersion: state.schemaVersion,
+    hasStartedGame: state.hasStartedGame,
+    players: state.players.map((player) => ({
+      id: player.id,
+      name: player.name,
+      seat: player.seat,
+    })),
+    rounds: state.rounds.map((round) => ({
+      ...round,
+      input: {
+        ...round.input,
+        tichuCalls: { ...round.input.tichuCalls },
+        cardPoints: round.input.cardPoints ? { ...round.input.cardPoints } : null,
+      },
+      result: {
+        ...round.result,
+        cardPoints: { ...round.result.cardPoints },
+        tichuBonuses: { ...round.result.tichuBonuses },
+        roundTotals: { ...round.result.roundTotals },
+        callResults: round.result.callResults.map((callResult) => ({ ...callResult })),
+      },
+      timing: { ...round.timing },
+    })),
+    activeRoundStartedAt: state.activeRoundStartedAt,
+    recentPlayerNames: [...state.recentPlayerNames],
+    settings: persistedSettings(),
+  }))
   const effectiveTheme = createMemo(() => (state.settings.theme === 'system' ? systemTheme() : state.settings.theme))
 
   const mediaQuery =
@@ -58,7 +86,7 @@ export const GameProvider: ParentComponent = (props) => {
   }
 
   createEffect(() => {
-    saveGameState(window.localStorage, unwrap(state))
+    saveGameState(window.localStorage, persistedGameState())
   })
 
   createEffect(() => {

@@ -29,6 +29,7 @@ export function createGameActions(options: CreateGameActionsOptions): Pick<
   | 'setTeamName'
   | 'setLanguage'
   | 'setTheme'
+  | 'clearRecentPlayerNames'
   | 'startRound'
   | 'cancelActiveRound'
   | 'addRound'
@@ -94,6 +95,7 @@ export function createGameActions(options: CreateGameActionsOptions): Pick<
         teamNames: applyLanguageTeamNameDefaults(current.teamNames, state.settings.language, language),
       })),
     setTheme: (theme) => setState('settings', 'theme', theme),
+    clearRecentPlayerNames: () => setState('recentPlayerNames', []),
     startRound: () => {
       if (!state.activeRoundStartedAt) {
         setState('activeRoundStartedAt', new Date().toISOString())

@@ -147,6 +147,7 @@ export const koDictionary = flatten({
     light: '라이트',
     dark: '다크',
     showLanding: '시작 화면 보기',
+    clearRecentPlayers: '최근 플레이어 지우기',
     reset: '게임 초기화',
     resetConfirm: '저장된 게임 상태를 초기화할까요?',
   },

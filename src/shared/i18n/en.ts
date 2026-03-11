@@ -149,6 +149,7 @@ export const enDictionary = flatten({
     light: 'Light',
     dark: 'Dark',
     showLanding: 'Show Start Screen',
+    clearRecentPlayers: 'Clear Recent Players',
     reset: 'Reset Game',
     resetConfirm: 'Reset the saved game state?',
   },
