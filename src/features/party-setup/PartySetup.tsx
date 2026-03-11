@@ -9,7 +9,7 @@ import { usePartySetupController } from './use-party-setup-controller'
 export function PartySetup() {
   const controller = usePartySetupController()
   let seatMapContainerRef: HTMLDivElement | undefined
-  const seatMapScrollMargin = 12
+  const seatMapScrollMargin = 32
 
   createEffect(() => {
     const armedPlayerId = controller.armedPlayerId()
