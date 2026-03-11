@@ -28,10 +28,27 @@ describe('PartySetup', () => {
     expect(within(screen.getByTestId('seat-north')).getByText('Alice')).toBeInTheDocument()
 
     const playerBenchChip = screen.getByTestId('bench-player-player-1')
-    await fireEvent.dragStart(playerBenchChip)
-    await fireEvent.drop(screen.getByTestId('seat-east'))
+    const seatEast = screen.getByTestId('seat-east')
+    const originalElementFromPoint = document.elementFromPoint
+    const elementFromPoint = vi.fn(() => seatEast)
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: elementFromPoint,
+    })
+
+    await fireEvent.pointerDown(playerBenchChip, { button: 0, pointerId: 1, clientX: 20, clientY: 20 })
+    await fireEvent.pointerMove(window, { pointerId: 1, clientX: 80, clientY: 90 })
+
+    expect(screen.getByTestId('bench-drag-preview')).toHaveTextContent('Alice')
+
+    await fireEvent.pointerUp(window, { pointerId: 1, clientX: 120, clientY: 120 })
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: originalElementFromPoint,
+    })
 
     expect(within(screen.getByTestId('seat-east')).getByText('Alice')).toBeInTheDocument()
+    expect(screen.queryByTestId('bench-drag-preview')).not.toBeInTheDocument()
   })
 
   it('can rename teams, reroll a unique name, disable used team colors, and block duplicate names', async () => {
