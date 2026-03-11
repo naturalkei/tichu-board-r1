@@ -30,22 +30,40 @@ describe('PartySetup', () => {
     const playerBenchChip = screen.getByTestId('bench-player-player-1')
     const seatEast = screen.getByTestId('seat-east')
     const originalElementFromPoint = document.elementFromPoint
+    const originalGetBoundingClientRect = playerBenchChip.getBoundingClientRect
     const elementFromPoint = vi.fn(() => seatEast)
     Object.defineProperty(document, 'elementFromPoint', {
       configurable: true,
       value: elementFromPoint,
     })
+    playerBenchChip.getBoundingClientRect = () =>
+      ({
+        left: 10,
+        top: 12,
+        right: 130,
+        bottom: 60,
+        width: 120,
+        height: 48,
+        x: 10,
+        y: 12,
+        toJSON: () => ({}),
+      }) as DOMRect
 
     await fireEvent.pointerDown(playerBenchChip, { button: 0, pointerId: 1, clientX: 20, clientY: 20 })
     await fireEvent.pointerMove(window, { pointerId: 1, clientX: 80, clientY: 90 })
 
     expect(screen.getByTestId('bench-drag-preview')).toHaveTextContent('Alice')
+    expect(screen.getByTestId('bench-drag-preview')).toHaveStyle({
+      left: '70px',
+      top: '82px',
+    })
 
     await fireEvent.pointerUp(window, { pointerId: 1, clientX: 120, clientY: 120 })
     Object.defineProperty(document, 'elementFromPoint', {
       configurable: true,
       value: originalElementFromPoint,
     })
+    playerBenchChip.getBoundingClientRect = originalGetBoundingClientRect
 
     expect(within(screen.getByTestId('seat-east')).getByText('Alice')).toBeInTheDocument()
     expect(screen.queryByTestId('bench-drag-preview')).not.toBeInTheDocument()

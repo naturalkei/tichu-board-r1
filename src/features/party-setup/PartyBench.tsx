@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { For, Show, createSignal, onCleanup } from 'solid-js'
+import { Portal } from 'solid-js/web'
 import type { PlayerId, Seat, TeamColor } from '@/domain/types'
 import { teamColorClasses } from './party-setup.shared'
 
@@ -37,6 +38,10 @@ export function PartyBench(props: PartyBenchProps) {
     teamColor: TeamColor
     x: number
     y: number
+    offsetX: number
+    offsetY: number
+    width: number
+    height: number
     hasStarted: boolean
   } | null>(null)
 
@@ -141,6 +146,9 @@ export function PartyBench(props: PartyBenchProps) {
       return
     }
 
+    const target = event.currentTarget as HTMLElement
+    const rect = target.getBoundingClientRect()
+
     activePointerId = event.pointerId
     originX = event.clientX
     originY = event.clientY
@@ -151,6 +159,10 @@ export function PartyBench(props: PartyBenchProps) {
       teamColor: player.teamColor,
       x: event.clientX,
       y: event.clientY,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      width: rect.width,
+      height: rect.height,
       hasStarted: false,
     })
     window.addEventListener('pointermove', handlePointerMove)
@@ -242,26 +254,30 @@ export function PartyBench(props: PartyBenchProps) {
       </div>
 
       <Show when={dragPreview() && dragPreview()!.hasStarted}>
-        <div
-          class="pointer-events-none fixed left-0 top-0 z-60 -translate-x-1/2 -translate-y-1/2"
-          style={{
-            left: `${dragPreview()!.x}px`,
-            top: `${dragPreview()!.y}px`,
-          }}
-          data-testid="bench-drag-preview"
-        >
-          <div class="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/14 bg-[color-mix(in_srgb,var(--color-surface)_94%,#020617)] px-3 py-2 text-sm text-(--color-fg) shadow-[0_18px_40px_rgba(15,23,42,0.3)]">
-            <div
-              class={clsx(
-                'inline-flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold',
-                teamColorClasses[dragPreview()!.teamColor].chip,
-              )}
-            >
-              {dragPreview()!.seatInitial}
+        <Portal>
+          <div
+            class="pointer-events-none fixed left-0 top-0 z-999"
+            style={{
+              left: `${dragPreview()!.x - dragPreview()!.offsetX}px`,
+              top: `${dragPreview()!.y - dragPreview()!.offsetY}px`,
+              width: `${dragPreview()!.width}px`,
+              height: `${dragPreview()!.height}px`,
+            }}
+            data-testid="bench-drag-preview"
+          >
+            <div class="inline-flex h-full w-full items-center gap-2 rounded-full border border-white/14 bg-[color-mix(in_srgb,var(--color-surface)_94%,#020617)] px-3 py-2 text-sm text-(--color-fg) shadow-[0_18px_40px_rgba(15,23,42,0.3)]">
+              <div
+                class={clsx(
+                  'inline-flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold',
+                  teamColorClasses[dragPreview()!.teamColor].chip,
+                )}
+              >
+                {dragPreview()!.seatInitial}
+              </div>
+              <span class="font-medium">{dragPreview()!.name}</span>
             </div>
-            <span class="font-medium">{dragPreview()!.name}</span>
           </div>
-        </div>
+        </Portal>
       </Show>
     </section>
   )
