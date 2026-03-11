@@ -9,7 +9,7 @@ import {
 } from 'solid-js'
 import { createStore, unwrap } from 'solid-js/store'
 import { calculateCumulativeScores, getGameStatus, getLeadingTeamId } from '@/domain/scoring'
-import { saveGameState } from '@/storage/game-storage'
+import { saveGameState, saveSettings } from '@/storage/game-storage'
 import { createTranslator } from '@/shared/i18n'
 import { createGameActions } from './game-context-actions'
 import {
@@ -31,6 +31,18 @@ export const GameProvider: ParentComponent = (props) => {
   const leadingTeamId = createMemo(() => getLeadingTeamId(cumulativeScores()))
   const teamLineups = createMemo(() => createTeamLineups(state.players))
   const teamNames = createMemo(() => state.settings.teamNames)
+  const persistedSettings = createMemo(() => ({
+    language: state.settings.language,
+    theme: state.settings.theme,
+    teamColors: {
+      'north-south': state.settings.teamColors['north-south'],
+      'east-west': state.settings.teamColors['east-west'],
+    },
+    teamNames: {
+      'north-south': state.settings.teamNames['north-south'],
+      'east-west': state.settings.teamNames['east-west'],
+    },
+  }))
   const effectiveTheme = createMemo(() => (state.settings.theme === 'system' ? systemTheme() : state.settings.theme))
 
   const mediaQuery =
@@ -47,6 +59,10 @@ export const GameProvider: ParentComponent = (props) => {
 
   createEffect(() => {
     saveGameState(window.localStorage, unwrap(state))
+  })
+
+  createEffect(() => {
+    saveSettings(window.localStorage, persistedSettings())
   })
 
   createEffect(() => {
