@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 import { createDefaultTichuCalls } from '../../domain/defaults'
@@ -111,7 +112,10 @@ export function RoundEntry(props: RoundEntryProps) {
                     </label>
                     <select
                       id={`call-${player.id}`}
-                      class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-(--color-fg) outline-none focus:border-(--color-accent)"
+                      class={clsx(
+                        'rounded-full border border-white/10 bg-black/15 px-3 py-2',
+                        'text-sm text-(--color-fg) outline-none focus:border-(--color-accent)',
+                      )}
                       value={draft.tichuCalls[player.id]}
                       data-testid={`tichu-call-${player.id}`}
                       onInput={(event) =>
@@ -143,7 +147,10 @@ export function RoundEntry(props: RoundEntryProps) {
           <label class="grid gap-2 text-sm">
             <span class="text-(--color-muted)">{t('round.doubleVictory')}</span>
             <select
-              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-(--color-fg) outline-none focus:border-(--color-accent)"
+              class={clsx(
+                'rounded-2xl border border-white/10 bg-black/15 px-4 py-3',
+                'text-(--color-fg) outline-none focus:border-(--color-accent)',
+              )}
               value={draft.doubleVictoryTeamId}
               data-testid="double-victory-team"
               onInput={(event) =>
@@ -164,7 +171,12 @@ export function RoundEntry(props: RoundEntryProps) {
               min="0"
               max="100"
               disabled={Boolean(draft.doubleVictoryTeamId)}
-              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-(--color-fg) outline-none transition-opacity focus:border-(--color-accent) disabled:cursor-not-allowed disabled:opacity-40"
+              class={clsx(
+                'rounded-2xl border border-white/10 bg-black/15 px-4 py-3',
+                'text-(--color-fg) outline-none transition-opacity',
+                'focus:border-(--color-accent)',
+                'disabled:cursor-not-allowed disabled:opacity-40',
+              )}
               value={draft.cardPointsNorthSouth}
               data-testid="card-points-north-south"
               onInput={(event) => setDraft('cardPointsNorthSouth', event.currentTarget.value)}
@@ -179,7 +191,12 @@ export function RoundEntry(props: RoundEntryProps) {
               min="0"
               max="100"
               disabled={Boolean(draft.doubleVictoryTeamId)}
-              class="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-(--color-fg) outline-none transition-opacity focus:border-(--color-accent) disabled:cursor-not-allowed disabled:opacity-40"
+              class={clsx(
+                'rounded-2xl border border-white/10 bg-black/15 px-4 py-3',
+                'text-(--color-fg) outline-none transition-opacity',
+                'focus:border-(--color-accent)',
+                'disabled:cursor-not-allowed disabled:opacity-40',
+              )}
               value={draft.cardPointsEastWest}
               data-testid="card-points-east-west"
               onInput={(event) => setDraft('cardPointsEastWest', event.currentTarget.value)}
@@ -204,7 +221,11 @@ export function RoundEntry(props: RoundEntryProps) {
         <div class="sticky bottom-3 z-10 flex gap-3 rounded-3xl border border-white/10 bg-[color-mix(in_srgb,var(--color-bg)_78%,transparent)] p-3 backdrop-blur">
           <button
             type="submit"
-            class="flex-1 rounded-2xl bg-(--color-accent) px-4 py-3 text-sm font-semibold text-slate-950 transition-transform duration-150 motion-safe:hover:-translate-y-0.5"
+            class={clsx(
+              'flex-1 rounded-2xl bg-(--color-accent) px-4 py-3',
+              'text-sm font-semibold text-slate-950',
+              'transition-transform duration-150 motion-safe:hover:-translate-y-0.5',
+            )}
             data-testid="save-round"
           >
             {submitLabel()}

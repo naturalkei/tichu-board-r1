@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { For, createMemo, createSignal } from 'solid-js'
 import { SEATS } from '../../domain/constants'
 import { getRandomPlayerName } from '../../domain/defaults'
@@ -60,7 +61,11 @@ export function PartySetup() {
 
             return (
             <article
-              class={`${entry.className} group rounded-3xl border border-white/10 bg-(--color-surface) p-3 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5`}
+              class={clsx(
+                entry.className,
+                'group rounded-3xl border border-white/10 bg-(--color-surface) p-3',
+                'transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5',
+              )}
               draggable="true"
               onDragStart={() => setDraggingPlayerId(entry.player.id)}
               onDragEnd={() => setDraggingPlayerId(null)}
@@ -125,7 +130,11 @@ export function PartySetup() {
                   {t('party.nameLabel', { seat: t(`seats.${entry.player.seat}`) })}
                 </span>
                 <input
-                  class="w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5 text-sm text-(--color-fg) outline-none transition-colors placeholder:text-(--color-muted) focus:border-(--color-accent)"
+                  class={clsx(
+                    'w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5',
+                    'text-sm text-(--color-fg) outline-none transition-colors',
+                    'placeholder:text-(--color-muted) focus:border-(--color-accent)',
+                  )}
                   value={entry.player.name}
                   onInput={(event) => updatePlayerName(entry.player.id, event.currentTarget.value)}
                   placeholder={t(`seats.${entry.player.seat}`)}
@@ -138,7 +147,10 @@ export function PartySetup() {
                   {t('party.seatPickerLabel', { seat: t(`seats.${entry.player.seat}`) })}
                 </span>
                 <select
-                  class="w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5 text-sm text-(--color-fg) outline-none focus:border-(--color-accent)"
+                  class={clsx(
+                    'w-full rounded-2xl border border-white/10 bg-black/15 px-3 py-2.5',
+                    'text-sm text-(--color-fg) outline-none focus:border-(--color-accent)',
+                  )}
                   aria-label={t('party.seatPicker', { seat: t(`seats.${entry.player.seat}`) })}
                   value={entry.player.seat}
                   onChange={(event) => assignPlayerSeat(entry.player.id, event.currentTarget.value as Seat)}
