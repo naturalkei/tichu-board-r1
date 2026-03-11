@@ -8,14 +8,13 @@ import {
   type ParentComponent,
 } from 'solid-js'
 import { createStore, reconcile, unwrap } from 'solid-js/store'
-import { createTranslator, type TranslationKey } from '../shared/i18n'
-import { getTeamIdBySeat } from '../domain/helpers'
+import { getTeamIdBySeat } from '@/domain/helpers'
 import {
   calculateCumulativeScores,
   calculateRoundScore,
   getGameStatus,
   getLeadingTeamId,
-} from '../domain/scoring'
+} from '@/domain/scoring'
 import type {
   PersistedGameState,
   Player,
@@ -25,13 +24,14 @@ import type {
   Seat,
   TeamId,
   ThemeMode,
-} from '../domain/types'
+} from '@/domain/types'
 import {
   clearGameState,
   createInitialGameState,
   loadGameState,
   saveGameState,
-} from '../storage/game-storage'
+} from '@/storage/game-storage'
+import { createTranslator, type TranslationKey } from '@/shared/i18n'
 
 type GameContextValue = {
   state: PersistedGameState

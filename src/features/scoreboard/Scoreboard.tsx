@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { For, Show } from 'solid-js'
-import { useGame } from '../../state/game-context'
-import type { TeamId } from '../../domain/types'
+import type { TeamId } from '@/domain/types'
+import { useGame } from '@/state/game-context'
 
 type ScoreboardProps = {
   onEditRound: (roundId: string) => void

@@ -1,9 +1,9 @@
 import { Match, Switch } from 'solid-js'
+import { PartySetup } from '@/features/party-setup/PartySetup'
+import { RoundEntry } from '@/features/rounds/RoundEntry'
+import { HistoryPanel, ResultsSummary } from '@/features/scoreboard/Scoreboard'
+import { useGame } from '@/state/game-context'
 import { PageSection } from './PageSection'
-import { PartySetup } from '../party-setup/PartySetup'
-import { RoundEntry } from '../rounds/RoundEntry'
-import { HistoryPanel, ResultsSummary } from '../scoreboard/Scoreboard'
-import { useGame } from '../../state/game-context'
 
 type GameplayPagesProps = {
   route: 'party' | 'round' | 'results' | 'history'

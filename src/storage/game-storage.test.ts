@@ -1,5 +1,5 @@
-import { createDefaultPlayers, createDefaultSettings } from '../domain/defaults'
-import type { PersistedGameState } from '../domain/types'
+import { createDefaultPlayers, createDefaultSettings } from '@/domain/defaults'
+import type { PersistedGameState } from '@/domain/types'
 import {
   clearGameState,
   createInitialGameState,
@@ -7,7 +7,7 @@ import {
   loadGameState,
   saveGameState,
   STORAGE_KEY,
-} from './game-storage'
+} from '@/storage/game-storage'
 
 function createMockState(): PersistedGameState {
   return {

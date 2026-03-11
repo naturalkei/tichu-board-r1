@@ -1,9 +1,9 @@
 import clsx from 'clsx'
 import { For, createMemo, createSignal } from 'solid-js'
-import { SEATS } from '../../domain/constants'
-import { getRandomPlayerName } from '../../domain/defaults'
-import { useGame } from '../../state/game-context'
-import type { PlayerId, Seat } from '../../domain/types'
+import { SEATS } from '@/domain/constants'
+import { getRandomPlayerName } from '@/domain/defaults'
+import type { PlayerId, Seat } from '@/domain/types'
+import { useGame } from '@/state/game-context'
 
 const seatLayouts: { seat: Seat; className: string }[] = [
   { seat: 'north', className: 'col-start-2 row-start-1' },
