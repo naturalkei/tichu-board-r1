@@ -288,7 +288,7 @@ describe('PartySetup', () => {
     await fireEvent.click(screen.getByTestId('bench-player-player-1'))
 
     expect(window.scrollTo).toHaveBeenCalledWith({
-      top: 412,
+      top: 432,
       behavior: 'smooth',
     })
 
