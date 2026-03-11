@@ -36,7 +36,7 @@ export function PartySetup() {
         </div>
       </div>
       <div
-        class="mt-4 grid min-h-[22rem] grid-cols-[minmax(0,1fr)_minmax(4.75rem,0.84fr)_minmax(0,1fr)] grid-rows-[auto_minmax(5rem,1fr)_auto] gap-3"
+        class="mt-4 grid min-h-88 grid-cols-[minmax(0,1fr)_minmax(4.75rem,0.84fr)_minmax(0,1fr)] grid-rows-[auto_minmax(5rem,1fr)_auto] gap-3"
         aria-label={t('party.tableLabel')}
       >
         <div class="col-start-2 row-start-2 flex items-center justify-center">
