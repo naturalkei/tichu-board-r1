@@ -1,9 +1,15 @@
-import { gameTabIcons } from '@/features/app/game-tab-icons'
 import type { InGameRoute } from '@/shared/routes'
 import { inGameRoutes } from '@/shared/routes'
 import { useGame } from '@/state/game-context'
 import clsx from 'clsx'
 import { For } from 'solid-js'
+import {
+  ChartColumnBig,
+  History,
+  NotebookPen,
+  SlidersHorizontal,
+  UsersRound,
+} from 'lucide-solid'
 import { Dynamic } from 'solid-js/web'
 
 type GameTabBarProps = {
@@ -11,6 +17,14 @@ type GameTabBarProps = {
   onNavigate: (route: InGameRoute) => void
   onOpenSettings: () => void
 }
+
+const tabLucideIcons = {
+  party: UsersRound,
+  round: NotebookPen,
+  results: ChartColumnBig,
+  history: History,
+  settings: SlidersHorizontal,
+} as const
 
 const tabButtonBaseClass =
   'group relative flex aspect-square min-w-0 items-center justify-center rounded-3xl p-1.5 text-center transition-all duration-200 ease-out'
@@ -91,9 +105,7 @@ export function GameTabBar(props: GameTabBarProps) {
 }
 
 function TabGlyph(props: { route: InGameRoute | 'settings'; class?: string }) {
-  const icon = () => gameTabIcons[props.route]
+  const icon = () => tabLucideIcons[props.route]
 
-  return (
-    <Dynamic component={icon()} class={props.class} />
-  )
+  return <Dynamic component={icon()} class={props.class} stroke-width={1.8} />
 }
