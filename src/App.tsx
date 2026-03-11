@@ -35,12 +35,6 @@ function AppContent() {
   })
 
   createEffect(() => {
-    if (!state.hasStartedGame && route() !== 'start') {
-      navigate('start', { replace: true })
-    }
-  })
-
-  createEffect(() => {
     if (typeof window === 'undefined') {
       return
     }

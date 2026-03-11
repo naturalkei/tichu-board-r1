@@ -44,8 +44,12 @@ export function getDefaultRoute(hasStartedGame: boolean): AppRoute {
 export function getRouteFromPath(pathname: string, hasStartedGame: boolean): AppRoute {
   const normalized = trimBasePath(pathname)
 
+  if (normalized.length === 0) {
+    return getDefaultRoute(hasStartedGame)
+  }
+
   if (isAppRoute(normalized)) {
-    return hasStartedGame || normalized === 'start' ? normalized : 'start'
+    return normalized
   }
 
   return getDefaultRoute(hasStartedGame)
