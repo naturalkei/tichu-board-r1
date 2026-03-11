@@ -1,52 +1,101 @@
 import { getRandomPlayerName } from '@/domain/defaults'
+import { teamColorOptions } from '@/domain/team-colors'
 import type { Language, Player, PlayerId, Seat, TeamColor, TeamId } from '@/domain/types'
 
-export const teamColorClasses: Record<TeamColor, { chip: string; ring: string; surface: string; glow: string }> = {
+export { teamColorOptions }
+
+export const teamColorClasses: Record<
+  TeamColor,
+  {
+    chip: string
+    ring: string
+    surface: string
+    glow: string
+    solid: string
+    solidText: string
+    picker: string
+    pickerEdge: string
+    label: string
+  }
+> = {
   amber: {
-    chip: 'bg-amber-300 text-amber-950',
-    ring: 'ring-amber-300/55',
-    surface: 'from-amber-300/18 to-amber-100/4',
-    glow: 'shadow-[0_0_0_1px_rgba(252,211,77,0.24),0_18px_50px_rgba(252,211,77,0.14)]',
+    chip: 'bg-yellow-300 text-yellow-950',
+    ring: 'ring-yellow-300/60',
+    surface: 'bg-linear-to-br from-yellow-300/20 to-amber-100/6',
+    glow: 'shadow-[0_0_0_1px_rgba(253,224,71,0.28),0_18px_50px_rgba(253,224,71,0.16)]',
+    solid: 'bg-yellow-300',
+    solidText: 'text-yellow-950',
+    picker: 'bg-linear-to-br from-yellow-300 to-amber-400',
+    pickerEdge: 'border-yellow-200/80',
+    label: 'Solar',
   },
   emerald: {
-    chip: 'bg-emerald-300 text-emerald-950',
-    ring: 'ring-emerald-300/55',
-    surface: 'from-emerald-300/18 to-emerald-100/4',
-    glow: 'shadow-[0_0_0_1px_rgba(110,231,183,0.24),0_18px_50px_rgba(110,231,183,0.14)]',
+    chip: 'bg-emerald-400 text-emerald-950',
+    ring: 'ring-emerald-300/60',
+    surface: 'bg-linear-to-br from-emerald-400/20 to-lime-200/5',
+    glow: 'shadow-[0_0_0_1px_rgba(52,211,153,0.28),0_18px_50px_rgba(52,211,153,0.16)]',
+    solid: 'bg-emerald-400',
+    solidText: 'text-emerald-950',
+    picker: 'bg-linear-to-br from-emerald-400 to-lime-300',
+    pickerEdge: 'border-emerald-200/80',
+    label: 'Emerald',
   },
   sky: {
-    chip: 'bg-sky-300 text-sky-950',
-    ring: 'ring-sky-300/55',
-    surface: 'from-sky-300/18 to-sky-100/4',
-    glow: 'shadow-[0_0_0_1px_rgba(125,211,252,0.24),0_18px_50px_rgba(125,211,252,0.14)]',
+    chip: 'bg-blue-400 text-blue-950',
+    ring: 'ring-blue-300/60',
+    surface: 'bg-linear-to-br from-blue-400/22 to-cyan-200/6',
+    glow: 'shadow-[0_0_0_1px_rgba(96,165,250,0.28),0_18px_50px_rgba(96,165,250,0.16)]',
+    solid: 'bg-blue-400',
+    solidText: 'text-blue-950',
+    picker: 'bg-linear-to-br from-blue-400 to-indigo-400',
+    pickerEdge: 'border-blue-200/80',
+    label: 'Royal',
   },
   rose: {
-    chip: 'bg-rose-300 text-rose-950',
-    ring: 'ring-rose-300/55',
-    surface: 'from-rose-300/18 to-rose-100/4',
-    glow: 'shadow-[0_0_0_1px_rgba(253,164,175,0.24),0_18px_50px_rgba(253,164,175,0.14)]',
+    chip: 'bg-rose-400 text-rose-950',
+    ring: 'ring-rose-300/60',
+    surface: 'bg-linear-to-br from-rose-400/22 to-red-200/6',
+    glow: 'shadow-[0_0_0_1px_rgba(251,113,133,0.3),0_18px_50px_rgba(251,113,133,0.18)]',
+    solid: 'bg-rose-400',
+    solidText: 'text-rose-950',
+    picker: 'bg-linear-to-br from-rose-400 to-red-400',
+    pickerEdge: 'border-rose-200/80',
+    label: 'Ruby',
   },
   violet: {
-    chip: 'bg-violet-300 text-violet-950',
-    ring: 'ring-violet-300/55',
-    surface: 'from-violet-300/18 to-violet-100/4',
-    glow: 'shadow-[0_0_0_1px_rgba(196,181,253,0.24),0_18px_50px_rgba(196,181,253,0.14)]',
+    chip: 'bg-fuchsia-400 text-fuchsia-950',
+    ring: 'ring-fuchsia-300/60',
+    surface: 'bg-linear-to-br from-fuchsia-400/22 to-violet-200/6',
+    glow: 'shadow-[0_0_0_1px_rgba(232,121,249,0.3),0_18px_50px_rgba(232,121,249,0.18)]',
+    solid: 'bg-fuchsia-400',
+    solidText: 'text-fuchsia-950',
+    picker: 'bg-linear-to-br from-fuchsia-400 to-violet-400',
+    pickerEdge: 'border-fuchsia-200/80',
+    label: 'Amethyst',
   },
   teal: {
-    chip: 'bg-teal-300 text-teal-950',
-    ring: 'ring-teal-300/55',
-    surface: 'from-teal-300/18 to-teal-100/4',
-    glow: 'shadow-[0_0_0_1px_rgba(94,234,212,0.24),0_18px_50px_rgba(94,234,212,0.14)]',
+    chip: 'bg-cyan-300 text-cyan-950',
+    ring: 'ring-cyan-300/60',
+    surface: 'bg-linear-to-br from-cyan-300/22 to-sky-200/6',
+    glow: 'shadow-[0_0_0_1px_rgba(103,232,249,0.3),0_18px_50px_rgba(103,232,249,0.18)]',
+    solid: 'bg-cyan-300',
+    solidText: 'text-cyan-950',
+    picker: 'bg-linear-to-br from-cyan-300 to-sky-400',
+    pickerEdge: 'border-cyan-100/80',
+    label: 'Cyan',
   },
   orange: {
-    chip: 'bg-orange-300 text-orange-950',
-    ring: 'ring-orange-300/55',
-    surface: 'from-orange-300/18 to-orange-100/4',
-    glow: 'shadow-[0_0_0_1px_rgba(253,186,116,0.24),0_18px_50px_rgba(253,186,116,0.14)]',
+    chip: 'bg-orange-400 text-orange-950',
+    ring: 'ring-orange-300/60',
+    surface: 'bg-linear-to-br from-orange-400/22 to-amber-200/6',
+    glow: 'shadow-[0_0_0_1px_rgba(251,146,60,0.3),0_18px_50px_rgba(251,146,60,0.18)]',
+    solid: 'bg-orange-400',
+    solidText: 'text-orange-950',
+    picker: 'bg-linear-to-br from-orange-400 to-amber-400',
+    pickerEdge: 'border-orange-200/80',
+    label: 'Orange',
   },
 }
-
-export const teamColorOptions: TeamColor[] = ['amber', 'sky', 'emerald', 'rose', 'violet', 'teal', 'orange']
 
 export const seatLayouts: { seat: Seat; className: string }[] = [
   { seat: 'north', className: 'col-start-2 row-start-1' },

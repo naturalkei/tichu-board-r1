@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { For } from 'solid-js'
+import { isTeamColorSelectable } from '@/domain/team-colors'
 import type { TeamColor } from '@/domain/types'
 import { teamColorClasses, teamColorOptions, type TeamEditorDraft } from './party-setup.shared'
 import { DialogCloseButton, DialogShell } from './PartyDialogPrimitives'
@@ -12,6 +13,8 @@ type TeamEditorDialogProps = {
   closeLabel: string
   nameFieldLabel: string
   teamColorsLabel: string
+  teamColorBlockedLabel: string
+  teamColorApplyLabel: string
   onNameInput: (name: string) => void
   onColorSelect: (color: TeamColor) => void
   onClose: () => void
@@ -30,7 +33,6 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
               <span class="text-[10px] uppercase tracking-[0.18em] text-(--color-muted)">{props.title}</span>
             </div>
             <p class="mt-3 text-base font-semibold tracking-[-0.02em] text-(--color-fg)">{props.subtitle}</p>
-            <p class="mt-1 truncate text-xs leading-5 text-(--color-muted)">{props.draft.name.trim() || props.subtitle}</p>
           </div>
           <DialogCloseButton closeLabel={props.closeLabel} onClose={props.onClose} size="lg" />
         </div>
@@ -48,19 +50,20 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
 
           <div class="grid gap-3">
             <span class="text-sm text-(--color-muted)">{props.teamColorsLabel}</span>
-            <div class="grid grid-cols-4 gap-2">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <For each={teamColorOptions}>
                 {(color) => {
-                  const isDisabled = () => color !== props.draft.color && color === props.oppositeTeamColor
+                  const isDisabled = () => !isTeamColorSelectable(color, props.oppositeTeamColor, props.draft.color)
+                  const colors = () => teamColorClasses[color]
 
                   return (
                     <button
                       type="button"
                       class={clsx(
-                        'grid gap-2 rounded-2xl border p-3 text-left transition-all duration-150',
-                        teamColorClasses[color].surface,
+                        'grid min-h-24 gap-3 rounded-3xl border p-4 text-left transition-all duration-150',
+                        colors().surface,
                         props.draft.color === color
-                          ? 'scale-[1.02] border-white/70 ring-2 ring-white/45 shadow-[0_0_0_1px_rgba(255,255,255,0.16),0_18px_36px_rgba(15,23,42,0.24)]'
+                          ? clsx(colors().pickerEdge, 'scale-[1.02] ring-2 ring-white/55 shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_18px_36px_rgba(15,23,42,0.28)]')
                           : 'border-white/8',
                         isDisabled() ? 'cursor-not-allowed opacity-30' : 'motion-safe:hover:-translate-y-0.5',
                       )}
@@ -70,8 +73,13 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
                       data-testid={`team-editor-color-${color}`}
                       onClick={() => props.onColorSelect(color)}
                     >
-                      <span class={clsx('h-3 w-8 rounded-full ring-1 ring-black/10', teamColorClasses[color].chip)} />
-                      <span class="text-[11px] font-semibold uppercase tracking-[0.18em]">{color}</span>
+                      <span class={clsx('h-10 w-full rounded-2xl border shadow-inner', colors().picker, colors().pickerEdge)} />
+                      <div class="grid gap-1">
+                        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-(--color-fg)">{colors().label}</span>
+                        <span class="text-[10px] leading-4 text-(--color-muted)">
+                          {isDisabled() ? props.teamColorBlockedLabel : props.teamColorApplyLabel}
+                        </span>
+                      </div>
                     </button>
                   )
                 }}
@@ -84,7 +92,12 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
       <div class="sticky bottom-0 border-t border-white/10 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-4 sm:px-5 sm:pb-5">
         <button
           type="button"
-          class="w-full rounded-2xl border border-white/10 px-4 py-3 text-sm text-(--color-fg)"
+          class={clsx(
+            'w-full rounded-2xl px-4 py-3 text-sm font-semibold shadow-[0_14px_28px_rgba(15,23,42,0.22)]',
+            selectedColors().solid,
+            selectedColors().solidText,
+          )}
+          data-testid="team-editor-close-button"
           onClick={() => props.onClose()}
         >
           {props.closeLabel}

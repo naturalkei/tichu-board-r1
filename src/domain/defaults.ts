@@ -137,8 +137,8 @@ export function createDefaultSettings(): GameSettings {
 
 export function createDefaultTeamColors(): Record<TeamId, TeamColor> {
   return {
-    'north-south': 'amber',
-    'east-west': 'sky',
+    'north-south': 'rose',
+    'east-west': 'emerald',
   }
 }
 

@@ -1,5 +1,6 @@
 import { reconcile, unwrap, type SetStoreFunction, type Store } from 'solid-js/store'
 import { mergeRecentPlayerNames } from '@/domain/defaults'
+import { areTeamColorsCompatible } from '@/domain/team-colors'
 import type {
   PersistedGameState,
   Player,
@@ -78,7 +79,7 @@ export function createGameActions(options: CreateGameActionsOptions): Pick<
     setTeamColor: (teamId, color) => {
       const oppositeTeamId = teamId === 'north-south' ? 'east-west' : 'north-south'
 
-      if (state.settings.teamColors[oppositeTeamId] === color) {
+      if (!areTeamColorsCompatible(color, state.settings.teamColors[oppositeTeamId])) {
         return
       }
 
