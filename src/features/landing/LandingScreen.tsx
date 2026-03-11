@@ -11,14 +11,16 @@ export function LandingScreen(props: LandingScreenProps) {
   const { startGame, state, t } = useGame()
 
   return (
-    <section class="flex min-h-screen items-center py-6">
+    <section
+      class="grid h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom)-3rem)] min-h-152 grid-rows-[auto_minmax(0,1fr)_auto] rounded-[2.4rem] border border-white/10 bg-[linear-gradient(155deg,rgba(255,191,105,0.18),rgba(255,255,255,0.04))] shadow-[0_28px_90px_rgba(0,0,0,0.24)] backdrop-blur-sm motion-safe:animate-[fade-in_260ms_ease-out]"
+      data-testid="landing-layout"
+    >
       <div
         class={clsx(
-          'w-full rounded-[2.4rem] border border-white/10',
-          'bg-[linear-gradient(155deg,rgba(255,191,105,0.18),rgba(255,255,255,0.04))]',
-          'p-5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] backdrop-blur-sm',
-          'motion-safe:animate-[fade-in_260ms_ease-out] sm:p-7',
+          'flex items-center gap-3 border-b border-white/10 px-5 pb-4 pt-[calc(env(safe-area-inset-top)+1.25rem)]',
+          'sm:px-7 sm:pt-7',
         )}
+        data-testid="landing-header"
       >
         <div class="flex items-center gap-3">
           <div class="flex h-16 w-16 items-center justify-center rounded-[1.4rem] border border-white/12 bg-slate-950/35 shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
@@ -28,7 +30,9 @@ export function LandingScreen(props: LandingScreenProps) {
             {t('app.badge')}
           </div>
         </div>
+      </div>
 
+      <div class="min-h-0 overflow-y-auto px-5 py-6 sm:px-7" data-testid="landing-content">
         <h1 class="mt-6 max-w-3xl text-4xl font-semibold tracking-tight sm:text-6xl">
           {t('app.title')}
         </h1>
@@ -50,8 +54,13 @@ export function LandingScreen(props: LandingScreenProps) {
             <p class="mt-2 leading-6">{t('landing.featureBilingualBody')}</p>
           </article>
         </div>
+      </div>
 
-        <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div
+        class="grid gap-3 border-t border-white/10 px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-4 sm:px-7 sm:pb-7"
+        data-testid="landing-footer"
+      >
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
           <button
             type="button"
             class={clsx(
