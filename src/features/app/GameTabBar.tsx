@@ -4,6 +4,7 @@ import { inGameRoutes } from '@/shared/routes'
 import { useGame } from '@/state/game-context'
 import clsx from 'clsx'
 import { For } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
 
 type GameTabBarProps = {
   activeRoute: InGameRoute
@@ -90,20 +91,9 @@ export function GameTabBar(props: GameTabBarProps) {
 }
 
 function TabGlyph(props: { route: InGameRoute | 'settings'; class?: string }) {
+  const icon = () => gameTabIcons[props.route]
+
   return (
-    <span
-      aria-hidden="true"
-      class={clsx('bg-current', props.class)}
-      style={{
-        '-webkit-mask-image': `url("${gameTabIcons[props.route]}")`,
-        '-webkit-mask-position': 'center',
-        '-webkit-mask-repeat': 'no-repeat',
-        '-webkit-mask-size': 'contain',
-        'mask-image': `url("${gameTabIcons[props.route]}")`,
-        'mask-position': 'center',
-        'mask-repeat': 'no-repeat',
-        'mask-size': 'contain',
-      }}
-    />
+    <Dynamic component={icon()} class={props.class} />
   )
 }
