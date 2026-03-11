@@ -3,6 +3,7 @@ import { flatten } from '@solid-primitives/i18n'
 export const enDictionary = flatten({
   app: {
     badge: 'Tichu score tracker',
+    credit: 'designed by naturalkei',
     title: 'TichuBoard',
     controlSubtitle: 'Compact round control for live table sessions',
     subtitle:
