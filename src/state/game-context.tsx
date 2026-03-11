@@ -191,7 +191,17 @@ export const GameProvider: ParentComponent = (props) => {
         }),
       )
     },
-    setTeamColor: (teamId, color) => setState('settings', 'teamColors', teamId, color),
+    setTeamColor: (teamId, color) => {
+      const oppositeTeamId: TeamId = teamId === 'north-south' ? 'east-west' : 'north-south'
+      const currentColor = state.settings.teamColors[teamId]
+      const oppositeColor = state.settings.teamColors[oppositeTeamId]
+
+      if (oppositeColor === color) {
+        setState('settings', 'teamColors', oppositeTeamId, currentColor)
+      }
+
+      setState('settings', 'teamColors', teamId, color)
+    },
     setLanguage: (language) => setState('settings', 'language', language),
     setTheme: (theme) => setState('settings', 'theme', theme),
     startRound: () => {

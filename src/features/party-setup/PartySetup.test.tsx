@@ -18,14 +18,14 @@ describe('PartySetup', () => {
 
     expect(within(screen.getByTestId('seat-north')).getByText('Alice')).toBeInTheDocument()
 
-    const eastSeat = screen.getByTestId('seat-east')
-    await fireEvent.dragStart(northSeat)
-    await fireEvent.drop(eastSeat)
+    await fireEvent.click(screen.getByTestId('seat-north'))
+    await fireEvent.click(screen.getByRole('button', { name: /move on table/i }))
+    await fireEvent.click(screen.getByTestId('seat-east'))
 
     expect(within(screen.getByTestId('seat-east')).getByText('Alice')).toBeInTheDocument()
   })
 
-  it('can reroll a name, move the player, and block duplicate names', async () => {
+  it('can reroll a unique name, keep team colors distinct, and block duplicate names', async () => {
     render(() => <App />)
 
     const northSeat = screen.getByTestId('seat-north')
@@ -37,12 +37,14 @@ describe('PartySetup', () => {
     const rerolledName = (screen.getByRole('textbox') as HTMLInputElement).value
     expect(rerolledName).not.toBe(northNameBefore)
 
-    await fireEvent.change(screen.getByRole('combobox'), {
-      target: { value: 'west' },
-    })
     await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
 
-    expect(within(screen.getByTestId('seat-west')).getByText(rerolledName)).toBeInTheDocument()
+    expect(screen.getByTestId('team-name-north-south')).toHaveTextContent(rerolledName)
+
+    await fireEvent.click(screen.getByTestId('team-color-east-west-amber'))
+
+    expect(screen.getByTestId('team-color-east-west-amber')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByTestId('team-color-north-south-sky')).toHaveAttribute('aria-pressed', 'true')
 
     await fireEvent.click(screen.getByTestId('seat-east'))
     await fireEvent.input(screen.getByRole('textbox'), { target: { value: rerolledName } })
