@@ -1,8 +1,9 @@
+import type { Player, PlayerId, Seat, TeamColor, TeamId } from '@/domain/types'
 import clsx from 'clsx'
 import { For, Show } from 'solid-js'
-import type { Player, PlayerId, Seat, TeamColor, TeamId } from '@/domain/types'
-import { TeamBadge } from './TeamSetupCard'
+
 import { getTeamId, seatLayouts, seatOverlayLabels, teamColorClasses } from './party-setup.shared'
+import { TeamBadge } from './TeamSetupCard'
 
 type SeatEntry = {
   seat: Seat
@@ -27,15 +28,19 @@ type SeatMapBoardProps = {
 export function SeatMapBoard(props: SeatMapBoardProps) {
   return (
     <div
-      class="grid min-h-96 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] grid-rows-[auto_minmax(6rem,1fr)_auto] gap-3"
+      class="grid aspect-square grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] grid-rows-[auto_minmax(6rem,1fr)_auto] gap-3"
       aria-label={props.tableLabel}
       data-testid="seat-map-board"
     >
       <div class="col-start-2 row-start-2 flex items-center justify-center">
-        <div class="flex h-full w-full max-w-18 items-center justify-center rounded-4xl border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.18),rgba(15,23,42,0.94))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+        <div class="flex h-full w-full max-w-18 items-center justify-center p-4 text-center">
           <div class="grid place-items-center gap-2">
-            <div class="h-12 w-12 rounded-full border border-white/12 bg-black/18 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]" />
-            <p class="text-[10px] uppercase tracking-[0.3em] text-(--color-muted)">Tichu</p>
+            <div class={clsx(
+              'h-15 w-15 rounded-full border border-white/15 bg-black/18 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]', 
+              'flex items-center justify-center',
+            )} >
+              <p class="text-[9px] uppercase tracking-[0.2em] text-(--color-muted)">Tichu</p>
+            </div>
           </div>
         </div>
       </div>
@@ -54,7 +59,10 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               type="button"
               class={clsx(
                 entry.className,
-                'relative flex aspect-square w-full min-w-0 justify-self-stretch flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-(--color-surface) p-3 text-left',
+                'relative flex aspect-square w-full min-w-0',
+                'flex-col overflow-hidden justify-center items-center',
+                // 'justify-between justify-self-stretch',
+                'rounded-3xl border border-white/10 bg-(--color-surface) p-2',
                 'ring-1 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5',
                 colors.ring,
                 colors.glow,
@@ -67,15 +75,28 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               data-testid={`seat-${entry.seat}`}
               >
               <div class={clsx('pointer-events-none absolute inset-0 bg-linear-to-br opacity-70', colors.surface)} />
+              {/* Seat overlay label */}
               <span
-                class="pointer-events-none absolute inset-0 flex items-center justify-center text-[clamp(3.5rem,20vw,5.25rem)] font-black tracking-[-0.08em] text-white/6"
+                class={clsx([
+                  'pointer-events-none absolute inset-0',
+                  'flex items-center justify-center',
+                  'text-[clamp(3.5rem,20vw,5.25rem)] font-black tracking-[-0.08em] text-white/6'
+                ])}
                 aria-hidden="true"
                 data-testid={`seat-overlay-${entry.seat}`}
               >
                 {seatOverlayLabels[entry.seat]}
               </span>
-              <div class="relative flex items-start justify-start gap-2">
-                <span class="inline-flex items-center gap-1 rounded-full border border-white/8 bg-black/10 px-2 py-1 text-[10px] text-(--color-muted)">
+              {/* Team badge */}
+              <div class={clsx([
+                // 'relative flex items-start justify-start gap-2'
+                'absolute top-2 left-2'
+              ])}>
+                <span class={clsx([
+                  'inline-flex items-center gap-1',
+                  // 'rounded-full border border-white/8 bg-black/10',
+                  'px-2 py-1 text-[10px] text-(--color-muted)'
+                ])}>
                   <TeamBadge color={props.teamColors[teamId]} />
                   {props.teamNames[teamId]}
                 </span>
@@ -83,10 +104,13 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
 
               <div class="relative grid gap-1">
                 <p class="text-lg font-semibold tracking-[-0.02em] text-(--color-fg)">{player?.name}</p>
-                <Show when={isActiveDropTarget}>
-                  <p class="text-[11px] text-(--color-muted)">{props.dropToSeatLabel}</p>
-                </Show>
               </div>
+              <Show when={isActiveDropTarget}>
+                <div class="absolute bottom-2">
+                  <p class="text-[9px] tracking-[0.2em] text-(--color-muted)">{props.dropToSeatLabel}</p>
+                </div>
+              </Show>
+              
             </button>
           )
         }}
