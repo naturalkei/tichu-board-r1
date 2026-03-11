@@ -14,6 +14,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      lucide-solid:
+        specifier: ^0.577.0
+        version: 0.577.0(solid-js@1.9.11)
       solid-js:
         specifier: ^1.9.10
         version: 1.9.11
@@ -2219,6 +2222,11 @@ packages:
   lru-cache@7.18.3:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
+
+  lucide-solid@0.577.0:
+    resolution: {integrity: sha512-r/rsauBlyNjFlUhXCkD544tOH1GgcFFupw9oP2zZT4BiFkHoO3MTr12QfKBrS5zCRIhktc/qY2tRr925hFlNuQ==}
+    peerDependencies:
+      solid-js: ^1.4.7
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -5391,6 +5399,10 @@ snapshots:
 
   lru-cache@7.18.3:
     optional: true
+
+  lucide-solid@0.577.0(solid-js@1.9.11):
+    dependencies:
+      solid-js: 1.9.11
 
   lz-string@1.5.0: {}
 
