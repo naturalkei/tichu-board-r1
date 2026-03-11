@@ -181,8 +181,10 @@ export function usePartySetupController() {
         return { ...current, color }
       }),
     armPlayer: (playerId: PlayerId) => {
-      setArmedPlayerId(playerId)
+      setArmedPlayerId((current) => (current === playerId ? null : playerId))
+      setDraggingPlayerId(null)
       setArmedRecentName(null)
+      setDraggingRecentName(null)
     },
     startDraggingPlayer: (playerId: PlayerId) => {
       setDraggingPlayerId(playerId)
