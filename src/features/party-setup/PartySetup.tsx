@@ -1,4 +1,5 @@
 import { Show } from 'solid-js'
+
 import { PartyBench } from './PartyBench'
 import { PlayerEditorDialog, TeamEditorDialog } from './PartySetupDialogs'
 import { SeatMapBoard } from './SeatMapBoard'
@@ -23,7 +24,7 @@ export function PartySetup() {
           </Show>
         </div>
 
-        <div class="grid gap-2 sm:grid-cols-2">
+        <div class="grid gap-3 sm:grid-cols-2">
           <TeamSetupCard
             teamId="north-south"
             label={controller.teamNames()['north-south']}
@@ -111,7 +112,6 @@ export function PartySetup() {
           nameFieldLabel={controller.t('party.teamNameField')}
           teamColorsLabel={controller.t('party.teamColors')}
           teamColorBlockedLabel={controller.t('party.teamColorUnavailable')}
-          teamColorApplyLabel={controller.t('party.tapToApplyColor')}
           onNameInput={controller.setTeamEditorName}
           onColorSelect={controller.setTeamEditorColor}
           onClose={controller.closeTeamEditor}

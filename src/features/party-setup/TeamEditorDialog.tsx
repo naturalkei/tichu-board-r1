@@ -14,7 +14,6 @@ type TeamEditorDialogProps = {
   nameFieldLabel: string
   teamColorsLabel: string
   teamColorBlockedLabel: string
-  teamColorApplyLabel: string
   onNameInput: (name: string) => void
   onColorSelect: (color: TeamColor) => void
   onClose: () => void
@@ -60,8 +59,8 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
                     <button
                       type="button"
                       class={clsx(
-                        'grid min-h-24 gap-3 rounded-3xl border p-4 text-left transition-all duration-150',
-                        colors().surface,
+                        'grid min-h-24 place-items-center rounded-3xl border p-4 text-center transition-all duration-150',
+                        colors().picker,
                         props.draft.color === color
                           ? clsx(colors().pickerEdge, 'scale-[1.02] ring-2 ring-white/55 shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_18px_36px_rgba(15,23,42,0.28)]')
                           : 'border-white/8',
@@ -73,13 +72,15 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
                       data-testid={`team-editor-color-${color}`}
                       onClick={() => props.onColorSelect(color)}
                     >
-                      <span class={clsx('h-10 w-full rounded-2xl border shadow-inner', colors().picker, colors().pickerEdge)} />
-                      <div class="grid gap-1">
-                        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-(--color-fg)">{colors().label}</span>
-                        <span class="text-[10px] leading-4 text-(--color-muted)">
-                          {isDisabled() ? props.teamColorBlockedLabel : props.teamColorApplyLabel}
-                        </span>
-                      </div>
+                      <span
+                        class={clsx(
+                          'text-xs font-semibold uppercase tracking-[0.18em]',
+                          colors().solidText,
+                          isDisabled() && 'opacity-70',
+                        )}
+                      >
+                        {isDisabled() ? props.teamColorBlockedLabel : colors().label}
+                      </span>
                     </button>
                   )
                 }}
