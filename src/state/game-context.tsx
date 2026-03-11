@@ -8,6 +8,7 @@ import {
   type ParentComponent,
 } from 'solid-js'
 import { createStore, reconcile, unwrap } from 'solid-js/store'
+import { createDefaultPlayers, mergeRecentPlayerNames } from '@/domain/defaults'
 import { getTeamIdBySeat } from '@/domain/helpers'
 import {
   calculateCumulativeScores,
@@ -22,6 +23,7 @@ import type {
   RoundInput,
   RoundRecord,
   Seat,
+  TeamColor,
   TeamId,
   ThemeMode,
 } from '@/domain/types'
@@ -46,6 +48,7 @@ type GameContextValue = {
   updatePlayerName: (playerId: PlayerId, name: string) => void
   assignPlayerSeat: (playerId: PlayerId, seat: Seat) => void
   swapPlayerSeats: (sourcePlayerId: PlayerId, targetPlayerId: PlayerId) => void
+  setTeamColor: (teamId: TeamId, color: TeamColor) => void
   setLanguage: (language: PersistedGameState['settings']['language']) => void
   setTheme: (theme: ThemeMode) => void
   addRound: (input: RoundInput) => void
@@ -123,6 +126,7 @@ export const GameProvider: ParentComponent = (props) => {
     startGame: () => setState('hasStartedGame', true),
     updatePlayerName: (playerId, name) => {
       const trimmedName = name.trimStart().slice(0, 24)
+      const previousName = state.players.find((player) => player.id === playerId)?.name
 
       setState(
         'players',
@@ -130,6 +134,10 @@ export const GameProvider: ParentComponent = (props) => {
         'name',
         (currentName) => trimmedName || currentName,
       )
+
+      if (previousName && trimmedName && previousName !== trimmedName) {
+        setState('recentPlayerNames', (names) => mergeRecentPlayerNames(names, [previousName]))
+      }
     },
     assignPlayerSeat: (playerId, seat) => {
       const sourcePlayer = state.players.find((player) => player.id === playerId)
@@ -181,6 +189,7 @@ export const GameProvider: ParentComponent = (props) => {
         }),
       )
     },
+    setTeamColor: (teamId, color) => setState('settings', 'teamColors', teamId, color),
     setLanguage: (language) => setState('settings', 'language', language),
     setTheme: (theme) => setState('settings', 'theme', theme),
     addRound: (input) => {
@@ -214,8 +223,21 @@ export const GameProvider: ParentComponent = (props) => {
     },
     findRound: (roundId) => state.rounds.find((round) => round.id === roundId),
     resetGame: () => {
+      const recentPlayerNames = mergeRecentPlayerNames(
+        state.recentPlayerNames,
+        state.players.map((player) => player.name.trim()).filter(Boolean),
+      )
+      const nextSettings = unwrap(state.settings)
+
       clearGameState(window.localStorage)
-      setState(reconcile(createInitialGameState()))
+      setState(
+        reconcile({
+          ...createInitialGameState(),
+          players: createDefaultPlayers(),
+          recentPlayerNames,
+          settings: nextSettings,
+        }),
+      )
     },
   }
 

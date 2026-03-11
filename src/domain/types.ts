@@ -6,6 +6,7 @@ export type TeamId = (typeof TEAM_IDS)[number]
 export type TichuCall = 'none' | 'small' | 'grand'
 export type Language = 'en' | 'ko'
 export type ThemeMode = 'system' | 'light' | 'dark'
+export type TeamColor = 'amber' | 'emerald' | 'sky' | 'rose'
 
 export type Player = {
   id: PlayerId
@@ -71,6 +72,7 @@ export type GameStatus =
 export type GameSettings = {
   language: Language
   theme: ThemeMode
+  teamColors: Record<TeamId, TeamColor>
 }
 
 export type PersistedGameState = {
@@ -78,6 +80,7 @@ export type PersistedGameState = {
   hasStartedGame: boolean
   players: Player[]
   rounds: RoundRecord[]
+  recentPlayerNames: string[]
   settings: GameSettings
 }
 

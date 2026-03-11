@@ -10,6 +10,7 @@ export function createInitialGameState(): PersistedGameState {
     hasStartedGame: false,
     players: createDefaultPlayers(),
     rounds: [],
+    recentPlayerNames: [],
     settings: createDefaultSettings(),
   }
 }
@@ -31,6 +32,19 @@ export function migratePersistedState(value: unknown): PersistedGameState | null
     ...(value as Omit<PersistedGameState, 'hasStartedGame'>),
     hasStartedGame:
       typeof value.hasStartedGame === 'boolean' ? value.hasStartedGame : value.rounds.length > 0,
+    recentPlayerNames: Array.isArray(value.recentPlayerNames)
+      ? value.recentPlayerNames.filter((name): name is string => typeof name === 'string').slice(0, 12)
+      : [],
+    settings: {
+      ...createDefaultSettings(),
+      ...(value.settings as PersistedGameState['settings']),
+      teamColors: {
+        ...createDefaultSettings().teamColors,
+        ...(isRecord((value.settings as PersistedGameState['settings']).teamColors)
+          ? ((value.settings as PersistedGameState['settings']).teamColors as PersistedGameState['settings']['teamColors'])
+          : {}),
+      },
+    },
   }
 }
 
