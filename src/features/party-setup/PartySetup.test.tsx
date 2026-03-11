@@ -209,4 +209,20 @@ describe('PartySetup', () => {
     expect(within(screen.getByTestId('seat-west')).getByText(/drop or tap to place here/i)).toBeInTheDocument()
     expect(within(screen.getByTestId('seat-north')).queryByText(/drop or tap to place here/i)).not.toBeInTheDocument()
   })
+
+  it('toggles the armed bench player state off when the same player is tapped again', async () => {
+    render(() => <App />)
+
+    const benchPlayer = screen.getByTestId('bench-player-player-1')
+
+    await fireEvent.click(benchPlayer)
+    expect(benchPlayer.className).toContain('bg-(--color-accent)')
+    expect(within(screen.getByTestId('seat-east')).getByText(/drop or tap to place here/i)).toBeInTheDocument()
+
+    await fireEvent.click(benchPlayer)
+
+    expect(benchPlayer.className).not.toContain('bg-(--color-accent)')
+    expect(within(screen.getByTestId('seat-east')).queryByText(/drop or tap to place here/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument()
+  })
 })
