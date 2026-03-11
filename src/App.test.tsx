@@ -30,6 +30,16 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: /open settings/i })).toBeInTheDocument()
   })
 
+  it('renders the correct page when opened from a direct site route', () => {
+    seedStartedGameState('results')
+    window.history.replaceState(null, '', getPathForRoute('results'))
+
+    render(() => <App />)
+
+    expect(screen.getByRole('heading', { name: /game results/i })).toBeInTheDocument()
+    expect(window.location.pathname).toBe(getPathForRoute('results'))
+  })
+
   it('switches pages through the tab bar and keeps route state in the pathname', async () => {
     seedStartedGameState('party')
     render(() => <App />)
