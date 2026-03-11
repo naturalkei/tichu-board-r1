@@ -46,7 +46,7 @@ type EditorDraft = {
 }
 
 export function PartySetup() {
-  const { assignPlayerSeat, setTeamColor, state, teamNames, updatePlayerName, t } = useGame()
+  const { assignPlayerSeat, setTeamColor, setTeamName, state, teamLineups, teamNames, updatePlayerName, t } = useGame()
   const [editorDraft, setEditorDraft] = createSignal<EditorDraft | null>(null)
   const [errorMessage, setErrorMessage] = createSignal('')
   const [armedPlayerId, setArmedPlayerId] = createSignal<PlayerId | null>(null)
@@ -79,7 +79,7 @@ export function PartySetup() {
 
     return state.recentPlayerNames
       .filter((name) => !seatedNames.has(name.trim().toLowerCase()))
-      .slice(0, 5)
+      .slice(0, 2)
   })
 
   const interactionHint = createMemo(() => {
@@ -216,16 +216,18 @@ export function PartySetup() {
           <TeamSetupCard
             teamId="north-south"
             label={teamNames()['north-south']}
-            subtitle={t('teams.northSouth')}
+            subtitle={teamLineups()['north-south']}
             selectedColor={state.settings.teamColors['north-south']}
             onSelectColor={setTeamColor}
+            onNameChange={setTeamName}
           />
           <TeamSetupCard
             teamId="east-west"
             label={teamNames()['east-west']}
-            subtitle={t('teams.eastWest')}
+            subtitle={teamLineups()['east-west']}
             selectedColor={state.settings.teamColors['east-west']}
             onSelectColor={setTeamColor}
+            onNameChange={setTeamName}
           />
         </div>
       </div>
@@ -292,9 +294,9 @@ export function PartySetup() {
                   <button
                     type="button"
                     class={clsx(
-                      'rounded-full border px-3 py-2 text-sm transition-colors',
+                      'rounded-full border px-3 py-2 text-sm transition-colors opacity-55 grayscale',
                       armedRecentName() === name
-                        ? 'border-(--color-accent) bg-(--color-accent) text-slate-950'
+                        ? 'border-(--color-accent) bg-(--color-accent) text-slate-950 opacity-100 grayscale-0'
                         : 'border-white/10 bg-black/15 text-(--color-fg)',
                     )}
                     draggable="true"
@@ -529,6 +531,7 @@ function TeamSetupCard(props: {
   subtitle: string
   selectedColor: TeamColor
   onSelectColor: (teamId: TeamId, color: TeamColor) => void
+  onNameChange: (teamId: TeamId, name: string) => void
 }) {
   const { state, t } = useGame()
   const oppositeTeamId = () => (props.teamId === 'north-south' ? 'east-west' : 'north-south')
@@ -538,10 +541,15 @@ function TeamSetupCard(props: {
       class="rounded-3xl border border-white/10 bg-black/10 p-3"
       data-testid={`team-name-${props.teamId}`}
     >
-      <div class="flex items-center justify-between gap-3">
+      <div class="grid gap-3">
         <div>
-          <p class="text-sm font-medium text-(--color-fg)">{props.label}</p>
-          <p class="mt-1 text-[11px] uppercase tracking-[0.18em] text-(--color-muted)">{props.subtitle}</p>
+          <input
+            class="w-full border-b border-dashed border-white/18 bg-transparent pb-1 text-sm font-medium text-(--color-fg) outline-none focus:border-(--color-accent)"
+            value={props.label}
+            data-testid={`team-label-${props.teamId}`}
+            onInput={(event) => props.onNameChange(props.teamId, event.currentTarget.value)}
+          />
+          <p class="mt-1 text-[11px] text-(--color-muted)">{props.subtitle}</p>
         </div>
         <div class="flex flex-wrap justify-end gap-1">
           <For each={teamColorOptions}>

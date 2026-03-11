@@ -49,6 +49,12 @@ export function migratePersistedState(value: unknown): PersistedGameState | null
           ? ((value.settings as PersistedGameState['settings']).teamColors as PersistedGameState['settings']['teamColors'])
           : {}),
       },
+      teamNames: {
+        ...createDefaultSettings().teamNames,
+        ...(isRecord((value.settings as PersistedGameState['settings']).teamNames)
+          ? ((value.settings as PersistedGameState['settings']).teamNames as PersistedGameState['settings']['teamNames'])
+          : {}),
+      },
     },
   }
 }

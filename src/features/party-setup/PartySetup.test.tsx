@@ -10,7 +10,7 @@ describe('PartySetup', () => {
 
     if (value) {
       const nextState = JSON.parse(value) as { recentPlayerNames: string[] }
-      nextState.recentPlayerNames = ['Morgan']
+      nextState.recentPlayerNames = ['Morgan', 'Nova']
       localStorage.setItem('tichu-board-r1:v1', JSON.stringify(nextState))
     }
   })
@@ -20,7 +20,9 @@ describe('PartySetup', () => {
 
     const northSeat = screen.getByTestId('seat-north')
     await fireEvent.click(northSeat)
-    await fireEvent.input(screen.getByRole('textbox'), { target: { value: 'Alice' } })
+    await fireEvent.input(within(screen.getByTestId('party-editor-dialog')).getByRole('textbox'), {
+      target: { value: 'Alice' },
+    })
     await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
 
     expect(within(screen.getByTestId('seat-north')).getByText('Alice')).toBeInTheDocument()
@@ -32,16 +34,28 @@ describe('PartySetup', () => {
     expect(within(screen.getByTestId('seat-east')).getByText('Alice')).toBeInTheDocument()
   })
 
-  it('can reroll a unique name, disable used team colors, and block duplicate names', async () => {
+  it('can rename teams, reroll a unique name, disable used team colors, and block duplicate names', async () => {
     render(() => <App />)
+
+    await fireEvent.input(screen.getByTestId('team-label-north-south'), {
+      target: { value: 'Alpha Team' },
+    })
+
+    expect(screen.getByTestId('team-label-north-south')).toHaveValue('Alpha Team')
+    expect(screen.getByTestId('bench-recent-Morgan')).toBeInTheDocument()
+    expect(screen.getByTestId('bench-recent-Nova')).toBeInTheDocument()
 
     const northSeat = screen.getByTestId('seat-north')
     await fireEvent.click(northSeat)
 
-    const northNameBefore = (screen.getByRole('textbox') as HTMLInputElement).value
+    const northNameBefore = (
+      within(screen.getByTestId('party-editor-dialog')).getByRole('textbox') as HTMLInputElement
+    ).value
     await fireEvent.click(screen.getByRole('button', { name: /reroll random name/i }))
 
-    const rerolledName = (screen.getByRole('textbox') as HTMLInputElement).value
+    const rerolledName = (
+      within(screen.getByTestId('party-editor-dialog')).getByRole('textbox') as HTMLInputElement
+    ).value
     expect(rerolledName).not.toBe(northNameBefore)
 
     await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
@@ -54,7 +68,9 @@ describe('PartySetup', () => {
     expect(screen.getByTestId('team-color-north-south-amber')).toHaveAttribute('aria-pressed', 'true')
 
     await fireEvent.click(screen.getByTestId('seat-east'))
-    await fireEvent.input(screen.getByRole('textbox'), { target: { value: rerolledName } })
+    await fireEvent.input(within(screen.getByTestId('party-editor-dialog')).getByRole('textbox'), {
+      target: { value: rerolledName },
+    })
     await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
 
     expect(screen.getByText(/player names must be unique/i)).toBeInTheDocument()

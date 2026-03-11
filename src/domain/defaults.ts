@@ -131,6 +131,7 @@ export function createDefaultSettings(): GameSettings {
     language: 'en',
     theme: 'system',
     teamColors: createDefaultTeamColors(),
+    teamNames: createDefaultTeamNames('en'),
   }
 }
 
@@ -139,6 +140,18 @@ export function createDefaultTeamColors(): Record<TeamId, TeamColor> {
     'north-south': 'amber',
     'east-west': 'sky',
   }
+}
+
+export function createDefaultTeamNames(language: Language): Record<TeamId, string> {
+  return language === 'ko'
+    ? {
+        'north-south': '1팀',
+        'east-west': '2팀',
+      }
+    : {
+        'north-south': 'Team 1',
+        'east-west': 'Team 2',
+      }
 }
 
 export function mergeRecentPlayerNames(existingNames: string[], nextNames: string[]) {

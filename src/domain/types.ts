@@ -78,6 +78,7 @@ export type GameSettings = {
   language: Language
   theme: ThemeMode
   teamColors: Record<TeamId, TeamColor>
+  teamNames: Record<TeamId, string>
 }
 
 export type PersistedGameState = {
