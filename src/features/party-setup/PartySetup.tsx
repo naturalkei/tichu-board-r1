@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { For, Show, createMemo, createSignal } from 'solid-js'
+import { For, Show, createMemo, createSignal, type ParentProps } from 'solid-js'
 import { getRandomPlayerName } from '@/domain/defaults'
 import type { Language, Player, PlayerId, Seat, TeamColor, TeamId } from '@/domain/types'
 import { useGame } from '@/state/game-context'
@@ -29,9 +29,27 @@ const teamColorClasses: Record<TeamColor, { chip: string; ring: string; surface:
     surface: 'from-rose-300/18 to-rose-100/4',
     glow: 'shadow-[0_0_0_1px_rgba(253,164,175,0.24),0_18px_50px_rgba(253,164,175,0.14)]',
   },
+  violet: {
+    chip: 'bg-violet-300 text-violet-950',
+    ring: 'ring-violet-300/55',
+    surface: 'from-violet-300/18 to-violet-100/4',
+    glow: 'shadow-[0_0_0_1px_rgba(196,181,253,0.24),0_18px_50px_rgba(196,181,253,0.14)]',
+  },
+  teal: {
+    chip: 'bg-teal-300 text-teal-950',
+    ring: 'ring-teal-300/55',
+    surface: 'from-teal-300/18 to-teal-100/4',
+    glow: 'shadow-[0_0_0_1px_rgba(94,234,212,0.24),0_18px_50px_rgba(94,234,212,0.14)]',
+  },
+  orange: {
+    chip: 'bg-orange-300 text-orange-950',
+    ring: 'ring-orange-300/55',
+    surface: 'from-orange-300/18 to-orange-100/4',
+    glow: 'shadow-[0_0_0_1px_rgba(253,186,116,0.24),0_18px_50px_rgba(253,186,116,0.14)]',
+  },
 }
 
-const teamColorOptions: TeamColor[] = ['amber', 'sky', 'emerald', 'rose']
+const teamColorOptions: TeamColor[] = ['amber', 'sky', 'emerald', 'rose', 'violet', 'teal', 'orange']
 
 const seatLayouts: { seat: Seat; className: string }[] = [
   { seat: 'north', className: 'col-start-2 row-start-1' },
@@ -52,9 +70,16 @@ type EditorDraft = {
   name: string
 }
 
+type TeamEditorDraft = {
+  teamId: TeamId
+  name: string
+  color: TeamColor
+}
+
 export function PartySetup() {
   const { assignPlayerSeat, setTeamColor, setTeamName, state, teamLineups, teamNames, updatePlayerName, t } = useGame()
   const [editorDraft, setEditorDraft] = createSignal<EditorDraft | null>(null)
+  const [teamEditorDraft, setTeamEditorDraft] = createSignal<TeamEditorDraft | null>(null)
   const [errorMessage, setErrorMessage] = createSignal('')
   const [armedPlayerId, setArmedPlayerId] = createSignal<PlayerId | null>(null)
   const [draggingPlayerId, setDraggingPlayerId] = createSignal<PlayerId | null>(null)
@@ -73,6 +98,8 @@ export function PartySetup() {
     const draft = editorDraft()
     return draft ? state.players.find((player) => player.id === draft.playerId) ?? null : null
   })
+
+  const activeTeamEditor = createMemo(() => teamEditorDraft())
 
   const rosterPlayers = createMemo(() =>
     state.players.map((player) => ({
@@ -113,6 +140,18 @@ export function PartySetup() {
   const closeEditor = () => {
     setEditorDraft(null)
     setErrorMessage('')
+  }
+
+  const openTeamEditor = (teamId: TeamId) => {
+    setTeamEditorDraft({
+      teamId,
+      name: teamNames()[teamId],
+      color: state.settings.teamColors[teamId],
+    })
+  }
+
+  const closeTeamEditor = () => {
+    setTeamEditorDraft(null)
   }
 
   const applyNameToSeat = (playerId: PlayerId, nextName: string) => {
@@ -202,6 +241,18 @@ export function PartySetup() {
     closeEditor()
   }
 
+  const commitTeamEditor = () => {
+    const draft = teamEditorDraft()
+
+    if (!draft) {
+      return
+    }
+
+    setTeamName(draft.teamId, draft.name)
+    setTeamColor(draft.teamId, draft.color)
+    closeTeamEditor()
+  }
+
   return (
     <section class="grid gap-4 rounded-4xl border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-5">
       <div class="grid gap-3">
@@ -226,8 +277,7 @@ export function PartySetup() {
             subtitle={() => teamLineups()['north-south']}
             selectedColor={() => state.settings.teamColors['north-south']}
             oppositeColor={() => state.settings.teamColors['east-west']}
-            onSelectColor={setTeamColor}
-            onNameChange={setTeamName}
+            onOpenEditor={openTeamEditor}
           />
           <TeamSetupCard
             teamId="east-west"
@@ -235,8 +285,7 @@ export function PartySetup() {
             subtitle={() => teamLineups()['east-west']}
             selectedColor={() => state.settings.teamColors['east-west']}
             oppositeColor={() => state.settings.teamColors['north-south']}
-            onSelectColor={setTeamColor}
-            onNameChange={setTeamName}
+            onOpenEditor={openTeamEditor}
           />
         </div>
       </div>
@@ -402,19 +451,8 @@ export function PartySetup() {
       </div>
 
       <Show when={editorDraft() && activePlayer()}>
-        <div class="fixed inset-0 z-50 bg-slate-950/78 backdrop-blur-md">
-          <button
-            type="button"
-            class="absolute inset-0"
-            aria-label={t('party.closeEditor')}
-            onClick={closeEditor}
-          />
-
-          <div
-            class="relative z-10 flex min-h-dvh w-full flex-col border-white/12 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] shadow-[0_28px_90px_rgba(0,0,0,0.42)] sm:mx-auto sm:mt-6 sm:min-h-0 sm:max-w-md sm:rounded-4xl sm:border"
-            data-testid="party-editor-dialog"
-          >
-            <div class="flex-1 overflow-y-auto px-5 pb-6 pt-6 sm:p-5">
+        <DialogShell closeLabel={t('party.closeEditor')} onClose={closeEditor} testId="party-editor-dialog">
+          <div class="flex-1 overflow-y-auto px-5 pb-6 pt-6 sm:p-5">
               <div class="flex items-start justify-between gap-3">
                 <div>
                   <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">
@@ -500,26 +538,106 @@ export function PartySetup() {
                   </p>
                 </Show>
               </div>
+          </div>
+
+          <DialogActions
+            primaryLabel={t('party.applyChanges')}
+            secondaryLabel={t('round.cancel')}
+            onPrimary={commitEditor}
+            onSecondary={closeEditor}
+          />
+        </DialogShell>
+      </Show>
+
+      <Show when={activeTeamEditor()}>
+        <DialogShell closeLabel={t('party.closeTeamEditor')} onClose={closeTeamEditor} testId="team-editor-dialog">
+          <div class="flex-1 overflow-y-auto px-5 pb-6 pt-6 sm:p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">
+                  {t('party.teamEditorTitle')}
+                </p>
+                <p class="mt-2 text-sm text-(--color-muted)">
+                  {t('party.teamEditorSubtitle', {
+                    team: activeTeamEditor()!.teamId === 'north-south' ? '1' : '2',
+                  })}
+                </p>
+              </div>
+              <button
+                type="button"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-(--color-fg)"
+                aria-label={t('party.closeTeamEditor')}
+                onClick={closeTeamEditor}
+              >
+                ×
+              </button>
             </div>
 
-            <div class="sticky bottom-0 flex gap-3 border-t border-white/10 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-4 sm:rounded-b-4xl sm:px-5 sm:pb-5">
-                <button
-                  type="button"
-                  class="flex-1 rounded-2xl bg-(--color-accent) px-4 py-3 text-sm font-semibold text-slate-950"
-                  onClick={commitEditor}
-                >
-                  {t('party.applyChanges')}
-                </button>
-                <button
-                  type="button"
-                  class="rounded-2xl border border-white/10 px-4 py-3 text-sm text-(--color-fg)"
-                  onClick={closeEditor}
-                >
-                  {t('round.cancel')}
-                </button>
+            <div class="mt-5 grid gap-5">
+              <label class="grid gap-2 text-sm">
+                <span class="text-(--color-muted)">{t('party.teamNameField')}</span>
+                <input
+                  class="w-full rounded-2xl border border-white/14 bg-slate-950/85 px-4 py-3 text-(--color-fg) outline-none placeholder:text-(--color-muted) focus:border-(--color-accent)"
+                  value={activeTeamEditor()!.name}
+                  onInput={(event) =>
+                    setTeamEditorDraft((current) =>
+                      current ? { ...current, name: event.currentTarget.value } : current,
+                    )
+                  }
+                  data-testid={`team-editor-name-${activeTeamEditor()!.teamId}`}
+                />
+              </label>
+
+              <div class="grid gap-3">
+                <span class="text-sm text-(--color-muted)">{t('party.teamColors')}</span>
+                <div class="grid grid-cols-4 gap-2">
+                  <For each={teamColorOptions}>
+                    {(color) => {
+                      const isDisabled = () =>
+                        color !== activeTeamEditor()!.color &&
+                        color === state.settings.teamColors[activeTeamEditor()!.teamId === 'north-south' ? 'east-west' : 'north-south']
+
+                      return (
+                        <button
+                          type="button"
+                          class={clsx(
+                            'grid gap-2 rounded-2xl border p-3 text-left transition-transform',
+                            teamColorClasses[color].chip,
+                            activeTeamEditor()!.color === color
+                              ? 'border-white shadow-[0_0_0_1px_rgba(255,255,255,0.12)]'
+                              : 'border-transparent',
+                            isDisabled()
+                              ? 'cursor-not-allowed opacity-30'
+                              : 'motion-safe:hover:-translate-y-0.5',
+                          )}
+                          aria-disabled={isDisabled()}
+                          aria-pressed={activeTeamEditor()!.color === color}
+                          disabled={isDisabled()}
+                          data-testid={`team-editor-color-${color}`}
+                          onClick={() =>
+                            setTeamEditorDraft((current) => (current ? { ...current, color } : current))
+                          }
+                        >
+                          <span class="h-3 w-8 rounded-full bg-black/20" />
+                          <span class="text-[11px] font-semibold uppercase tracking-[0.18em]">
+                            {color}
+                          </span>
+                        </button>
+                      )
+                    }}
+                  </For>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+
+          <DialogActions
+            primaryLabel={t('party.applyChanges')}
+            secondaryLabel={t('round.cancel')}
+            onPrimary={commitTeamEditor}
+            onSecondary={closeTeamEditor}
+          />
+        </DialogShell>
       </Show>
     </section>
   )
@@ -545,60 +663,90 @@ function TeamSetupCard(props: {
   subtitle: () => string
   selectedColor: () => TeamColor
   oppositeColor: () => TeamColor
-  onSelectColor: (teamId: TeamId, color: TeamColor) => void
-  onNameChange: (teamId: TeamId, name: string) => void
+  onOpenEditor: (teamId: TeamId) => void
 }) {
   const { t } = useGame()
-  const unavailableColors = createMemo(() => {
-    return Object.fromEntries(
-      teamColorOptions.map((color) => [color, color !== props.selectedColor() && props.oppositeColor() === color]),
-    ) as Record<TeamColor, boolean>
-  })
 
   return (
-    <div
-      class="rounded-3xl border border-white/10 bg-black/10 p-3"
+    <button
+      type="button"
+      class="rounded-3xl border border-white/10 bg-black/10 p-3 text-left transition-transform motion-safe:hover:-translate-y-0.5"
       data-testid={`team-name-${props.teamId}`}
+      onClick={() => props.onOpenEditor(props.teamId)}
     >
       <div class="grid gap-3">
         <div>
-          <input
-            class="w-full border-b border-dashed border-white/18 bg-transparent pb-1 text-sm font-medium text-(--color-fg) outline-none focus:border-(--color-accent)"
-            value={props.label()}
-            data-testid={`team-label-${props.teamId}`}
-            onInput={(event) => props.onNameChange(props.teamId, event.currentTarget.value)}
-          />
+          <p class="text-sm font-medium text-(--color-fg)" data-testid={`team-label-${props.teamId}`}>
+            {props.label()}
+          </p>
           <p class="mt-1 text-[11px] text-(--color-muted)">{props.subtitle()}</p>
         </div>
-        <div class="flex flex-wrap justify-end gap-1">
-          <For each={teamColorOptions}>
-            {(color) => {
-              const isDisabled = () => unavailableColors()[color]
-
-              return (
-                <button
-                  type="button"
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-wrap gap-1.5">
+            <For each={teamColorOptions.slice(0, 4)}>
+              {(color) => (
+                <span
                   class={clsx(
-                    'h-7 w-7 rounded-full border-2 transition-transform',
+                    'h-3 w-3 rounded-full border border-white/10',
                     teamColorClasses[color].chip,
-                    props.selectedColor() === color ? 'border-white' : 'border-transparent',
-                    isDisabled()
-                      ? 'cursor-not-allowed opacity-35'
-                      : 'motion-safe:hover:scale-105',
+                    props.selectedColor() !== color && props.oppositeColor() === color && 'opacity-25',
                   )}
-                  aria-label={`${props.label()} ${color}`}
-                  aria-disabled={isDisabled()}
-                  aria-pressed={props.selectedColor() === color}
-                  data-testid={`team-color-${props.teamId}-${color}`}
-                  disabled={isDisabled()}
-                  title={isDisabled() ? t('party.teamColorUnavailable') : undefined}
-                  onClick={() => props.onSelectColor(props.teamId, color)}
                 />
-              )
-            }}
-          </For>
+              )}
+            </For>
+          </div>
+          <span class="text-[11px] uppercase tracking-[0.18em] text-(--color-muted)">{t('party.editTeam')}</span>
         </div>
       </div>
+    </button>
+  )
+}
+
+function DialogShell(props: ParentProps<{
+  closeLabel: string
+  onClose: () => void
+  testId: string
+}>) {
+  return (
+    <div class="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/82 p-0 backdrop-blur-md sm:items-center sm:p-6">
+      <button
+        type="button"
+        class="absolute inset-0"
+        aria-label={props.closeLabel}
+        onClick={() => props.onClose()}
+      />
+      <div
+        class="relative z-10 flex h-dvh max-h-dvh w-full flex-col overflow-hidden border-white/12 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] shadow-[0_28px_90px_rgba(0,0,0,0.42)] sm:h-auto sm:max-h-[min(100dvh-3rem,42rem)] sm:max-w-md sm:rounded-4xl sm:border"
+        data-testid={props.testId}
+      >
+        {props.children}
+      </div>
+    </div>
+  )
+}
+
+function DialogActions(props: {
+  primaryLabel: string
+  secondaryLabel: string
+  onPrimary: () => void
+  onSecondary: () => void
+}) {
+  return (
+    <div class="sticky bottom-0 flex gap-3 border-t border-white/10 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-4 sm:px-5 sm:pb-5">
+      <button
+        type="button"
+        class="flex-1 rounded-2xl bg-(--color-accent) px-4 py-3 text-sm font-semibold text-slate-950"
+        onClick={() => props.onPrimary()}
+      >
+        {props.primaryLabel}
+      </button>
+      <button
+        type="button"
+        class="rounded-2xl border border-white/10 px-4 py-3 text-sm text-(--color-fg)"
+        onClick={() => props.onSecondary()}
+      >
+        {props.secondaryLabel}
+      </button>
     </div>
   )
 }

@@ -6,7 +6,7 @@ export type TeamId = (typeof TEAM_IDS)[number]
 export type TichuCall = 'none' | 'small' | 'grand'
 export type Language = 'en' | 'ko'
 export type ThemeMode = 'system' | 'light' | 'dark'
-export type TeamColor = 'amber' | 'emerald' | 'sky' | 'rose'
+export type TeamColor = 'amber' | 'emerald' | 'sky' | 'rose' | 'violet' | 'teal' | 'orange'
 
 export type Player = {
   id: PlayerId

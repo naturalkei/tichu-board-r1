@@ -37,11 +37,15 @@ describe('PartySetup', () => {
   it('can rename teams, reroll a unique name, disable used team colors, and block duplicate names', async () => {
     render(() => <App />)
 
-    await fireEvent.input(screen.getByTestId('team-label-north-south'), {
+    await fireEvent.click(screen.getByTestId('team-name-north-south'))
+    await fireEvent.input(screen.getByTestId('team-editor-name-north-south'), {
       target: { value: 'Alpha Team' },
     })
+    await fireEvent.click(screen.getByTestId('team-editor-color-violet'))
+    await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
 
-    expect(screen.getByTestId('team-label-north-south')).toHaveValue('Alpha Team')
+    expect(screen.getByTestId('team-label-north-south')).toHaveTextContent('Alpha Team')
+    expect(screen.getByTestId('team-name-north-south')).toHaveTextContent('Alpha Team')
     expect(screen.getByTestId('bench-recent-Morgan')).toBeInTheDocument()
     expect(screen.getByTestId('bench-recent-Nova')).toBeInTheDocument()
 
@@ -62,17 +66,16 @@ describe('PartySetup', () => {
 
     expect(screen.getByTestId('team-name-north-south')).toHaveTextContent(rerolledName)
 
-    expect(screen.getByTestId('team-color-east-west-amber')).toBeDisabled()
-    expect(screen.getByTestId('team-color-east-west-amber')).toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByTestId('team-color-east-west-sky')).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByTestId('team-color-north-south-amber')).toHaveAttribute('aria-pressed', 'true')
-
-    await fireEvent.click(screen.getByTestId('team-color-east-west-rose'))
+    await fireEvent.click(screen.getByTestId('team-name-east-west'))
+    expect(screen.getByTestId('team-editor-color-violet')).toBeDisabled()
+    expect(screen.getByTestId('team-editor-color-amber')).not.toBeDisabled()
+    expect(screen.getByTestId('team-editor-color-teal')).toBeInTheDocument()
+    expect(screen.getByTestId('team-editor-color-orange')).toBeInTheDocument()
+    await fireEvent.click(screen.getByTestId('team-editor-color-rose'))
+    await fireEvent.click(screen.getByRole('button', { name: /apply changes/i }))
 
     await waitFor(() => {
-      expect(screen.getByTestId('team-color-east-west-rose')).toHaveAttribute('aria-pressed', 'true')
-      expect(screen.getByTestId('team-color-north-south-rose')).toBeDisabled()
-      expect(screen.getByTestId('team-color-north-south-rose')).toHaveAttribute('aria-disabled', 'true')
+      expect(screen.getByTestId('team-name-east-west')).toHaveTextContent('Team 2')
     })
 
     await fireEvent.click(screen.getByTestId('seat-east'))
@@ -90,7 +93,16 @@ describe('PartySetup', () => {
     await fireEvent.click(screen.getByTestId('seat-north'))
 
     expect(screen.getByTestId('party-editor-dialog')).toBeInTheDocument()
-    expect(screen.getByTestId('party-editor-dialog').className).toContain('min-h-dvh')
+    expect(screen.getByTestId('party-editor-dialog').className).toContain('max-h-dvh')
+  })
+
+  it('opens team editing in a dedicated dialog sheet', async () => {
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByTestId('team-name-east-west'))
+
+    expect(screen.getByTestId('team-editor-dialog')).toBeInTheDocument()
+    expect(screen.getByTestId('team-editor-dialog').className).toContain('max-h-dvh')
   })
 
   it('renders large seat overlays for every table target', async () => {
