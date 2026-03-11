@@ -77,7 +77,8 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               onDragOver={(event) => event.preventDefault()}
               onDrop={() => props.onSeatAssign(entry.seat)}
               data-testid={`seat-${entry.seat}`}
-              >
+              data-seat-id={entry.seat}
+            >
               <div class={clsx('pointer-events-none absolute inset-0 bg-linear-to-br opacity-70', colors.surface)} />
               <span
                 class="pointer-events-none absolute inset-0 flex items-center justify-center text-[clamp(3.5rem,20vw,5.25rem)] font-black tracking-[-0.08em] text-white/6"

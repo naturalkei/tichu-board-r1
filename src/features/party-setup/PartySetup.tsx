@@ -54,6 +54,7 @@ export function PartySetup() {
         onArmPlayer={controller.armPlayer}
         onDragPlayerStart={controller.startDraggingPlayer}
         onDragPlayerEnd={controller.stopDraggingPlayer}
+        onDragPlayerDrop={controller.handleSeatAssign}
         onRecentNameClick={controller.selectRecentName}
         onRecentNameDragStart={controller.startDraggingRecentName}
         onRecentNameDragEnd={controller.stopDraggingRecentName}
