@@ -151,7 +151,7 @@ function AppContent() {
           'mx-auto flex w-full max-w-6xl flex-col px-4 sm:px-6 lg:px-8',
           isStartRoute()
             ? 'h-dvh overflow-hidden py-4 sm:py-5'
-            : 'min-h-screen gap-4 py-6 pb-[calc(env(safe-area-inset-bottom)+4.75rem)] sm:py-8',
+            : 'min-h-screen gap-4 py-6 sm:py-8',
         )}
       >
         <Show
@@ -185,7 +185,7 @@ function AppContent() {
           <div
             ref={creditFooterRef}
             data-testid="bottom-credit"
-            class="flex min-h-[calc(env(safe-area-inset-bottom)+2.75rem)] items-end justify-center pb-[calc(env(safe-area-inset-bottom)+0.2rem)] pt-1"
+            class="flex  items-end justify-center py-1"
           >
             <p class="text-[10px] font-medium uppercase tracking-[0.18em] text-(--color-muted)/70">
               {t('app.credit')}
