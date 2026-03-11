@@ -9,6 +9,7 @@ import { usePartySetupController } from './use-party-setup-controller'
 export function PartySetup() {
   const controller = usePartySetupController()
   let seatMapContainerRef: HTMLDivElement | undefined
+  const seatMapScrollMargin = 12
 
   createEffect(() => {
     const armedPlayerId = controller.armedPlayerId()
@@ -19,8 +20,12 @@ export function PartySetup() {
     }
 
     const { top, bottom } = seatMapElement.getBoundingClientRect()
+    const bottomDock = document.querySelector<HTMLElement>('[data-testid="game-tab-bar"]')
+    const dockTop = bottomDock?.getBoundingClientRect().top ?? window.innerHeight
     const viewportHeight = window.innerHeight
-    const isFullyVisible = top >= 0 && bottom <= viewportHeight
+    const visibleTop = seatMapScrollMargin
+    const visibleBottom = Math.min(viewportHeight, dockTop) - seatMapScrollMargin
+    const isFullyVisible = top >= visibleTop && bottom <= visibleBottom
 
     if (isFullyVisible) {
       return
@@ -29,9 +34,23 @@ export function PartySetup() {
     const prefersReducedMotion =
       typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    seatMapElement.scrollIntoView({
+    const currentScrollTop = window.scrollY ?? window.pageYOffset ?? 0
+    const overflowBottom = bottom - visibleBottom
+    const overflowTop = visibleTop - top
+    const nextScrollTop =
+      overflowBottom > 0
+        ? currentScrollTop + overflowBottom
+        : overflowTop > 0
+          ? Math.max(0, currentScrollTop - overflowTop)
+          : currentScrollTop
+
+    if (nextScrollTop === currentScrollTop) {
+      return
+    }
+
+    window.scrollTo({
+      top: nextScrollTop,
       behavior: prefersReducedMotion ? 'auto' : 'smooth',
-      block: 'center',
     })
   })
 

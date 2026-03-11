@@ -3,9 +3,12 @@ import App from '@/App'
 import { seedStartedGameState } from '@/test/game-state'
 
 describe('PartySetup', () => {
+  const originalScrollTo = window.scrollTo
+
   beforeEach(() => {
     localStorage.clear()
     seedStartedGameState('party')
+    window.scrollTo = vi.fn()
     const value = localStorage.getItem('tichu-board-r1:v1')
 
     if (value) {
@@ -13,6 +16,10 @@ describe('PartySetup', () => {
       nextState.recentPlayerNames = ['Morgan', 'Nova', 'Riley', 'Jordan', 'Casey', 'Taylor']
       localStorage.setItem('tichu-board-r1:v1', JSON.stringify(nextState))
     }
+  })
+
+  afterEach(() => {
+    window.scrollTo = originalScrollTo
   })
 
   it('updates player names and reassigns seats from the player bench', async () => {
@@ -226,17 +233,21 @@ describe('PartySetup', () => {
     expect(screen.queryByRole('button', { name: /clear/i })).not.toBeInTheDocument()
   })
 
-  it('smoothly scrolls the seat map into view when seat move mode starts off-screen', async () => {
+  it('scrolls the seat map just above the bottom dock when seat move mode starts off-screen', async () => {
     render(() => <App />)
 
     const seatMapAnchor = screen.getByTestId('seat-map-scroll-anchor')
+    const gameTabBar = screen.getByTestId('game-tab-bar')
     const originalInnerHeight = window.innerHeight
+    const originalScrollY = window.scrollY
     const originalMatchMedia = window.matchMedia
-    const originalScrollIntoView = seatMapAnchor.scrollIntoView
-
     Object.defineProperty(window, 'innerHeight', {
       configurable: true,
       value: 700,
+    })
+    Object.defineProperty(window, 'scrollY', {
+      configurable: true,
+      value: 120,
     })
     window.matchMedia = vi.fn().mockImplementation((query: string) => ({
       matches: false,
@@ -260,20 +271,35 @@ describe('PartySetup', () => {
         y: 520,
         toJSON: () => ({}),
       }) as DOMRect
-    seatMapAnchor.scrollIntoView = vi.fn()
+    gameTabBar.getBoundingClientRect = () =>
+      ({
+        top: 640,
+        bottom: 736,
+        left: 0,
+        right: 390,
+        width: 390,
+        height: 96,
+        x: 0,
+        y: 640,
+        toJSON: () => ({}),
+      }) as DOMRect
+    window.scrollTo = vi.fn()
 
     await fireEvent.click(screen.getByTestId('bench-player-player-1'))
 
-    expect(seatMapAnchor.scrollIntoView).toHaveBeenCalledWith({
+    expect(window.scrollTo).toHaveBeenCalledWith({
+      top: 412,
       behavior: 'smooth',
-      block: 'center',
     })
 
     Object.defineProperty(window, 'innerHeight', {
       configurable: true,
       value: originalInnerHeight,
     })
+    Object.defineProperty(window, 'scrollY', {
+      configurable: true,
+      value: originalScrollY,
+    })
     window.matchMedia = originalMatchMedia
-    seatMapAnchor.scrollIntoView = originalScrollIntoView
   })
 })

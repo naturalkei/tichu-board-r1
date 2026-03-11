@@ -32,6 +32,7 @@ export function GameTabBar(props: GameTabBarProps) {
   return (
     <nav
       aria-label={t('nav.label')}
+      data-testid="game-tab-bar"
       class={clsx(
         'sticky bottom-4 z-20',
         'rounded-4xl border border-white/10',
