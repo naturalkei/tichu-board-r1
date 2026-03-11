@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { BrandLogo } from '../../shared/BrandLogo'
 import { useGame } from '../../state/game-context'
 
@@ -9,7 +10,15 @@ export function ApplicationControlBar(props: ApplicationControlBarProps) {
   const { t } = useGame()
 
   return (
-    <header class="sticky top-4 z-20 rounded-[1.8rem] border border-white/10 bg-[color-mix(in_srgb,var(--color-surface)_82%,transparent)] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.2)] backdrop-blur-xl motion-safe:animate-[fade-in_220ms_ease-out]">
+    <header
+      class={clsx(
+        'sticky top-4 z-20',
+        'rounded-[1.8rem] border border-white/10',
+        'bg-[color-mix(in_srgb,var(--color-surface)_82%,transparent)]',
+        'p-3 shadow-[0_20px_60px_rgba(0,0,0,0.2)] backdrop-blur-xl',
+        'motion-safe:animate-[fade-in_220ms_ease-out]',
+      )}
+    >
       <div class="flex items-center gap-3">
         <div class="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-slate-950/35 shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
           <BrandLogo class="h-8 w-8" />
@@ -20,7 +29,13 @@ export function ApplicationControlBar(props: ApplicationControlBarProps) {
             <p class="truncate text-sm font-semibold tracking-[0.08em] text-(--color-fg)">
               {t('app.title')}
             </p>
-            <span class="rounded-full border border-white/10 bg-white/8 px-2 py-0.5 text-[10px] uppercase tracking-[0.22em] text-(--color-accent)">
+            <span
+              class={clsx(
+                'rounded-full border border-white/10 bg-white/8',
+                'px-2 py-0.5 text-[10px] uppercase tracking-[0.22em]',
+                'text-(--color-accent)',
+              )}
+            >
               {t('app.badge')}
             </span>
           </div>
@@ -29,7 +44,13 @@ export function ApplicationControlBar(props: ApplicationControlBarProps) {
 
         <button
           type="button"
-          class="inline-flex h-11 min-w-11 items-center justify-center rounded-full border border-white/10 bg-slate-950/35 px-4 text-sm font-medium text-(--color-fg) transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5"
+          class={clsx(
+            'inline-flex h-11 min-w-11 items-center justify-center rounded-full',
+            'border border-white/10 bg-slate-950/35 px-4',
+            'text-sm font-medium text-(--color-fg)',
+            'transition-transform duration-200 ease-out',
+            'motion-safe:hover:-translate-y-0.5',
+          )}
           aria-label={t('settings.open')}
           onClick={() => props.onOpenSettings()}
         >

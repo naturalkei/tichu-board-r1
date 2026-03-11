@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { For, Show } from 'solid-js'
 import { useGame } from '../../state/game-context'
 import type { TeamId } from '../../domain/types'
@@ -142,11 +143,13 @@ function TeamTotalCard(props: {
 
   return (
     <article
-      class={`rounded-[1.6rem] border p-4 transition-transform duration-200 motion-safe:hover:-translate-y-0.5 ${
+      class={clsx(
+        'rounded-[1.6rem] border p-4',
+        'transition-transform duration-200 motion-safe:hover:-translate-y-0.5',
         props.isLeading
           ? 'border-amber-300/40 bg-amber-300/10'
-          : 'border-white/10 bg-(--color-surface)'
-      }`}
+          : 'border-white/10 bg-(--color-surface)',
+      )}
       data-testid={`team-total-${props.teamId}`}
     >
       <div class="flex items-start justify-between gap-3">
@@ -170,11 +173,12 @@ function TeamTotalCard(props: {
 function Banner(props: { children: string; tone: 'amber' | 'emerald' }) {
   return (
     <div
-      class={`rounded-3xl border px-4 py-3 text-sm ${
+      class={clsx(
+        'rounded-3xl border px-4 py-3 text-sm',
         props.tone === 'amber'
           ? 'border-amber-300/35 bg-amber-300/10 text-amber-50'
-          : 'border-emerald-300/35 bg-emerald-300/10 text-emerald-50'
-      }`}
+          : 'border-emerald-300/35 bg-emerald-300/10 text-emerald-50',
+      )}
     >
       {props.children}
     </div>

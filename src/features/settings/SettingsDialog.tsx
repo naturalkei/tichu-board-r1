@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { For, Show } from 'solid-js'
 import type { ThemeMode } from '../../domain/types'
 import { useGame } from '../../state/game-context'
@@ -26,7 +27,11 @@ export function SettingsDialog(props: SettingsDialogProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="settings-dialog-title"
-          class="relative z-10 w-full max-w-md rounded-4xl border border-white/10 bg-(--color-surface) p-5 shadow-[0_28px_90px_rgba(0,0,0,0.3)] motion-safe:animate-[fade-in_180ms_ease-out] sm:p-6"
+          class={clsx(
+            'relative z-10 w-full max-w-md rounded-4xl border border-white/10',
+            'bg-(--color-surface) p-5 shadow-[0_28px_90px_rgba(0,0,0,0.3)]',
+            'motion-safe:animate-[fade-in_180ms_ease-out] sm:p-6',
+          )}
         >
           <div class="flex items-start justify-between gap-4">
             <div>
@@ -120,11 +125,12 @@ function OptionButton(props: { isActive: boolean; label: string; onClick: () => 
   return (
     <button
       type="button"
-      class={`rounded-2xl px-4 py-3 text-sm transition-colors ${
+      class={clsx(
+        'rounded-2xl px-4 py-3 text-sm transition-colors',
         props.isActive
           ? 'bg-(--color-accent) text-slate-950'
-          : 'border border-white/10 bg-black/15 text-(--color-fg)'
-      }`}
+          : 'border border-white/10 bg-black/15 text-(--color-fg)',
+      )}
       onClick={() => props.onClick()}
     >
       {props.label}
