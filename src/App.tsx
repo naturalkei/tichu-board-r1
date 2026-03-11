@@ -11,14 +11,20 @@ import { SettingsDialog } from '@/features/settings/SettingsDialog'
 import { GameProvider, useGame } from '@/state/game-context'
 import {
   getDefaultRoute,
+  inGameRoutes,
+  isInGameRoute,
   getPathForRoute,
   type InGameRoute,
 } from '@/shared/routes'
+
+type PageTransitionDirection = 'forward' | 'backward' | 'none'
 
 function AppContent() {
   const { state } = useGame()
   const [editingRoundId, setEditingRoundId] = createSignal<string | null>(null)
   const [isSettingsOpen, setIsSettingsOpen] = createSignal(false)
+  const [pageTransitionDirection, setPageTransitionDirection] = createSignal<PageTransitionDirection>('none')
+  const [pageTransitionKey, setPageTransitionKey] = createSignal(0)
   const { route, navigate, syncRouteFromLocation } = useAppNavigation(() => state.hasStartedGame)
   const currentGameRoute = (): InGameRoute => (route() === 'start' ? 'party' : route()) as InGameRoute
   const isStartRoute = () => route() === 'start'
@@ -46,6 +52,24 @@ function AppContent() {
     }
   })
 
+  createEffect((previousRoute?: string) => {
+    const nextRoute = route()
+
+    if (
+      previousRoute &&
+      isInGameRoute(previousRoute as typeof nextRoute) &&
+      isInGameRoute(nextRoute) &&
+      previousRoute !== nextRoute
+    ) {
+      const previousIndex = inGameRoutes.indexOf(previousRoute as InGameRoute)
+      const nextIndex = inGameRoutes.indexOf(nextRoute)
+      setPageTransitionDirection(nextIndex > previousIndex ? 'forward' : 'backward')
+      setPageTransitionKey((current) => current + 1)
+    }
+
+    return nextRoute
+  })
+
   return (
     <main
       class={clsx(
@@ -71,6 +95,8 @@ function AppContent() {
           <div class="min-h-[calc(100vh-15rem)]" data-testid={`page-${route()}`}>
             <GameplayPages
               route={currentGameRoute()}
+              transitionDirection={pageTransitionDirection()}
+              transitionKey={pageTransitionKey()}
               editingRoundId={editingRoundId()}
               onEditingRoundIdChange={setEditingRoundId}
               onEditRound={(roundId) => {
