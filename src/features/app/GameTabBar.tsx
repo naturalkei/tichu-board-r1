@@ -1,8 +1,8 @@
-import clsx from 'clsx'
-import { For } from 'solid-js'
 import type { InGameRoute } from '@/shared/routes'
 import { inGameRoutes } from '@/shared/routes'
 import { useGame } from '@/state/game-context'
+import clsx from 'clsx'
+import { For } from 'solid-js'
 
 type GameTabBarProps = {
   activeRoute: InGameRoute
@@ -58,9 +58,9 @@ export function GameTabBar(props: GameTabBarProps) {
               <div
                 class={clsx(
                   'grid h-full w-full place-items-center rounded-[1.35rem] pb-3 transition-all duration-200',
-                  route !== 'settings' && props.activeRoute === route
-                    ? 'bg-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
-                    : 'bg-white/4 group-hover:bg-white/7',
+                  // route !== 'settings' && props.activeRoute === route
+                  //   ? 'bg-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                  //   : 'bg-white/4 group-hover:bg-white/7',
                 )}
               >
                 <TabGlyph
