@@ -34,10 +34,10 @@ const teamColorClasses: Record<TeamColor, { chip: string; ring: string; surface:
 const teamColorOptions: TeamColor[] = ['amber', 'sky', 'emerald', 'rose']
 
 const seatLayouts: { seat: Seat; className: string }[] = [
-  { seat: 'north', className: 'col-start-2 row-start-1' },
-  { seat: 'west', className: 'col-start-1 row-start-2' },
-  { seat: 'east', className: 'col-start-3 row-start-2' },
-  { seat: 'south', className: 'col-start-2 row-start-3' },
+  { seat: 'north', className: 'col-start-1 row-start-1 sm:col-start-2 sm:row-start-1' },
+  { seat: 'east', className: 'col-start-2 row-start-1 sm:col-start-3 sm:row-start-2' },
+  { seat: 'west', className: 'col-start-1 row-start-2 sm:col-start-1 sm:row-start-2' },
+  { seat: 'south', className: 'col-start-2 row-start-2 sm:col-start-2 sm:row-start-3' },
 ]
 
 type EditorDraft = {
@@ -47,8 +47,6 @@ type EditorDraft = {
 
 export function PartySetup() {
   const { setTeamColor, state, swapPlayerSeats, teamNames, updatePlayerName, t } = useGame()
-  const [draggingPlayerId, setDraggingPlayerId] = createSignal<PlayerId | null>(null)
-  const [draggingRecentName, setDraggingRecentName] = createSignal<string | null>(null)
   const [editorDraft, setEditorDraft] = createSignal<EditorDraft | null>(null)
   const [errorMessage, setErrorMessage] = createSignal('')
   const [seatMoveSourceId, setSeatMoveSourceId] = createSignal<PlayerId | null>(null)
@@ -99,8 +97,6 @@ export function PartySetup() {
       playerId: player.id,
       name: player.name,
     })
-    setSeatMoveSourceId(null)
-    setPendingRecentName(null)
     setErrorMessage('')
   }
 
@@ -133,9 +129,7 @@ export function PartySetup() {
 
   const handleSeatAction = (player: Player) => {
     if (pendingRecentName()) {
-      const nextName = pendingRecentName()!
-
-      if (applyNameToSeat(player.id, nextName)) {
+      if (applyNameToSeat(player.id, pendingRecentName()!)) {
         setPendingRecentName(null)
       }
 
@@ -152,22 +146,6 @@ export function PartySetup() {
     }
 
     openEditor(player)
-  }
-
-  const handleSeatDrop = (targetPlayerId: PlayerId) => {
-    const sourcePlayerId = draggingPlayerId()
-    const recentName = draggingRecentName()
-
-    if (sourcePlayerId && sourcePlayerId !== targetPlayerId) {
-      swapPlayerSeats(sourcePlayerId, targetPlayerId)
-    }
-
-    if (recentName) {
-      applyNameToSeat(targetPlayerId, recentName)
-    }
-
-    setDraggingPlayerId(null)
-    setDraggingRecentName(null)
   }
 
   const applyRecentName = (name: string) => {
@@ -214,62 +192,30 @@ export function PartySetup() {
           </Show>
         </div>
 
-        <Show when={recentNames().length > 0}>
-          <div class="grid gap-2 rounded-3xl border border-white/10 bg-black/12 p-3">
-            <div class="flex items-center justify-between gap-2">
-              <p class="text-[11px] uppercase tracking-[0.22em] text-(--color-muted)">
-                {t('party.recentPlayers')}
-              </p>
-              <p class="text-[11px] text-(--color-muted)">{t('party.recentPlayersHint')}</p>
-            </div>
-            <div class="flex snap-x gap-2 overflow-x-auto pb-1">
-              <For each={recentNames()}>
-                {(name) => (
-                  <button
-                    type="button"
-                    class={clsx(
-                      'shrink-0 snap-start rounded-full border px-3 py-2 text-sm transition-colors',
-                      pendingRecentName() === name
-                        ? 'border-(--color-accent) bg-(--color-accent) text-slate-950'
-                        : 'border-white/10 bg-black/15 text-(--color-fg)',
-                    )}
-                    draggable="true"
-                    onClick={() => applyRecentName(name)}
-                    onDragStart={() => setDraggingRecentName(name)}
-                    onDragEnd={() => setDraggingRecentName(null)}
-                  >
-                    {name}
-                  </button>
-                )}
-              </For>
-            </div>
-          </div>
-        </Show>
-
         <div class="grid gap-2 sm:grid-cols-2">
-          <TeamColorPicker
+          <TeamSetupCard
             teamId="north-south"
             label={teamNames()['north-south']}
             subtitle={t('teams.northSouth')}
             selectedColor={state.settings.teamColors['north-south']}
-            onSelect={setTeamColor}
+            onSelectColor={setTeamColor}
           />
-          <TeamColorPicker
+          <TeamSetupCard
             teamId="east-west"
             label={teamNames()['east-west']}
             subtitle={t('teams.eastWest')}
             selectedColor={state.settings.teamColors['east-west']}
-            onSelect={setTeamColor}
+            onSelectColor={setTeamColor}
           />
         </div>
       </div>
 
       <div
-        class="grid min-h-96 grid-cols-[minmax(0,1fr)_5.5rem_minmax(0,1fr)] grid-rows-[auto_minmax(6.5rem,1fr)_auto] gap-3"
+        class="grid min-h-80 grid-cols-2 grid-rows-2 gap-3 sm:min-h-96 sm:grid-cols-[minmax(0,1fr)_5.5rem_minmax(0,1fr)] sm:grid-rows-[auto_minmax(6.5rem,1fr)_auto]"
         aria-label={t('party.tableLabel')}
       >
-        <div class="col-start-2 row-start-2 flex items-center justify-center">
-          <div class="flex h-full min-h-36 w-full items-center justify-center rounded-[2.4rem] border border-white/12 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.24),rgba(15,23,42,0.92))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+        <div class="hidden sm:col-start-2 sm:row-start-2 sm:flex sm:items-center sm:justify-center">
+          <div class="flex h-full min-h-36 w-full items-center justify-center rounded-5xl border border-white/12 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.24),rgba(15,23,42,0.92))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             <div class="grid gap-3">
               <p class="text-[10px] uppercase tracking-[0.26em] text-(--color-accent)">
                 {t('party.tableCenter')}
@@ -292,23 +238,18 @@ export function PartySetup() {
                 type="button"
                 class={clsx(
                   entry.className,
-                  'relative flex min-h-24 flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-(--color-surface) p-3 text-left',
+                  'relative flex min-h-28 flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-(--color-surface) p-3 text-left',
                   'ring-1 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5',
                   colors.ring,
                   colors.glow,
-                  isMovingSource && 'scale-[1.02] border-(--color-accent) ring-(--color-accent)',
+                  isMovingSource && 'border-(--color-accent) ring-(--color-accent)',
                   isRecentTarget && 'border-dashed',
                 )}
-                draggable="true"
                 aria-label={t('party.seatAction', {
                   seat: t(`seats.${entry.player.seat}`),
                   name: entry.player.name,
                 })}
                 onClick={() => handleSeatAction(entry.player)}
-                onDragStart={() => setDraggingPlayerId(entry.player.id)}
-                onDragEnd={() => setDraggingPlayerId(null)}
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={() => handleSeatDrop(entry.player.id)}
                 data-testid={`seat-${entry.player.seat}`}
               >
                 <div
@@ -340,6 +281,35 @@ export function PartySetup() {
           }}
         </For>
       </div>
+
+      <Show when={recentNames().length > 0}>
+        <div class="grid gap-2 rounded-3xl border border-white/10 bg-black/12 p-3">
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-[11px] uppercase tracking-[0.22em] text-(--color-muted)">
+              {t('party.recentPlayers')}
+            </p>
+            <p class="text-[11px] text-(--color-muted)">{t('party.recentPlayersHint')}</p>
+          </div>
+          <div class="flex snap-x gap-2 overflow-x-auto pb-1">
+            <For each={recentNames()}>
+              {(name) => (
+                <button
+                  type="button"
+                  class={clsx(
+                    'shrink-0 snap-start rounded-full border px-3 py-2 text-sm transition-colors',
+                    pendingRecentName() === name
+                      ? 'border-(--color-accent) bg-(--color-accent) text-slate-950'
+                      : 'border-white/10 bg-black/15 text-(--color-fg)',
+                  )}
+                  onClick={() => applyRecentName(name)}
+                >
+                  {name}
+                </button>
+              )}
+            </For>
+          </div>
+        </div>
+      </Show>
 
       <Show when={editorDraft() && activePlayer()}>
         <div class="fixed inset-0 z-40 flex items-end bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center sm:justify-center">
@@ -410,6 +380,7 @@ export function PartySetup() {
                     class="rounded-full border border-white/10 bg-black/15 px-3 py-2 text-sm text-(--color-fg)"
                     onClick={() => {
                       setSeatMoveSourceId(activePlayer()!.id)
+                      setPendingRecentName(null)
                       closeEditor()
                     }}
                   >
@@ -482,7 +453,7 @@ function TeamPill(props: { teamId: TeamId; label: string; subtitle: string }) {
         'rounded-3xl border border-white/10 px-3 py-2 text-left',
         teamColorClasses[state.settings.teamColors[props.teamId]].surface,
       )}
-      data-testid={`team-name-${props.teamId}`}
+      data-testid={`team-pill-${props.teamId}`}
     >
       <div class="flex items-center gap-2">
         <TeamBadge teamId={props.teamId} />
@@ -495,34 +466,41 @@ function TeamPill(props: { teamId: TeamId; label: string; subtitle: string }) {
   )
 }
 
-function TeamColorPicker(props: {
+function TeamSetupCard(props: {
   teamId: TeamId
   label: string
   subtitle: string
   selectedColor: TeamColor
-  onSelect: (teamId: TeamId, color: TeamColor) => void
+  onSelectColor: (teamId: TeamId, color: TeamColor) => void
 }) {
   return (
-    <div class="rounded-3xl border border-white/10 bg-black/10 p-3">
-      <p class="text-sm font-medium text-(--color-fg)">{props.label}</p>
-      <p class="mt-1 text-[11px] uppercase tracking-[0.18em] text-(--color-muted)">{props.subtitle}</p>
-      <div class="mt-3 flex flex-wrap gap-2">
-        <For each={teamColorOptions}>
-          {(color) => (
-            <button
-              type="button"
-              class={clsx(
-                'h-8 w-8 rounded-full border-2 transition-transform motion-safe:hover:scale-105',
-                teamColorClasses[color].chip,
-                props.selectedColor === color ? 'border-white' : 'border-transparent',
-              )}
-              aria-label={`${props.label} ${color}`}
-              aria-pressed={props.selectedColor === color}
-              data-testid={`team-color-${props.teamId}-${color}`}
-              onClick={() => props.onSelect(props.teamId, color)}
-            />
-          )}
-        </For>
+    <div
+      class="rounded-3xl border border-white/10 bg-black/10 p-3"
+      data-testid={`team-name-${props.teamId}`}
+    >
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <p class="text-sm font-medium text-(--color-fg)">{props.label}</p>
+          <p class="mt-1 text-[11px] uppercase tracking-[0.18em] text-(--color-muted)">{props.subtitle}</p>
+        </div>
+        <div class="flex flex-wrap justify-end gap-1">
+          <For each={teamColorOptions}>
+            {(color) => (
+              <button
+                type="button"
+                class={clsx(
+                  'h-7 w-7 rounded-full border-2 transition-transform motion-safe:hover:scale-105',
+                  teamColorClasses[color].chip,
+                  props.selectedColor === color ? 'border-white' : 'border-transparent',
+                )}
+                aria-label={`${props.label} ${color}`}
+                aria-pressed={props.selectedColor === color}
+                data-testid={`team-color-${props.teamId}-${color}`}
+                onClick={() => props.onSelectColor(props.teamId, color)}
+              />
+            )}
+          </For>
+        </div>
       </div>
     </div>
   )

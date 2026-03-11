@@ -61,7 +61,7 @@ const dictionaries = {
     party: {
       hint: 'Drag cards or use the seat picker to keep names fixed while swapping chairs.',
       hintCompact:
-        'Tap a seat to edit, tap-to-move on touch devices, or drag on desktop while keeping the tabletop clear.',
+        'Tap a seat to edit, use tap-to-swap for seat moves, and keep recent player picks on the bench below.',
       nameLabel: '{{ seat }} player name',
       nameField: 'Player name',
       rerollName: 'Reroll random name',
@@ -71,7 +71,7 @@ const dictionaries = {
       tableLabel: 'Table overview',
       tableCenter: 'Tabletop setup',
       teamLabel: 'Team {{ team }}',
-      tapToEdit: 'Tap to edit or drag to swap',
+      tapToEdit: 'Tap to edit',
       tapTargetSeat: 'Tap another seat to swap',
       recentPlayers: 'Recent players',
       recentPlayersHint: 'Drag onto a seat or tap then choose a seat',
@@ -215,7 +215,7 @@ const dictionaries = {
     party: {
       hint: '카드를 드래그하거나 자리 선택기를 사용해 이름을 유지한 채 좌석을 바꿀 수 있습니다.',
       hintCompact:
-        '좌석을 눌러 수정하고, 터치에서는 탭 이동으로, 데스크톱에서는 드래그로 자리를 바꾸며 테이블을 간결하게 유지하세요.',
+        '좌석을 눌러 수정하고, 탭으로 자리를 교체하며, 최근 플레이어 벤치로 빠르게 이름을 적용하세요.',
       nameLabel: '{{ seat }} 플레이어 이름',
       nameField: '플레이어 이름',
       rerollName: '랜덤 이름 다시 뽑기',
@@ -225,7 +225,7 @@ const dictionaries = {
       tableLabel: '테이블 개요',
       tableCenter: '테이블탑 배치',
       teamLabel: '{{ team }} 팀',
-      tapToEdit: '눌러서 수정하거나 드래그로 자리 교체',
+      tapToEdit: '눌러서 수정',
       tapTargetSeat: '다른 좌석을 눌러 자리 교체',
       recentPlayers: '최근 플레이어',
       recentPlayersHint: '좌석에 드래그하거나 이름을 탭한 뒤 좌석을 선택',
