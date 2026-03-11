@@ -11,10 +11,10 @@ type GameTabBarProps = {
 }
 
 const tabButtonBaseClass =
-  'group relative flex min-h-21 min-w-0 flex-col items-center justify-center gap-1.5 rounded-3xl px-2 py-2.5 text-center transition-all duration-200 ease-out'
+  'group relative flex aspect-square min-w-0 items-center justify-center rounded-3xl p-1.5 text-center transition-all duration-200 ease-out'
 
 const tabLabelClass =
-  'max-w-full truncate text-[10px] font-semibold tracking-[0.08em] text-current/72 transition-opacity duration-200'
+  'pointer-events-none absolute bottom-1.5 left-1/2 max-w-[90%] -translate-x-1/2 truncate text-[8px] font-semibold uppercase tracking-[0.14em] text-current/68 transition-opacity duration-200'
 
 export function GameTabBar(props: GameTabBarProps) {
   const { t } = useGame()
@@ -28,7 +28,7 @@ export function GameTabBar(props: GameTabBarProps) {
         'sticky bottom-4 z-20',
         'rounded-4xl border border-white/10',
         'bg-[color-mix(in_srgb,var(--color-surface)_84%,transparent)]',
-        'px-2 py-2 shadow-[0_22px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl',
+        'px-1.5 py-1.5 shadow-[0_22px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl',
       )}
     >
       <div class="grid grid-cols-5 gap-2" data-testid="game-tab-grid">
@@ -41,8 +41,8 @@ export function GameTabBar(props: GameTabBarProps) {
                 tabButtonBaseClass,
                 'border border-white/8 bg-black/14 text-(--color-fg)',
                 route !== 'settings' && props.activeRoute === route
-                  ? 'border-amber-200/55 bg-[linear-gradient(180deg,rgba(255,191,105,0.98),rgba(255,160,84,0.92))] text-[#1c1203] shadow-[0_0_0_1px_rgba(255,224,176,0.26),0_16px_30px_rgba(255,191,105,0.34)] ring-2 ring-amber-100/28'
-                  : 'motion-safe:hover:-translate-y-0.5 motion-safe:hover:bg-black/18',
+                  ? 'border-amber-100/60 bg-[linear-gradient(180deg,rgba(255,191,105,1),rgba(255,154,81,0.94))] text-[#1c1203] shadow-[0_0_0_1px_rgba(255,240,204,0.32),0_18px_34px_rgba(255,191,105,0.38)] ring-2 ring-amber-100/34'
+                  : 'motion-safe:hover:-translate-y-0.5 motion-safe:hover:bg-black/18 dark:border-white/10 dark:bg-white/5',
               )}
               aria-current={route !== 'settings' && props.activeRoute === route ? 'page' : undefined}
               aria-label={route === 'settings' ? t('settings.open') : t(`nav.${route}`)}
@@ -54,10 +54,10 @@ export function GameTabBar(props: GameTabBarProps) {
 
                 props.onNavigate(route)
               }}
-            >
+              >
               <div
                 class={clsx(
-                  'grid h-10 w-10 place-items-center rounded-2xl transition-all duration-200',
+                  'grid h-full w-full place-items-center rounded-[1.35rem] pb-3 transition-all duration-200',
                   route !== 'settings' && props.activeRoute === route
                     ? 'bg-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
                     : 'bg-white/4 group-hover:bg-white/7',
@@ -67,17 +67,17 @@ export function GameTabBar(props: GameTabBarProps) {
                   route={route}
                   active={route !== 'settings' && props.activeRoute === route}
                   class={clsx(
-                    'h-8 w-8 transition-transform duration-200',
-                    route === 'settings' ? 'h-7.5 w-7.5' : '',
+                    'h-11 w-11 transition-transform duration-200',
+                    route === 'settings' ? 'h-10.5 w-10.5' : '',
                     route !== 'settings' && props.activeRoute === route
-                      ? 'scale-110'
-                      : 'text-current/88 group-active:scale-95',
+                      ? 'scale-108'
+                      : 'text-current/90 group-active:scale-95',
                   )}
                 />
               </div>
               <span class={clsx(
                 tabLabelClass,
-                route !== 'settings' && props.activeRoute === route ? 'opacity-100' : 'opacity-78',
+                route !== 'settings' && props.activeRoute === route ? 'opacity-100' : 'opacity-68',
               )}>
                 {route === 'settings' ? t('nav.settings') : t(`nav.${route}`)}
               </span>

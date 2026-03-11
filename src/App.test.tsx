@@ -58,6 +58,7 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: /game results/i })).toBeInTheDocument()
     expect(window.location.pathname).toBe(getPathForRoute('results'))
     expect(screen.getByTestId('game-tab-grid').className).toContain('grid-cols-5')
+    expect(screen.getByTestId('game-tab-results').className).toContain('aspect-square')
     expect(screen.getByTestId('game-tab-results').className).toContain('ring-2')
   })
 
