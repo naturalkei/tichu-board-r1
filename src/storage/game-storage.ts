@@ -1,7 +1,8 @@
 import { createDefaultPlayers, createDefaultSettings } from '@/domain/defaults'
-import type { PersistedGameState } from '@/domain/types'
+import type { GameSettings, PersistedGameState } from '@/domain/types'
 
 export const STORAGE_KEY = 'tichu-board-r1:v1'
+export const SETTINGS_STORAGE_KEY = 'tichu-board-r1:settings:v1'
 export const CURRENT_SCHEMA_VERSION = 1 as const
 
 export function createInitialGameState(): PersistedGameState {
@@ -41,20 +42,32 @@ export function migratePersistedState(value: unknown): PersistedGameState | null
       ? value.recentPlayerNames.filter((name): name is string => typeof name === 'string').slice(0, 12)
       : [],
     settings: {
-      ...createDefaultSettings(),
-      ...(value.settings as PersistedGameState['settings']),
-      teamColors: {
-        ...createDefaultSettings().teamColors,
-        ...(isRecord((value.settings as PersistedGameState['settings']).teamColors)
-          ? ((value.settings as PersistedGameState['settings']).teamColors as PersistedGameState['settings']['teamColors'])
-          : {}),
-      },
-      teamNames: {
-        ...createDefaultSettings().teamNames,
-        ...(isRecord((value.settings as PersistedGameState['settings']).teamNames)
-          ? ((value.settings as PersistedGameState['settings']).teamNames as PersistedGameState['settings']['teamNames'])
-          : {}),
-      },
+      ...normalizeSettings(value.settings),
+    },
+  }
+}
+
+export function normalizeSettings(value: unknown): GameSettings {
+  const defaults = createDefaultSettings()
+
+  if (!isRecord(value)) {
+    return defaults
+  }
+
+  return {
+    ...defaults,
+    ...(value as GameSettings),
+    teamColors: {
+      ...defaults.teamColors,
+      ...(isRecord((value as GameSettings).teamColors)
+        ? ((value as GameSettings).teamColors as GameSettings['teamColors'])
+        : {}),
+    },
+    teamNames: {
+      ...defaults.teamNames,
+      ...(isRecord((value as GameSettings).teamNames)
+        ? ((value as GameSettings).teamNames as GameSettings['teamNames'])
+        : {}),
     },
   }
 }
@@ -73,16 +86,50 @@ export function serializeGameState(state: PersistedGameState): string {
 
 export function loadGameState(storage: Storage): PersistedGameState {
   const savedValue = storage.getItem(STORAGE_KEY)
+  const persistedSettings = loadSettings(storage)
 
   if (!savedValue) {
-    return createInitialGameState()
+    return {
+      ...createInitialGameState(),
+      settings: persistedSettings,
+    }
   }
 
-  return deserializeGameState(savedValue) ?? createInitialGameState()
+  const state = deserializeGameState(savedValue)
+
+  if (!state) {
+    return {
+      ...createInitialGameState(),
+      settings: persistedSettings,
+    }
+  }
+
+  return {
+    ...state,
+    settings: persistedSettings,
+  }
 }
 
 export function saveGameState(storage: Storage, state: PersistedGameState): void {
   storage.setItem(STORAGE_KEY, serializeGameState(state))
+}
+
+export function loadSettings(storage: Storage): GameSettings {
+  const savedValue = storage.getItem(SETTINGS_STORAGE_KEY)
+
+  if (!savedValue) {
+    return createDefaultSettings()
+  }
+
+  try {
+    return normalizeSettings(JSON.parse(savedValue))
+  } catch {
+    return createDefaultSettings()
+  }
+}
+
+export function saveSettings(storage: Storage, settings: GameSettings): void {
+  storage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings))
 }
 
 export function clearGameState(storage: Storage): void {

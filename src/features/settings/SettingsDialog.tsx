@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { For, Show } from 'solid-js'
 import type { ThemeMode } from '@/domain/types'
+import { DialogCloseButton } from '@/shared/DialogCloseButton'
 import { useGame } from '@/state/game-context'
 
 const themeModes: ThemeMode[] = ['system', 'light', 'dark']
@@ -47,28 +48,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               </p>
             </div>
 
-            <button
-              type="button"
-              class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/15 text-(--color-fg)"
-              aria-label={t('settings.close')}
-              onClick={() => props.onClose()}
-            >
-              <svg
-                aria-hidden="true"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 6L18 18M18 6L6 18"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.8"
-                />
-              </svg>
-            </button>
+            <DialogCloseButton closeLabel={t('settings.close')} onClose={() => props.onClose()} />
           </div>
 
           <div class="mt-6 grid gap-5">

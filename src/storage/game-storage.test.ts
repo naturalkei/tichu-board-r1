@@ -5,7 +5,11 @@ import {
   createInitialGameState,
   deserializeGameState,
   loadGameState,
+  loadSettings,
+  normalizeSettings,
   saveGameState,
+  saveSettings,
+  SETTINGS_STORAGE_KEY,
   STORAGE_KEY,
 } from '@/storage/game-storage'
 
@@ -86,5 +90,65 @@ describe('game storage', () => {
     clearGameState(localStorage)
 
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+  })
+
+  it('loads standalone persisted settings when game state is missing', () => {
+    saveSettings(localStorage, {
+      ...createDefaultSettings(),
+      language: 'ko',
+      theme: 'light',
+    })
+
+    expect(loadGameState(localStorage).settings).toEqual({
+      ...createDefaultSettings(),
+      language: 'ko',
+      theme: 'light',
+    })
+  })
+
+  it('keeps standalone persisted settings when the game state payload is invalid', () => {
+    localStorage.setItem(STORAGE_KEY, '{"schemaVersion":99}')
+    saveSettings(localStorage, {
+      ...createDefaultSettings(),
+      language: 'ko',
+      theme: 'dark',
+    })
+
+    expect(loadGameState(localStorage).settings).toEqual({
+      ...createDefaultSettings(),
+      language: 'ko',
+      theme: 'dark',
+    })
+  })
+
+  it('serializes and hydrates settings separately', () => {
+    const settings = {
+      ...createDefaultSettings(),
+      language: 'ko' as const,
+      theme: 'light' as const,
+    }
+
+    saveSettings(localStorage, settings)
+
+    expect(loadSettings(localStorage)).toEqual(settings)
+  })
+
+  it('falls back to defaults for malformed settings payloads', () => {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, '{not-json')
+
+    expect(loadSettings(localStorage)).toEqual(createDefaultSettings())
+  })
+
+  it('normalizes partial settings payloads', () => {
+    expect(
+      normalizeSettings({
+        language: 'ko',
+        theme: 'dark',
+      }),
+    ).toEqual({
+      ...createDefaultSettings(),
+      language: 'ko',
+      theme: 'dark',
+    })
   })
 })
