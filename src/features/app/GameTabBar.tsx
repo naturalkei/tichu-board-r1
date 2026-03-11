@@ -10,20 +10,11 @@ type GameTabBarProps = {
   onOpenSettings: () => void
 }
 
-const tabIcons: Record<InGameRoute | 'settings', string> = {
-  party: 'M4 9.5H20M7.5 4V9.5M16.5 4V9.5M6 20H18A2 2 0 0 0 20 18V9.5H4V18A2 2 0 0 0 6 20Z',
-  round: 'M12 3V21M3 12H21M5.5 5.5L18.5 18.5M18.5 5.5L5.5 18.5',
-  results: 'M5 19V10M12 19V5M19 19V13',
-  history: 'M12 7V12L15 15M4 12A8 8 0 1 0 6.34 6.34M4 4V9H9',
-  settings:
-    'M12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5ZM19.4 15A1 1 0 0 0 19.6 16.1L19.7 16.2A1.2 1.2 0 0 1 18 17.9L17.9 17.8A1 1 0 0 0 16.8 17.6A1 1 0 0 0 16.2 18.5V18.8A1.2 1.2 0 0 1 13.8 18.8V18.7A1 1 0 0 0 13.2 17.8A1 1 0 0 0 12.1 17.9L12 18A1.2 1.2 0 0 1 10.3 16.3L10.4 16.2A1 1 0 0 0 10.6 15.1A1 1 0 0 0 9.7 14.5H9.4A1.2 1.2 0 0 1 9.4 12.1H9.5A1 1 0 0 0 10.4 11.5A1 1 0 0 0 10.2 10.4L10.1 10.3A1.2 1.2 0 0 1 11.8 8.6L11.9 8.7A1 1 0 0 0 13 8.9A1 1 0 0 0 13.6 8V7.7A1.2 1.2 0 0 1 16 7.7V7.8A1 1 0 0 0 16.6 8.7A1 1 0 0 0 17.7 8.5L17.8 8.4A1.2 1.2 0 0 1 19.5 10.1L19.4 10.2A1 1 0 0 0 19.2 11.3A1 1 0 0 0 20.1 11.9H20.4A1.2 1.2 0 0 1 20.4 14.3H20.3A1 1 0 0 0 19.4 15Z',
-}
-
 const tabButtonBaseClass =
-  'group relative flex min-h-20 flex-col items-center justify-center gap-1 rounded-3xl px-2 py-2 text-center transition-all duration-200 ease-out'
+  'group relative flex min-h-21 min-w-0 flex-col items-center justify-center gap-1.5 rounded-3xl px-2 py-2.5 text-center transition-all duration-200 ease-out'
 
 const tabLabelClass =
-  'max-w-full truncate text-[10px] font-medium tracking-[0.08em] text-current/72 transition-opacity duration-200'
+  'max-w-full truncate text-[10px] font-semibold tracking-[0.08em] text-current/72 transition-opacity duration-200'
 
 export function GameTabBar(props: GameTabBarProps) {
   const { t } = useGame()
@@ -40,20 +31,18 @@ export function GameTabBar(props: GameTabBarProps) {
         'px-2 py-2 shadow-[0_22px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl',
       )}
     >
-      <div class="grid grid-cols-[repeat(4,minmax(0,1fr))_auto] gap-2">
+      <div class="grid grid-cols-5 gap-2" data-testid="game-tab-grid">
         <For each={tabs()}>
           {(route) => (
             <button
               type="button"
+              data-testid={`game-tab-${route}`}
               class={clsx(
                 tabButtonBaseClass,
-                route === 'settings' ? 'min-w-18 bg-black/16 text-(--color-fg)' : 'bg-black/10 text-(--color-fg)',
+                'border border-white/8 bg-black/14 text-(--color-fg)',
                 route !== 'settings' && props.activeRoute === route
-                  ? 'bg-(--color-accent) text-slate-950 shadow-[0_10px_24px_rgba(255,191,105,0.26)]'
-                  : 'border border-white/6',
-                route === 'settings'
-                  ? 'before:absolute before:inset-y-2 before:-left-1 before:w-px before:bg-white/10'
-                  : 'motion-safe:hover:-translate-y-0.5 motion-safe:hover:bg-black/16',
+                  ? 'border-amber-200/55 bg-[linear-gradient(180deg,rgba(255,191,105,0.98),rgba(255,160,84,0.92))] text-[#1c1203] shadow-[0_0_0_1px_rgba(255,224,176,0.26),0_16px_30px_rgba(255,191,105,0.34)] ring-2 ring-amber-100/28'
+                  : 'motion-safe:hover:-translate-y-0.5 motion-safe:hover:bg-black/18',
               )}
               aria-current={route !== 'settings' && props.activeRoute === route ? 'page' : undefined}
               aria-label={route === 'settings' ? t('settings.open') : t(`nav.${route}`)}
@@ -66,27 +55,30 @@ export function GameTabBar(props: GameTabBarProps) {
                 props.onNavigate(route)
               }}
             >
-              <svg
-                aria-hidden="true"
+              <div
                 class={clsx(
-                  'h-6 w-6 transition-transform duration-200',
+                  'grid h-10 w-10 place-items-center rounded-2xl transition-all duration-200',
                   route !== 'settings' && props.activeRoute === route
-                    ? 'scale-110'
-                    : 'group-active:scale-95',
+                    ? 'bg-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                    : 'bg-white/4 group-hover:bg-white/7',
                 )}
-                fill="none"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  d={tabIcons[route]}
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width={route === 'settings' ? '1.7' : '2'}
+                <TabGlyph
+                  route={route}
+                  active={route !== 'settings' && props.activeRoute === route}
+                  class={clsx(
+                    'h-8 w-8 transition-transform duration-200',
+                    route === 'settings' ? 'h-7.5 w-7.5' : '',
+                    route !== 'settings' && props.activeRoute === route
+                      ? 'scale-110'
+                      : 'text-current/88 group-active:scale-95',
+                  )}
                 />
-              </svg>
-              <span class={tabLabelClass}>
+              </div>
+              <span class={clsx(
+                tabLabelClass,
+                route !== 'settings' && props.activeRoute === route ? 'opacity-100' : 'opacity-78',
+              )}>
                 {route === 'settings' ? t('nav.settings') : t(`nav.${route}`)}
               </span>
             </button>
@@ -94,5 +86,65 @@ export function GameTabBar(props: GameTabBarProps) {
         </For>
       </div>
     </nav>
+  )
+}
+
+function TabGlyph(props: { route: InGameRoute | 'settings'; active: boolean; class?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      class={props.class}
+      fill="none"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {props.route === 'party' ? (
+        <>
+          <rect x="5" y="5" width="14" height="14" rx="4.5" stroke="currentColor" stroke-width={props.active ? '2.4' : '2.2'} />
+          <circle cx="8.4" cy="8.4" r="1.35" fill="currentColor" />
+          <circle cx="15.6" cy="8.4" r="1.35" fill="currentColor" />
+          <circle cx="8.4" cy="15.6" r="1.35" fill="currentColor" />
+          <circle cx="15.6" cy="15.6" r="1.35" fill="currentColor" />
+        </>
+      ) : null}
+      {props.route === 'round' ? (
+        <>
+          <path
+            d="M8 4.8H15.2L19 8.6V17.2C19 18.3 18.1 19.2 17 19.2H8C6.9 19.2 6 18.3 6 17.2V6.8C6 5.7 6.9 4.8 8 4.8Z"
+            stroke="currentColor"
+            stroke-width={props.active ? '2.3' : '2.1'}
+            stroke-linejoin="round"
+          />
+          <path d="M14.8 4.8V8.2H18.2" stroke="currentColor" stroke-width={props.active ? '2.3' : '2.1'} stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M12 10V15.2M9.4 12.6H14.6" stroke="currentColor" stroke-width={props.active ? '2.6' : '2.3'} stroke-linecap="round" />
+        </>
+      ) : null}
+      {props.route === 'results' ? (
+        <>
+          <path d="M6.5 18.5V12.8" stroke="currentColor" stroke-width={props.active ? '2.8' : '2.4'} stroke-linecap="round" />
+          <path d="M12 18.5V8.8" stroke="currentColor" stroke-width={props.active ? '2.8' : '2.4'} stroke-linecap="round" />
+          <path d="M17.5 18.5V5.8" stroke="currentColor" stroke-width={props.active ? '2.8' : '2.4'} stroke-linecap="round" />
+          <path d="M5 18.5H19" stroke="currentColor" stroke-width={props.active ? '2.1' : '1.9'} stroke-linecap="round" />
+        </>
+      ) : null}
+      {props.route === 'history' ? (
+        <>
+          <circle cx="12" cy="12.2" r="6.6" stroke="currentColor" stroke-width={props.active ? '2.4' : '2.1'} />
+          <path d="M12 9.2V12.4L14.2 14.2" stroke="currentColor" stroke-width={props.active ? '2.5' : '2.2'} stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M8 4.7H5.7V7" stroke="currentColor" stroke-width={props.active ? '2.2' : '2'} stroke-linecap="round" stroke-linejoin="round" />
+        </>
+      ) : null}
+      {props.route === 'settings' ? (
+        <>
+          <circle cx="12" cy="12" r="3.1" stroke="currentColor" stroke-width="2.1" />
+          <path
+            d="M12 4.6V6.2M12 17.8V19.4M19.4 12H17.8M6.2 12H4.6M17.3 6.7L16.1 7.9M7.9 16.1L6.7 17.3M17.3 17.3L16.1 16.1M7.9 7.9L6.7 6.7"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </>
+      ) : null}
+    </svg>
   )
 }

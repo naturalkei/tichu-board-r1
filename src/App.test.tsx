@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@solidjs/testing-library'
+import { fireEvent, render, screen, waitFor } from '@solidjs/testing-library'
 import App from '@/App'
 import { getPathForRoute } from '@/shared/routes'
 import { seedStartedGameState } from '@/test/game-state'
@@ -57,6 +57,8 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: /game results/i })).toBeInTheDocument()
     expect(window.location.pathname).toBe(getPathForRoute('results'))
+    expect(screen.getByTestId('game-tab-grid').className).toContain('grid-cols-5')
+    expect(screen.getByTestId('game-tab-results').className).toContain('ring-2')
   })
 
   it('moves to the next page with a left swipe gesture', async () => {
@@ -74,6 +76,9 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: /round entry/i })).toBeInTheDocument()
     expect(window.location.pathname).toBe(getPathForRoute('round'))
+    await waitFor(() => {
+      expect(screen.getByTestId('page-transition-round').className).toContain('page-slide-forward')
+    })
   })
 
   it('can revisit the landing screen and continue the current game', async () => {
