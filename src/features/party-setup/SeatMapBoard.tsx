@@ -98,8 +98,8 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
                 <p class="text-lg font-semibold tracking-[-0.02em] text-(--color-fg)">{player?.name}</p>
               </div>
               <Show when={showDropLabel()}>
-                <div class="absolute bottom-2">
-                  <p class="rounded-full bg-black/24 px-2 py-1 text-[9px] font-medium tracking-[0.2em] text-(--color-accent)">
+                <div class="absolute inset-0 bg-black/65 flex items-center justify-center">
+                  <p class="text-[9px] font-medium tracking-[0.2em] text-(--color-accent)">
                     {props.dropToSeatLabel}
                   </p>
                 </div>
