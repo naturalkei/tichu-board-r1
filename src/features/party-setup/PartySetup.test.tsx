@@ -6,9 +6,16 @@ describe('PartySetup', () => {
   beforeEach(() => {
     localStorage.clear()
     seedStartedGameState('party')
+    const value = localStorage.getItem('tichu-board-r1:v1')
+
+    if (value) {
+      const nextState = JSON.parse(value) as { recentPlayerNames: string[] }
+      nextState.recentPlayerNames = ['Morgan']
+      localStorage.setItem('tichu-board-r1:v1', JSON.stringify(nextState))
+    }
   })
 
-  it('updates player names through the editor and swaps seats with drag and drop', async () => {
+  it('updates player names and reassigns seats from the player bench', async () => {
     render(() => <App />)
 
     const northSeat = screen.getByTestId('seat-north')
@@ -18,9 +25,9 @@ describe('PartySetup', () => {
 
     expect(within(screen.getByTestId('seat-north')).getByText('Alice')).toBeInTheDocument()
 
-    await fireEvent.click(screen.getByTestId('seat-north'))
-    await fireEvent.click(screen.getByRole('button', { name: /move on table/i }))
-    await fireEvent.click(screen.getByTestId('seat-east'))
+    const playerBenchChip = screen.getByTestId('bench-player-player-1')
+    await fireEvent.dragStart(playerBenchChip)
+    await fireEvent.drop(screen.getByTestId('seat-east'))
 
     expect(within(screen.getByTestId('seat-east')).getByText('Alice')).toBeInTheDocument()
   })
@@ -59,5 +66,14 @@ describe('PartySetup', () => {
     await fireEvent.click(screen.getByTestId('seat-north'))
 
     expect(screen.getByTestId('party-editor-dialog')).toBeInTheDocument()
+  })
+
+  it('applies an armed recent player to a seat target', async () => {
+    render(() => <App />)
+
+    await fireEvent.click(screen.getByTestId('bench-recent-Morgan'))
+    await fireEvent.click(screen.getByTestId('seat-west'))
+
+    expect(within(screen.getByTestId('seat-west')).getByText('Morgan')).toBeInTheDocument()
   })
 })

@@ -34,10 +34,10 @@ const teamColorClasses: Record<TeamColor, { chip: string; ring: string; surface:
 const teamColorOptions: TeamColor[] = ['amber', 'sky', 'emerald', 'rose']
 
 const seatLayouts: { seat: Seat; className: string }[] = [
-  { seat: 'north', className: 'col-start-1 row-start-1 sm:col-start-2 sm:row-start-1' },
-  { seat: 'east', className: 'col-start-2 row-start-1 sm:col-start-3 sm:row-start-2' },
-  { seat: 'west', className: 'col-start-1 row-start-2 sm:col-start-1 sm:row-start-2' },
-  { seat: 'south', className: 'col-start-2 row-start-2 sm:col-start-2 sm:row-start-3' },
+  { seat: 'north', className: 'col-start-2 row-start-1' },
+  { seat: 'west', className: 'col-start-1 row-start-2' },
+  { seat: 'east', className: 'col-start-3 row-start-2' },
+  { seat: 'south', className: 'col-start-2 row-start-3' },
 ]
 
 type EditorDraft = {
@@ -46,20 +46,20 @@ type EditorDraft = {
 }
 
 export function PartySetup() {
-  const { setTeamColor, state, swapPlayerSeats, teamNames, updatePlayerName, t } = useGame()
+  const { assignPlayerSeat, setTeamColor, state, teamNames, updatePlayerName, t } = useGame()
   const [editorDraft, setEditorDraft] = createSignal<EditorDraft | null>(null)
   const [errorMessage, setErrorMessage] = createSignal('')
-  const [seatMoveSourceId, setSeatMoveSourceId] = createSignal<PlayerId | null>(null)
-  const [pendingRecentName, setPendingRecentName] = createSignal<string | null>(null)
+  const [armedPlayerId, setArmedPlayerId] = createSignal<PlayerId | null>(null)
+  const [draggingPlayerId, setDraggingPlayerId] = createSignal<PlayerId | null>(null)
+  const [armedRecentName, setArmedRecentName] = createSignal<string | null>(null)
+  const [draggingRecentName, setDraggingRecentName] = createSignal<string | null>(null)
 
   const playersBySeat = createMemo(() =>
-    seatLayouts
-      .map(({ seat, className }) => {
-        const player = state.players.find((item) => item.seat === seat)
-
-        return player ? { player, className } : null
-      })
-      .filter((item): item is { player: Player; className: string } => Boolean(item)),
+    seatLayouts.map(({ seat, className }) => ({
+      seat,
+      className,
+      player: state.players.find((item) => item.seat === seat) ?? null,
+    })),
   )
 
   const activePlayer = createMemo(() => {
@@ -67,10 +67,12 @@ export function PartySetup() {
     return draft ? state.players.find((player) => player.id === draft.playerId) ?? null : null
   })
 
-  const movingPlayer = createMemo(() => {
-    const playerId = seatMoveSourceId()
-    return playerId ? state.players.find((player) => player.id === playerId) ?? null : null
-  })
+  const rosterPlayers = createMemo(() =>
+    state.players.map((player) => ({
+      ...player,
+      teamId: getTeamId(player.seat),
+    })),
+  )
 
   const recentNames = createMemo(() => {
     const seatedNames = new Set(state.players.map((player) => player.name.trim().toLowerCase()))
@@ -81,12 +83,13 @@ export function PartySetup() {
   })
 
   const interactionHint = createMemo(() => {
-    if (pendingRecentName()) {
-      return t('party.pendingRecentName', { name: pendingRecentName()! })
+    if (armedRecentName()) {
+      return t('party.pendingRecentName', { name: armedRecentName()! })
     }
 
-    if (movingPlayer()) {
-      return t('party.pendingSeatMove', { name: movingPlayer()!.name })
+    if (armedPlayerId()) {
+      const player = state.players.find((item) => item.id === armedPlayerId())
+      return player ? t('party.pendingSeatMove', { name: player.name }) : ''
     }
 
     return ''
@@ -127,25 +130,42 @@ export function PartySetup() {
     return true
   }
 
-  const handleSeatAction = (player: Player) => {
-    if (pendingRecentName()) {
-      if (applyNameToSeat(player.id, pendingRecentName()!)) {
-        setPendingRecentName(null)
+  const clearArmedState = () => {
+    setArmedPlayerId(null)
+    setDraggingPlayerId(null)
+    setArmedRecentName(null)
+    setDraggingRecentName(null)
+  }
+
+  const handleSeatAssign = (seat: Seat) => {
+    const seatPlayer = state.players.find((player) => player.seat === seat)
+
+    if (!seatPlayer) {
+      return
+    }
+
+    if (draggingRecentName() || armedRecentName()) {
+      const nextName = draggingRecentName() ?? armedRecentName()
+
+      if (nextName && applyNameToSeat(seatPlayer.id, nextName)) {
+        clearArmedState()
       }
 
       return
     }
 
-    if (seatMoveSourceId()) {
-      if (seatMoveSourceId() !== player.id) {
-        swapPlayerSeats(seatMoveSourceId()!, player.id)
+    if (draggingPlayerId() || armedPlayerId()) {
+      const sourcePlayerId = draggingPlayerId() ?? armedPlayerId()
+
+      if (sourcePlayerId) {
+        assignPlayerSeat(sourcePlayerId, seat)
+        clearArmedState()
       }
 
-      setSeatMoveSourceId(null)
       return
     }
 
-    openEditor(player)
+    openEditor(seatPlayer)
   }
 
   const applyRecentName = (name: string) => {
@@ -157,8 +177,8 @@ export function PartySetup() {
       return
     }
 
-    setPendingRecentName(name)
-    setSeatMoveSourceId(null)
+    setArmedRecentName(name)
+    setArmedPlayerId(null)
   }
 
   const commitEditor = () => {
@@ -210,28 +230,112 @@ export function PartySetup() {
         </div>
       </div>
 
+      <section class="grid gap-3 rounded-4xl border border-white/10 bg-black/12 p-3">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.22em] text-(--color-accent)">{t('party.playerBench')}</p>
+            <p class="mt-1 text-[11px] text-(--color-muted)">{t('party.playerBenchHint')}</p>
+          </div>
+          <Show when={armedPlayerId() || armedRecentName()}>
+            <button
+              type="button"
+              class="rounded-full border border-white/10 px-3 py-1 text-[11px] text-(--color-fg)"
+              onClick={clearArmedState}
+            >
+              {t('party.clearSelection')}
+            </button>
+          </Show>
+        </div>
+
+        <div class="grid gap-2">
+          <div class="flex flex-wrap gap-2">
+            <For each={rosterPlayers()}>
+              {(player) => (
+                <button
+                  type="button"
+                  class={clsx(
+                    'inline-flex min-h-12 items-center gap-2 rounded-full border px-3 py-2 text-left text-sm transition-transform',
+                    armedPlayerId() === player.id
+                      ? 'border-(--color-accent) bg-(--color-accent) text-slate-950'
+                      : 'border-white/10 bg-(--color-surface) text-(--color-fg) motion-safe:hover:-translate-y-0.5',
+                  )}
+                  draggable="true"
+                  data-testid={`bench-player-${player.id}`}
+                  onClick={() => {
+                    setArmedPlayerId(player.id)
+                    setArmedRecentName(null)
+                  }}
+                  onDragStart={() => {
+                    setDraggingPlayerId(player.id)
+                    setArmedRecentName(null)
+                  }}
+                  onDragEnd={() => setDraggingPlayerId(null)}
+                >
+                  <span
+                    class={clsx(
+                      'inline-flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold',
+                      teamColorClasses[state.settings.teamColors[player.teamId]].chip,
+                    )}
+                  >
+                    {t(`seats.${player.seat}`).slice(0, 1)}
+                  </span>
+                  <span class="font-medium">{player.name}</span>
+                </button>
+              )}
+            </For>
+          </div>
+
+          <Show when={recentNames().length > 0}>
+            <div class="flex flex-wrap gap-2 border-t border-white/8 pt-2">
+              <For each={recentNames()}>
+                {(name) => (
+                  <button
+                    type="button"
+                    class={clsx(
+                      'rounded-full border px-3 py-2 text-sm transition-colors',
+                      armedRecentName() === name
+                        ? 'border-(--color-accent) bg-(--color-accent) text-slate-950'
+                        : 'border-white/10 bg-black/15 text-(--color-fg)',
+                    )}
+                    draggable="true"
+                    data-testid={`bench-recent-${name}`}
+                    onClick={() => applyRecentName(name)}
+                    onDragStart={() => {
+                      setDraggingRecentName(name)
+                      setArmedPlayerId(null)
+                    }}
+                    onDragEnd={() => setDraggingRecentName(null)}
+                  >
+                    {name}
+                  </button>
+                )}
+              </For>
+            </div>
+          </Show>
+        </div>
+      </section>
+
       <div
-        class="grid min-h-80 grid-cols-2 grid-rows-2 gap-3 sm:min-h-96 sm:grid-cols-[minmax(0,1fr)_5.5rem_minmax(0,1fr)] sm:grid-rows-[auto_minmax(6.5rem,1fr)_auto]"
+        class="grid min-h-96 grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)] grid-rows-[auto_minmax(6rem,1fr)_auto] gap-3"
         aria-label={t('party.tableLabel')}
       >
-        <div class="hidden sm:col-start-2 sm:row-start-2 sm:flex sm:items-center sm:justify-center">
-          <div class="flex h-full min-h-36 w-full items-center justify-center rounded-5xl border border-white/12 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.24),rgba(15,23,42,0.92))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-            <div class="grid gap-3">
+        <div class="col-start-2 row-start-2 flex items-center justify-center">
+          <div class="flex h-full w-full items-center justify-center rounded-5xl border border-white/12 bg-[radial-gradient(circle_at_top,rgba(255,191,105,0.24),rgba(15,23,42,0.92))] p-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <div class="grid gap-2">
               <p class="text-[10px] uppercase tracking-[0.26em] text-(--color-accent)">
                 {t('party.tableCenter')}
               </p>
-              <TeamPill teamId="north-south" label={teamNames()['north-south']} subtitle={t('teams.northSouth')} />
-              <TeamPill teamId="east-west" label={teamNames()['east-west']} subtitle={t('teams.eastWest')} />
+              <p class="text-xs text-(--color-muted)">{t('party.tableDropHint')}</p>
             </div>
           </div>
         </div>
 
         <For each={playersBySeat()}>
           {(entry) => {
-            const teamId = getTeamId(entry.player.seat)
+            const player = entry.player
+            const teamId = player ? getTeamId(player.seat) : getTeamId(entry.seat)
             const colors = teamColorClasses[state.settings.teamColors[teamId]]
-            const isMovingSource = seatMoveSourceId() === entry.player.id
-            const isRecentTarget = Boolean(pendingRecentName())
+            const isActiveDropTarget = Boolean(armedPlayerId() || draggingPlayerId() || armedRecentName() || draggingRecentName())
 
             return (
               <button
@@ -242,15 +346,16 @@ export function PartySetup() {
                   'ring-1 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5',
                   colors.ring,
                   colors.glow,
-                  isMovingSource && 'border-(--color-accent) ring-(--color-accent)',
-                  isRecentTarget && 'border-dashed',
+                  isActiveDropTarget && 'border-dashed border-(--color-accent)',
                 )}
                 aria-label={t('party.seatAction', {
-                  seat: t(`seats.${entry.player.seat}`),
-                  name: entry.player.name,
+                  seat: t(`seats.${entry.seat}`),
+                  name: player?.name ?? '',
                 })}
-                onClick={() => handleSeatAction(entry.player)}
-                data-testid={`seat-${entry.player.seat}`}
+                onClick={() => handleSeatAssign(entry.seat)}
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={() => handleSeatAssign(entry.seat)}
+                data-testid={`seat-${entry.seat}`}
               >
                 <div
                   class={clsx(
@@ -262,7 +367,7 @@ export function PartySetup() {
                   <div class="flex items-center gap-2">
                     <TeamBadge teamId={teamId} />
                     <span class="text-[11px] uppercase tracking-[0.24em] text-(--color-muted)">
-                      {t(`seats.${entry.player.seat}`)}
+                      {t(`seats.${entry.seat}`)}
                     </span>
                   </div>
                   <span class="rounded-full border border-white/10 bg-black/15 px-2 py-1 text-[10px] text-(--color-muted)">
@@ -271,9 +376,9 @@ export function PartySetup() {
                 </div>
 
                 <div class="relative">
-                  <p class="text-base font-semibold text-(--color-fg)">{entry.player.name}</p>
+                  <p class="text-base font-semibold text-(--color-fg)">{player?.name}</p>
                   <p class="mt-1 text-[11px] text-(--color-muted)">
-                    {isMovingSource ? t('party.tapTargetSeat') : t('party.tapToEdit')}
+                    {isActiveDropTarget ? t('party.dropToSeat') : t('party.tapToEdit')}
                   </p>
                 </div>
               </button>
@@ -281,35 +386,6 @@ export function PartySetup() {
           }}
         </For>
       </div>
-
-      <Show when={recentNames().length > 0}>
-        <div class="grid gap-2 rounded-3xl border border-white/10 bg-black/12 p-3">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-[11px] uppercase tracking-[0.22em] text-(--color-muted)">
-              {t('party.recentPlayers')}
-            </p>
-            <p class="text-[11px] text-(--color-muted)">{t('party.recentPlayersHint')}</p>
-          </div>
-          <div class="flex snap-x gap-2 overflow-x-auto pb-1">
-            <For each={recentNames()}>
-              {(name) => (
-                <button
-                  type="button"
-                  class={clsx(
-                    'shrink-0 snap-start rounded-full border px-3 py-2 text-sm transition-colors',
-                    pendingRecentName() === name
-                      ? 'border-(--color-accent) bg-(--color-accent) text-slate-950'
-                      : 'border-white/10 bg-black/15 text-(--color-fg)',
-                  )}
-                  onClick={() => applyRecentName(name)}
-                >
-                  {name}
-                </button>
-              )}
-            </For>
-          </div>
-        </div>
-      </Show>
 
       <Show when={editorDraft() && activePlayer()}>
         <div class="fixed inset-0 z-40 flex items-end bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center sm:justify-center">
@@ -382,8 +458,8 @@ export function PartySetup() {
                     type="button"
                     class="rounded-full border border-white/12 bg-slate-950/70 px-3 py-2 text-sm text-(--color-fg)"
                     onClick={() => {
-                      setSeatMoveSourceId(activePlayer()!.id)
-                      setPendingRecentName(null)
+                      setArmedPlayerId(activePlayer()!.id)
+                      setArmedRecentName(null)
                       closeEditor()
                     }}
                   >
@@ -444,28 +520,6 @@ function TeamBadge(props: { teamId: TeamId }) {
     <span
       class={clsx('h-3 w-3 rounded-full', teamColorClasses[state.settings.teamColors[props.teamId]].chip)}
     />
-  )
-}
-
-function TeamPill(props: { teamId: TeamId; label: string; subtitle: string }) {
-  const { state } = useGame()
-
-  return (
-    <div
-      class={clsx(
-        'rounded-3xl border border-white/10 px-3 py-2 text-left',
-        teamColorClasses[state.settings.teamColors[props.teamId]].surface,
-      )}
-      data-testid={`team-pill-${props.teamId}`}
-    >
-      <div class="flex items-center gap-2">
-        <TeamBadge teamId={props.teamId} />
-        <div>
-          <p class="text-sm font-semibold text-(--color-fg)">{props.label}</p>
-          <p class="text-[11px] text-(--color-muted)">{props.subtitle}</p>
-        </div>
-      </div>
-    </div>
   )
 }
 
