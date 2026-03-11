@@ -18,15 +18,28 @@ type TeamEditorDialogProps = {
 }
 
 export function TeamEditorDialog(props: TeamEditorDialogProps) {
+  const selectedColors = () => teamColorClasses[props.draft.color]
+
   return (
     <DialogShell closeLabel={props.closeLabel} onClose={props.onClose} testId="team-editor-dialog">
       <div class="flex-1 overflow-y-auto px-5 pb-6 pt-6 sm:p-5">
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-(--color-accent)">{props.title}</p>
-            <p class="mt-2 text-sm text-(--color-muted)">{props.subtitle}</p>
+        <div
+          class={clsx(
+            'rounded-[1.6rem] border p-4 transition-colors duration-150',
+            selectedColors().surface,
+            selectedColors().ring,
+          )}
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/18 px-2.5 py-1">
+                <span class={clsx('h-3.5 w-3.5 rounded-full ring-2 ring-white/30', selectedColors().chip)} />
+                <span class="text-[10px] uppercase tracking-[0.18em] text-(--color-muted)">{props.title}</span>
+              </div>
+              <p class="mt-3 text-base font-semibold tracking-[-0.02em] text-(--color-fg)">{props.subtitle}</p>
+            </div>
+            <DialogCloseButton closeLabel={props.closeLabel} onClose={props.onClose} size="lg" />
           </div>
-          <DialogCloseButton closeLabel={props.closeLabel} onClose={props.onClose} size="lg" />
         </div>
 
         <div class="mt-5 grid gap-5">
@@ -54,7 +67,7 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
                         'grid gap-2 rounded-2xl border p-3 text-left transition-transform',
                         teamColorClasses[color].chip,
                         props.draft.color === color
-                          ? 'border-white shadow-[0_0_0_1px_rgba(255,255,255,0.12)]'
+                          ? 'scale-[1.02] border-white shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_16px_32px_rgba(255,255,255,0.08)]'
                           : 'border-transparent',
                         isDisabled() ? 'cursor-not-allowed opacity-30' : 'motion-safe:hover:-translate-y-0.5',
                       )}
