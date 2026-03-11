@@ -55,6 +55,11 @@ export type RoundRecord = {
   id: string
   input: RoundInput
   result: RoundScoreBreakdown
+  timing: {
+    startedAt: string
+    completedAt: string
+    elapsedMs: number
+  }
 }
 
 export type GameStatus =
@@ -80,6 +85,7 @@ export type PersistedGameState = {
   hasStartedGame: boolean
   players: Player[]
   rounds: RoundRecord[]
+  activeRoundStartedAt: string | null
   recentPlayerNames: string[]
   settings: GameSettings
 }

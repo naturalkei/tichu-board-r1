@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, onCleanup } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 import { createDefaultTichuCalls } from '@/domain/defaults'
 import { validateRoundInput } from '@/domain/scoring'
@@ -20,9 +20,10 @@ type RoundDraft = {
 }
 
 export function RoundEntry(props: RoundEntryProps) {
-  const { state, addRound, findRound, t, updateRound } = useGame()
+  const { addRound, cancelActiveRound, findRound, startRound, state, t, updateRound } = useGame()
   const [draft, setDraft] = createStore<RoundDraft>(createDraft(state.players))
   const [errors, setErrors] = createSignal<string[]>([])
+  const [now, setNow] = createSignal(Date.now())
   const [statusMessage, setStatusMessage] = createSignal('')
   const editingRound = createMemo(() =>
     props.editingRoundId ? findRound(props.editingRoundId) : undefined,
@@ -50,7 +51,24 @@ export function RoundEntry(props: RoundEntryProps) {
     }
   })
 
+  const timer = window.setInterval(() => setNow(Date.now()), 1000)
+  onCleanup(() => window.clearInterval(timer))
+
+  const activeRoundElapsed = createMemo(() => {
+    if (!state.activeRoundStartedAt) {
+      return null
+    }
+
+    return formatElapsedMs(now() - new Date(state.activeRoundStartedAt).getTime())
+  })
+
+  const lastRoundElapsed = createMemo(() => {
+    const lastRound = state.rounds.at(-1)
+    return lastRound ? formatElapsedMs(lastRound.timing.elapsedMs) : null
+  })
+
   const submitLabel = () => (props.editingRoundId ? t('round.update') : t('round.save'))
+  const shouldShowForm = () => Boolean(props.editingRoundId || state.activeRoundStartedAt)
 
   return (
     <section class="rounded-4xl border border-white/10 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-sm sm:p-6">
@@ -68,7 +86,46 @@ export function RoundEntry(props: RoundEntryProps) {
         </Show>
       </div>
 
-      <form
+      <Show when={!shouldShowForm()}>
+        <div class="mt-5 grid gap-4 rounded-3xl border border-white/10 bg-(--color-surface) p-4">
+          <p class="text-sm leading-6 text-(--color-muted)">
+            {state.rounds.length > 0 ? t('round.nextRoundPrompt') : t('round.firstRoundPrompt')}
+          </p>
+          <Show when={lastRoundElapsed()}>
+            <p class="text-sm text-(--color-muted)">
+              {t('round.previousElapsed', { elapsed: lastRoundElapsed()! })}
+            </p>
+          </Show>
+          <button
+            type="button"
+            class="inline-flex min-h-12 items-center justify-center rounded-2xl bg-(--color-accent) px-4 text-sm font-semibold text-slate-950"
+            onClick={() => {
+              startRound()
+              setStatusMessage('')
+            }}
+          >
+            {state.rounds.length > 0 ? t('round.startNext') : t('round.startFirst')}
+          </button>
+        </div>
+      </Show>
+
+      <Show when={shouldShowForm()}>
+        <div class="mt-5 flex flex-wrap items-center gap-2">
+          <Show when={state.activeRoundStartedAt && !props.editingRoundId}>
+            <span class="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs text-emerald-50">
+              {t('round.timelapseRunning', { elapsed: activeRoundElapsed() ?? '00:00' })}
+            </span>
+          </Show>
+          <Show when={lastRoundElapsed() && !props.editingRoundId && state.rounds.length > 0}>
+            <span class="rounded-full border border-white/10 px-3 py-1 text-xs text-(--color-muted)">
+              {t('round.previousElapsedShort', { elapsed: lastRoundElapsed()! })}
+            </span>
+          </Show>
+        </div>
+      </Show>
+
+      <Show when={shouldShowForm()}>
+        <form
         class="mt-5 space-y-5"
         onSubmit={(event) => {
           event.preventDefault()
@@ -238,6 +295,19 @@ export function RoundEntry(props: RoundEntryProps) {
                 props.onEditingRoundIdChange(null)
                 setDraft(replaceDraft(createDraft(state.players)))
                 setErrors([])
+                cancelActiveRound()
+              }}
+            >
+              {t('round.cancel')}
+            </button>
+          </Show>
+          <Show when={!props.editingRoundId}>
+            <button
+              type="button"
+              class="rounded-2xl border border-white/12 px-4 py-3 text-sm text-(--color-fg)"
+              onClick={() => {
+                cancelActiveRound()
+                setErrors([])
               }}
             >
               {t('round.cancel')}
@@ -245,6 +315,7 @@ export function RoundEntry(props: RoundEntryProps) {
           </Show>
         </div>
       </form>
+      </Show>
     </section>
   )
 }
@@ -287,4 +358,12 @@ function buildRoundInput(draft: RoundDraft): RoundInput {
           'east-west': Number(draft.cardPointsEastWest || 0),
         },
   }
+}
+
+function formatElapsedMs(value: number) {
+  const totalSeconds = Math.max(0, Math.floor(value / 1000))
+  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0')
+  const seconds = String(totalSeconds % 60).padStart(2, '0')
+
+  return `${minutes}:${seconds}`
 }

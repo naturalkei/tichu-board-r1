@@ -72,6 +72,8 @@ describe('App', () => {
     seedStartedGameState('round')
     render(() => <App />)
 
+    await fireEvent.click(screen.getByRole('button', { name: /start first round/i }))
+
     await fireEvent.input(screen.getByTestId('card-points-north-south'), {
       target: { value: '60' },
     })

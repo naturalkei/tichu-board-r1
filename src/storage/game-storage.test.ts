@@ -15,6 +15,7 @@ function createMockState(): PersistedGameState {
     hasStartedGame: true,
     players: createDefaultPlayers(),
     rounds: [],
+    activeRoundStartedAt: null,
     recentPlayerNames: ['Avery'],
     settings: createDefaultSettings(),
   }
@@ -65,6 +66,7 @@ describe('game storage', () => {
         hasStartedGame: true,
         players: createDefaultPlayers(),
         rounds: [],
+        activeRoundStartedAt: null,
         settings: {
           language: 'en',
           theme: 'system',

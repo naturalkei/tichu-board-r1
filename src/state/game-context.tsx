@@ -53,6 +53,8 @@ type GameContextValue = {
   setTheme: (theme: ThemeMode) => void
   addRound: (input: RoundInput) => void
   updateRound: (roundId: string, input: RoundInput) => void
+  startRound: () => void
+  cancelActiveRound: () => void
   deleteRound: (roundId: string) => void
   duplicateRound: (roundId: string) => void
   findRound: (roundId: string) => RoundRecord | undefined
@@ -192,12 +194,38 @@ export const GameProvider: ParentComponent = (props) => {
     setTeamColor: (teamId, color) => setState('settings', 'teamColors', teamId, color),
     setLanguage: (language) => setState('settings', 'language', language),
     setTheme: (theme) => setState('settings', 'theme', theme),
+    startRound: () => {
+      if (state.activeRoundStartedAt) {
+        return
+      }
+
+      setState('activeRoundStartedAt', new Date().toISOString())
+    },
+    cancelActiveRound: () => setState('activeRoundStartedAt', null),
     addRound: (input) => {
-      const round = createRoundRecord(state.players, input)
+      const round = createRoundRecord(
+        state.players,
+        input,
+        undefined,
+        state.activeRoundStartedAt ?? undefined,
+      )
       setState('rounds', (rounds) => [...rounds, round])
+      setState('activeRoundStartedAt', null)
     },
     updateRound: (roundId, input) => {
-      const round = createRoundRecord(state.players, input, roundId)
+      const existingRound = state.rounds.find((item) => item.id === roundId)
+
+      if (!existingRound) {
+        return
+      }
+
+      const round = createRoundRecord(
+        state.players,
+        input,
+        roundId,
+        existingRound.timing.startedAt,
+        existingRound.timing.completedAt,
+      )
       setState(
         'rounds',
         state.rounds.map((item) => (item.id === roundId ? round : item)),
@@ -234,6 +262,7 @@ export const GameProvider: ParentComponent = (props) => {
         reconcile({
           ...createInitialGameState(),
           players: createDefaultPlayers(),
+          activeRoundStartedAt: null,
           recentPlayerNames,
           settings: nextSettings,
         }),
@@ -270,11 +299,24 @@ function detectSystemTheme(): Exclude<ThemeMode, 'system'> {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-function createRoundRecord(players: Player[], input: RoundInput, roundId = createRoundId()): RoundRecord {
+function createRoundRecord(
+  players: Player[],
+  input: RoundInput,
+  roundId = createRoundId(),
+  startedAt = new Date().toISOString(),
+  completedAt = new Date().toISOString(),
+): RoundRecord {
+  const elapsedMs = Math.max(0, new Date(completedAt).getTime() - new Date(startedAt).getTime())
+
   return {
     id: roundId,
     input,
     result: calculateRoundScore(players, input),
+    timing: {
+      startedAt,
+      completedAt,
+      elapsedMs,
+    },
   }
 }
 
