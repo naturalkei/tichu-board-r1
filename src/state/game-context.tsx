@@ -8,7 +8,7 @@ import {
   type ParentComponent,
 } from 'solid-js'
 import { createStore, reconcile, unwrap } from 'solid-js/store'
-import { createDefaultPlayers, mergeRecentPlayerNames } from '@/domain/defaults'
+import { createDefaultPlayers, createDefaultTeamNames, mergeRecentPlayerNames } from '@/domain/defaults'
 import { getTeamIdBySeat } from '@/domain/helpers'
 import {
   calculateCumulativeScores,
@@ -41,6 +41,7 @@ type GameContextValue = {
   gameStatus: () => ReturnType<typeof getGameStatus>
   leadingTeamId: () => ReturnType<typeof getLeadingTeamId>
   teamNames: () => Record<TeamId, string>
+  teamLineups: () => Record<TeamId, string>
   systemTheme: () => Exclude<ThemeMode, 'system'>
   effectiveTheme: () => Exclude<ThemeMode, 'system'>
   t: (key: TranslationKey, args?: Record<string, string | number | boolean>) => string
@@ -49,6 +50,7 @@ type GameContextValue = {
   assignPlayerSeat: (playerId: PlayerId, seat: Seat) => void
   swapPlayerSeats: (sourcePlayerId: PlayerId, targetPlayerId: PlayerId) => void
   setTeamColor: (teamId: TeamId, color: TeamColor) => void
+  setTeamName: (teamId: TeamId, name: string) => void
   setLanguage: (language: PersistedGameState['settings']['language']) => void
   setTheme: (theme: ThemeMode) => void
   addRound: (input: RoundInput) => void
@@ -73,7 +75,7 @@ export const GameProvider: ParentComponent = (props) => {
   )
   const gameStatus = createMemo(() => getGameStatus(cumulativeScores()))
   const leadingTeamId = createMemo(() => getLeadingTeamId(cumulativeScores()))
-  const teamNames = createMemo(() => {
+  const teamLineups = createMemo(() => {
     const names = {
       'north-south': [] as string[],
       'east-west': [] as string[],
@@ -88,6 +90,7 @@ export const GameProvider: ParentComponent = (props) => {
       'east-west': names['east-west'].join(' / '),
     }
   })
+  const teamNames = createMemo(() => state.settings.teamNames)
   const effectiveTheme = createMemo<Exclude<ThemeMode, 'system'>>(() =>
     state.settings.theme === 'system' ? systemTheme() : state.settings.theme,
   )
@@ -122,6 +125,7 @@ export const GameProvider: ParentComponent = (props) => {
     gameStatus,
     leadingTeamId,
     teamNames,
+    teamLineups,
     systemTheme,
     effectiveTheme,
     t: (key, args) => translate()(key, args),
@@ -200,7 +204,27 @@ export const GameProvider: ParentComponent = (props) => {
 
       setState('settings', 'teamColors', teamId, color)
     },
-    setLanguage: (language) => setState('settings', 'language', language),
+    setTeamName: (teamId, name) =>
+      setState('settings', 'teamNames', teamId, name.trim().slice(0, 24) || state.settings.teamNames[teamId]),
+    setLanguage: (language) => {
+      const previousDefaults = createDefaultTeamNames(state.settings.language)
+      const nextDefaults = createDefaultTeamNames(language)
+
+      setState('settings', (current) => ({
+        ...current,
+        language,
+        teamNames: {
+          'north-south':
+            current.teamNames['north-south'] === previousDefaults['north-south']
+              ? nextDefaults['north-south']
+              : current.teamNames['north-south'],
+          'east-west':
+            current.teamNames['east-west'] === previousDefaults['east-west']
+              ? nextDefaults['east-west']
+              : current.teamNames['east-west'],
+        },
+      }))
+    },
     setTheme: (theme) => setState('settings', 'theme', theme),
     startRound: () => {
       if (state.activeRoundStartedAt) {
