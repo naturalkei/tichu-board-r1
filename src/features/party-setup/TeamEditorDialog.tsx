@@ -22,24 +22,17 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
 
   return (
     <DialogShell closeLabel={props.closeLabel} onClose={props.onClose} testId="team-editor-dialog">
-      <div class="flex-1 overflow-y-auto px-5 pb-6 pt-6 sm:p-5">
-        <div
-          class={clsx(
-            'rounded-[1.6rem] border p-4 transition-colors duration-150',
-            selectedColors().surface,
-            selectedColors().ring,
-          )}
-        >
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/18 px-2.5 py-1">
-                <span class={clsx('h-3.5 w-3.5 rounded-full ring-2 ring-white/30', selectedColors().chip)} />
-                <span class="text-[10px] uppercase tracking-[0.18em] text-(--color-muted)">{props.title}</span>
-              </div>
-              <p class="mt-3 text-base font-semibold tracking-[-0.02em] text-(--color-fg)">{props.subtitle}</p>
+      <div class={clsx('flex-1 overflow-y-auto px-5 pb-6 pt-6 transition-colors duration-200 sm:p-5', selectedColors().surface)}>
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="inline-flex items-center gap-2 rounded-full bg-black/18 px-2.5 py-1">
+              <span class={clsx('h-3.5 w-3.5 rounded-full ring-2 ring-white/30', selectedColors().chip)} />
+              <span class="text-[10px] uppercase tracking-[0.18em] text-(--color-muted)">{props.title}</span>
             </div>
-            <DialogCloseButton closeLabel={props.closeLabel} onClose={props.onClose} size="lg" />
+            <p class="mt-3 text-base font-semibold tracking-[-0.02em] text-(--color-fg)">{props.subtitle}</p>
+            <p class="mt-1 truncate text-xs leading-5 text-(--color-muted)">{props.draft.name.trim() || props.subtitle}</p>
           </div>
+          <DialogCloseButton closeLabel={props.closeLabel} onClose={props.onClose} size="lg" />
         </div>
 
         <div class="mt-5 grid gap-5">
@@ -64,11 +57,11 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
                     <button
                       type="button"
                       class={clsx(
-                        'grid gap-2 rounded-2xl border p-3 text-left transition-transform',
-                        teamColorClasses[color].chip,
+                        'grid gap-2 rounded-2xl border p-3 text-left transition-all duration-150',
+                        teamColorClasses[color].surface,
                         props.draft.color === color
-                          ? 'scale-[1.02] border-white shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_16px_32px_rgba(255,255,255,0.08)]'
-                          : 'border-transparent',
+                          ? 'scale-[1.02] border-white/70 ring-2 ring-white/45 shadow-[0_0_0_1px_rgba(255,255,255,0.16),0_18px_36px_rgba(15,23,42,0.24)]'
+                          : 'border-white/8',
                         isDisabled() ? 'cursor-not-allowed opacity-30' : 'motion-safe:hover:-translate-y-0.5',
                       )}
                       aria-disabled={isDisabled()}
@@ -77,7 +70,7 @@ export function TeamEditorDialog(props: TeamEditorDialogProps) {
                       data-testid={`team-editor-color-${color}`}
                       onClick={() => props.onColorSelect(color)}
                     >
-                      <span class="h-3 w-8 rounded-full bg-black/20" />
+                      <span class={clsx('h-3 w-8 rounded-full ring-1 ring-black/10', teamColorClasses[color].chip)} />
                       <span class="text-[11px] font-semibold uppercase tracking-[0.18em]">{color}</span>
                     </button>
                   )

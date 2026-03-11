@@ -105,7 +105,7 @@ export function PartySetup() {
           oppositeTeamColor={controller.state.settings.teamColors[controller.activeTeamId(controller.teamEditorDraft()!.teamId)]}
           title={controller.t('party.teamEditorTitle')}
           subtitle={controller.t('party.teamEditorSubtitle', {
-            team: controller.teamEditorDraft()!.teamId === 'north-south' ? '1' : '2',
+            team: controller.teamEditorDraft()!.name.trim() || (controller.teamEditorDraft()!.teamId === 'north-south' ? 'Team 1' : 'Team 2'),
           })}
           closeLabel={controller.t('party.closeTeamEditor')}
           nameFieldLabel={controller.t('party.teamNameField')}

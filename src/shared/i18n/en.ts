@@ -87,7 +87,7 @@ export const enDictionary = flatten({
     moveSeat: 'Move on table',
     editTeam: 'Edit team',
     teamEditorTitle: 'Edit team',
-    teamEditorSubtitle: 'Adjust Team {{ team }} name and color',
+    teamEditorSubtitle: 'Adjust {{ team }} name and color',
     closeTeamEditor: 'Close team editor',
     pendingSeatMove: 'Move {{ name }} to another seat',
     pendingRecentName: 'Apply {{ name }} to a seat',

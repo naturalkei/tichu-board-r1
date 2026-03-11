@@ -85,7 +85,7 @@ export const koDictionary = flatten({
     moveSeat: '테이블에서 이동',
     editTeam: '팀 수정',
     teamEditorTitle: '팀 설정 수정',
-    teamEditorSubtitle: '{{ team }}팀 이름과 색상을 조정합니다.',
+    teamEditorSubtitle: '{{ team }} 이름과 색상을 조정합니다.',
     closeTeamEditor: '팀 편집 닫기',
     pendingSeatMove: '{{ name }} 플레이어 자리를 선택하세요',
     pendingRecentName: '{{ name }} 이름을 적용할 좌석을 선택하세요',
