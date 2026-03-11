@@ -128,7 +128,9 @@ describe('PartySetup', () => {
 
     expect(screen.getByTestId('seat-map-board').className).toContain('grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]')
     expect(screen.getByTestId('seat-north').className).toContain('w-full')
+    expect(screen.getByTestId('seat-north').className).toContain('aspect-square')
     expect(screen.getByTestId('seat-east').className).toContain('w-full')
+    expect(within(screen.getByTestId('seat-north')).getByText('Team 1').className).toContain('bg-black/10')
     expect(screen.getByTestId('seat-overlay-north')).toHaveTextContent('N')
     expect(screen.getByTestId('seat-overlay-west')).toHaveTextContent('W')
     expect(screen.getByTestId('seat-overlay-east')).toHaveTextContent('E')

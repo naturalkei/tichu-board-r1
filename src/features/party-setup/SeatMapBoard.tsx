@@ -54,7 +54,7 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               type="button"
               class={clsx(
                 entry.className,
-                'relative flex min-h-28 w-full min-w-0 justify-self-stretch flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-(--color-surface) p-3 text-left',
+                'relative flex aspect-square w-full min-w-0 justify-self-stretch flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-(--color-surface) p-3 text-left',
                 'ring-1 transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5',
                 colors.ring,
                 colors.glow,
@@ -65,7 +65,7 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               onDragOver={(event) => event.preventDefault()}
               onDrop={() => props.onSeatAssign(entry.seat)}
               data-testid={`seat-${entry.seat}`}
-            >
+              >
               <div class={clsx('pointer-events-none absolute inset-0 bg-linear-to-br opacity-70', colors.surface)} />
               <span
                 class="pointer-events-none absolute inset-0 flex items-center justify-center text-[clamp(3.5rem,20vw,5.25rem)] font-black tracking-[-0.08em] text-white/6"
@@ -74,8 +74,8 @@ export function SeatMapBoard(props: SeatMapBoardProps) {
               >
                 {seatOverlayLabels[entry.seat]}
               </span>
-              <div class="relative flex items-start justify-end gap-2">
-                <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/18 px-2 py-1 text-[10px] text-(--color-muted)">
+              <div class="relative flex items-start justify-start gap-2">
+                <span class="inline-flex items-center gap-1 rounded-full border border-white/8 bg-black/10 px-2 py-1 text-[10px] text-(--color-muted)">
                   <TeamBadge color={props.teamColors[teamId]} />
                   {props.teamNames[teamId]}
                 </span>
