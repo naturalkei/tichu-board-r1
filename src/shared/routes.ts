@@ -4,6 +4,8 @@ export const appRoutes = ['start', ...inGameRoutes] as const
 export type AppRoute = (typeof appRoutes)[number]
 export type InGameRoute = (typeof inGameRoutes)[number]
 
+const appBasePath = normalizeBasePath(import.meta.env.BASE_URL ?? '/')
+
 export function isAppRoute(value: string): value is AppRoute {
   return appRoutes.includes(value as AppRoute)
 }
@@ -16,8 +18,8 @@ export function getDefaultRoute(hasStartedGame: boolean): AppRoute {
   return hasStartedGame ? 'party' : 'start'
 }
 
-export function getRouteFromHash(hash: string, hasStartedGame: boolean): AppRoute {
-  const normalized = hash.replace(/^#\/?/, '')
+export function getRouteFromPath(pathname: string, hasStartedGame: boolean): AppRoute {
+  const normalized = trimBasePath(pathname)
 
   if (isAppRoute(normalized)) {
     return hasStartedGame || normalized === 'start' ? normalized : 'start'
@@ -26,8 +28,8 @@ export function getRouteFromHash(hash: string, hasStartedGame: boolean): AppRout
   return getDefaultRoute(hasStartedGame)
 }
 
-export function getHashForRoute(route: AppRoute) {
-  return `#/${route}`
+export function getPathForRoute(route: AppRoute) {
+  return `${appBasePath}${route}`
 }
 
 export function getAdjacentRoute(route: InGameRoute, direction: 'next' | 'previous'): InGameRoute {
@@ -38,4 +40,25 @@ export function getAdjacentRoute(route: InGameRoute, direction: 'next' | 'previo
       : Math.max(0, currentIndex - 1)
 
   return inGameRoutes[targetIndex]!
+}
+
+function normalizeBasePath(basePath: string) {
+  const trimmed = basePath.replace(/^\/+|\/+$/g, '')
+
+  return trimmed.length > 0 ? `/${trimmed}/` : '/'
+}
+
+function trimBasePath(pathname: string) {
+  const normalizedPathname = pathname.replace(/\/+$/, '') || '/'
+  const baseWithoutTrailingSlash = appBasePath.replace(/\/+$/, '') || '/'
+
+  if (normalizedPathname === baseWithoutTrailingSlash) {
+    return ''
+  }
+
+  if (normalizedPathname.startsWith(appBasePath)) {
+    return normalizedPathname.slice(appBasePath.length).replace(/^\/+|\/+$/g, '')
+  }
+
+  return normalizedPathname.replace(/^\/+|\/+$/g, '')
 }

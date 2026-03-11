@@ -11,7 +11,7 @@ import { SettingsDialog } from '@/features/settings/SettingsDialog'
 import { GameProvider, useGame } from '@/state/game-context'
 import {
   getDefaultRoute,
-  getHashForRoute,
+  getPathForRoute,
   type InGameRoute,
 } from '@/shared/routes'
 
@@ -27,11 +27,11 @@ function AppContent() {
 
   onMount(() => {
     syncRouteFromLocation()
-    window.addEventListener('hashchange', syncRouteFromLocation)
+    window.addEventListener('popstate', syncRouteFromLocation)
   })
 
   onCleanup(() => {
-    window.removeEventListener('hashchange', syncRouteFromLocation)
+    window.removeEventListener('popstate', syncRouteFromLocation)
   })
 
   createEffect(() => {
@@ -45,9 +45,9 @@ function AppContent() {
       return
     }
 
-    const expectedHash = getHashForRoute(route())
+    const expectedPath = getPathForRoute(route())
 
-    if (window.location.hash !== expectedHash) {
+    if (window.location.pathname !== expectedPath) {
       navigate(route(), { replace: true })
     }
   })

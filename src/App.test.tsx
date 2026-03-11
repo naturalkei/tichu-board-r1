@@ -1,11 +1,12 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library'
 import App from '@/App'
+import { getPathForRoute } from '@/shared/routes'
 import { seedStartedGameState } from '@/test/game-state'
 
 describe('App', () => {
   beforeEach(() => {
     localStorage.clear()
-    window.location.hash = ''
+    window.history.replaceState(null, '', '/')
   })
 
   it('shows the landing screen before a game starts', () => {
@@ -13,7 +14,7 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: /tichuboard/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start scoring/i })).toBeInTheDocument()
-    expect(window.location.hash).toBe('#/start')
+    expect(window.location.pathname).toBe(getPathForRoute('start'))
     expect(screen.getByTestId('landing-layout')).toBeInTheDocument()
     expect(screen.getByTestId('landing-content').className).toContain('overflow-y-auto')
     expect(screen.getByTestId('app-shell').className).toContain('overflow-hidden')
@@ -25,18 +26,18 @@ describe('App', () => {
     await fireEvent.click(screen.getByRole('button', { name: /start scoring/i }))
 
     expect(screen.getByRole('heading', { name: /party setup/i })).toBeInTheDocument()
-    expect(window.location.hash).toBe('#/party')
+    expect(window.location.pathname).toBe(getPathForRoute('party'))
     expect(screen.getByRole('button', { name: /open settings/i })).toBeInTheDocument()
   })
 
-  it('switches pages through the tab bar and keeps route state in the hash', async () => {
+  it('switches pages through the tab bar and keeps route state in the pathname', async () => {
     seedStartedGameState('party')
     render(() => <App />)
 
     await fireEvent.click(screen.getByRole('button', { name: /^results$/i }))
 
     expect(screen.getByRole('heading', { name: /game results/i })).toBeInTheDocument()
-    expect(window.location.hash).toBe('#/results')
+    expect(window.location.pathname).toBe(getPathForRoute('results'))
   })
 
   it('moves to the next page with a left swipe gesture', async () => {
@@ -53,7 +54,7 @@ describe('App', () => {
     })
 
     expect(screen.getByRole('heading', { name: /round entry/i })).toBeInTheDocument()
-    expect(window.location.hash).toBe('#/round')
+    expect(window.location.pathname).toBe(getPathForRoute('round'))
   })
 
   it('can revisit the landing screen and continue the current game', async () => {
@@ -64,12 +65,12 @@ describe('App', () => {
     await fireEvent.click(screen.getByRole('button', { name: /show start screen/i }))
 
     expect(screen.getByRole('button', { name: /continue game/i })).toBeInTheDocument()
-    expect(window.location.hash).toBe('#/start')
+    expect(window.location.pathname).toBe(getPathForRoute('start'))
 
     await fireEvent.click(screen.getByRole('button', { name: /continue game/i }))
 
     expect(screen.getByRole('heading', { name: /party setup/i })).toBeInTheDocument()
-    expect(window.location.hash).toBe('#/party')
+    expect(window.location.pathname).toBe(getPathForRoute('party'))
   })
 
   it('shows the floating score summary after the first round is saved', async () => {

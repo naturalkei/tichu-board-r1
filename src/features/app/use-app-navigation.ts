@@ -2,8 +2,8 @@ import { createSignal } from 'solid-js'
 import type { PersistedGameState } from '@/domain/types'
 import {
   getDefaultRoute,
-  getHashForRoute,
-  getRouteFromHash,
+  getPathForRoute,
+  getRouteFromPath,
   type AppRoute,
 } from '@/shared/routes'
 
@@ -11,17 +11,17 @@ export function useAppNavigation(hasStartedGame: () => PersistedGameState['hasSt
   const [route, setRoute] = createSignal<AppRoute>(resolveInitialRoute(hasStartedGame()))
 
   const syncRouteFromLocation = () => {
-    setRoute(getRouteFromHash(window.location.hash, hasStartedGame()))
+    setRoute(getRouteFromPath(window.location.pathname, hasStartedGame()))
   }
 
   const navigate = (nextRoute: AppRoute, options?: { replace?: boolean }) => {
-    const nextHash = getHashForRoute(nextRoute)
+    const nextPath = getPathForRoute(nextRoute)
 
-    if (window.location.hash !== nextHash) {
+    if (window.location.pathname !== nextPath) {
       if (options?.replace) {
-        window.history.replaceState(null, '', nextHash)
+        window.history.replaceState(null, '', nextPath)
       } else {
-        window.history.pushState(null, '', nextHash)
+        window.history.pushState(null, '', nextPath)
       }
     }
 
@@ -40,5 +40,5 @@ function resolveInitialRoute(hasStartedGame: boolean): AppRoute {
     return getDefaultRoute(hasStartedGame)
   }
 
-  return getRouteFromHash(window.location.hash, hasStartedGame)
+  return getRouteFromPath(window.location.pathname, hasStartedGame)
 }
