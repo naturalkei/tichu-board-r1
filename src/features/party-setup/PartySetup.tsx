@@ -429,9 +429,6 @@ export function PartySetup() {
                   {seatOverlayLabels[entry.seat]}
                 </span>
                 <div class="relative flex items-start justify-between gap-2">
-                  <span class="rounded-full border border-white/10 bg-black/18 px-2 py-1 text-[10px] uppercase tracking-[0.26em] text-(--color-muted)">
-                    {seatOverlayLabels[entry.seat]}
-                  </span>
                   <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/18 px-2 py-1 text-[10px] text-(--color-muted)">
                     <TeamBadge teamId={teamId} />
                     {teamId === 'north-south' ? teamNames()['north-south'] : teamNames()['east-west']}
@@ -440,9 +437,9 @@ export function PartySetup() {
 
                 <div class="relative grid gap-1">
                   <p class="text-lg font-semibold tracking-[-0.02em] text-(--color-fg)">{player?.name}</p>
-                  <p class="text-[11px] text-(--color-muted)">
-                    {isActiveDropTarget ? t('party.dropToSeat') : t(`seats.${entry.seat}`)}
-                  </p>
+                  <Show when={isActiveDropTarget}>
+                    <p class="text-[11px] text-(--color-muted)">{t('party.dropToSeat')}</p>
+                  </Show>
                 </div>
               </button>
             )

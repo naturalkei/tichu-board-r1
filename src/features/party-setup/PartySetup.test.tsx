@@ -112,6 +112,8 @@ describe('PartySetup', () => {
     expect(screen.getByTestId('seat-overlay-west')).toHaveTextContent('W')
     expect(screen.getByTestId('seat-overlay-east')).toHaveTextContent('E')
     expect(screen.getByTestId('seat-overlay-south')).toHaveTextContent('S')
+    expect(within(screen.getByTestId('seat-north')).queryByText('North')).not.toBeInTheDocument()
+    expect(within(screen.getByTestId('seat-west')).queryByText('West')).not.toBeInTheDocument()
   })
 
   it('applies an armed recent player to a seat target', async () => {
