@@ -90,6 +90,9 @@ export function GameTabBar(props: GameTabBarProps) {
 }
 
 function TabGlyph(props: { route: InGameRoute | 'settings'; active: boolean; class?: string }) {
+  const primaryStroke = () => (props.active ? '2.05' : '1.8')
+  const accentStroke = () => (props.active ? '2.25' : '2')
+
   return (
     <svg
       aria-hidden="true"
@@ -100,49 +103,45 @@ function TabGlyph(props: { route: InGameRoute | 'settings'; active: boolean; cla
     >
       {props.route === 'party' ? (
         <>
-          <rect x="5" y="5" width="14" height="14" rx="4.5" stroke="currentColor" stroke-width={props.active ? '2.4' : '2.2'} />
-          <circle cx="8.4" cy="8.4" r="1.35" fill="currentColor" />
-          <circle cx="15.6" cy="8.4" r="1.35" fill="currentColor" />
-          <circle cx="8.4" cy="15.6" r="1.35" fill="currentColor" />
-          <circle cx="15.6" cy="15.6" r="1.35" fill="currentColor" />
+          <circle cx="12" cy="6.9" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
+          <circle cx="17.1" cy="12" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
+          <circle cx="12" cy="17.1" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
+          <circle cx="6.9" cy="12" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
+          <path d="M12 9.2V14.8M9.2 12H14.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
         </>
       ) : null}
       {props.route === 'round' ? (
         <>
-          <path
-            d="M8 4.8H15.2L19 8.6V17.2C19 18.3 18.1 19.2 17 19.2H8C6.9 19.2 6 18.3 6 17.2V6.8C6 5.7 6.9 4.8 8 4.8Z"
-            stroke="currentColor"
-            stroke-width={props.active ? '2.3' : '2.1'}
-            stroke-linejoin="round"
-          />
-          <path d="M14.8 4.8V8.2H18.2" stroke="currentColor" stroke-width={props.active ? '2.3' : '2.1'} stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M12 10V15.2M9.4 12.6H14.6" stroke="currentColor" stroke-width={props.active ? '2.6' : '2.3'} stroke-linecap="round" />
+          <circle cx="12" cy="12" r="6.2" stroke="currentColor" stroke-width={primaryStroke()} />
+          <path d="M12 8.7V15.3M8.7 12H15.3" stroke="currentColor" stroke-width={accentStroke()} stroke-linecap="round" />
         </>
       ) : null}
       {props.route === 'results' ? (
         <>
-          <path d="M6.5 18.5V12.8" stroke="currentColor" stroke-width={props.active ? '2.8' : '2.4'} stroke-linecap="round" />
-          <path d="M12 18.5V8.8" stroke="currentColor" stroke-width={props.active ? '2.8' : '2.4'} stroke-linecap="round" />
-          <path d="M17.5 18.5V5.8" stroke="currentColor" stroke-width={props.active ? '2.8' : '2.4'} stroke-linecap="round" />
-          <path d="M5 18.5H19" stroke="currentColor" stroke-width={props.active ? '2.1' : '1.9'} stroke-linecap="round" />
+          <rect x="5.7" y="11.8" width="3" height="6.2" rx="1.1" stroke="currentColor" stroke-width={primaryStroke()} />
+          <rect x="10.5" y="8.8" width="3" height="9.2" rx="1.1" stroke="currentColor" stroke-width={primaryStroke()} />
+          <rect x="15.3" y="5.8" width="3" height="12.2" rx="1.1" stroke="currentColor" stroke-width={primaryStroke()} />
         </>
       ) : null}
       {props.route === 'history' ? (
         <>
-          <circle cx="12" cy="12.2" r="6.6" stroke="currentColor" stroke-width={props.active ? '2.4' : '2.1'} />
-          <path d="M12 9.2V12.4L14.2 14.2" stroke="currentColor" stroke-width={props.active ? '2.5' : '2.2'} stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M8 4.7H5.7V7" stroke="currentColor" stroke-width={props.active ? '2.2' : '2'} stroke-linecap="round" stroke-linejoin="round" />
+          <path
+            d="M7 10.2A5.9 5.9 0 1 1 8.7 16.9"
+            stroke="currentColor"
+            stroke-width={primaryStroke()}
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path d="M6.9 7.2V10.3H10" stroke="currentColor" stroke-width={primaryStroke()} stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M12 9.7V12.1L14.4 12.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
         </>
       ) : null}
       {props.route === 'settings' ? (
         <>
-          <circle cx="12" cy="12" r="3.1" stroke="currentColor" stroke-width="2.1" />
-          <path
-            d="M12 4.6V6.2M12 17.8V19.4M19.4 12H17.8M6.2 12H4.6M17.3 6.7L16.1 7.9M7.9 16.1L6.7 17.3M17.3 17.3L16.1 16.1M7.9 7.9L6.7 6.7"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
+          <path d="M6 9H18" stroke="currentColor" stroke-width={primaryStroke()} stroke-linecap="round" />
+          <path d="M6 15H18" stroke="currentColor" stroke-width={primaryStroke()} stroke-linecap="round" />
+          <circle cx="9" cy="9" r="2.1" fill="var(--color-surface)" stroke="currentColor" stroke-width={primaryStroke()} />
+          <circle cx="15" cy="15" r="2.1" fill="var(--color-surface)" stroke="currentColor" stroke-width={primaryStroke()} />
         </>
       ) : null}
     </svg>
