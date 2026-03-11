@@ -1,21 +1,26 @@
 import type { ParentProps } from 'solid-js'
+import { Portal } from 'solid-js/web'
 
 export function DialogShell(props: ParentProps<{ closeLabel: string; onClose: () => void; testId: string }>) {
   return (
-    <div class="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/82 p-0 backdrop-blur-md sm:items-center sm:p-6">
-      <button
-        type="button"
-        class="absolute inset-0"
-        aria-label={props.closeLabel}
-        onClick={() => props.onClose()}
-      />
-      <div
-        class="relative z-10 flex h-dvh max-h-dvh w-full flex-col overflow-hidden border-white/12 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] shadow-[0_28px_90px_rgba(0,0,0,0.42)] sm:h-auto sm:max-h-[min(100dvh-3rem,42rem)] sm:max-w-md sm:rounded-4xl sm:border"
-        data-testid={props.testId}
-      >
-        {props.children}
+    <Portal>
+      <div class="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/82 p-0 backdrop-blur-md sm:items-center sm:p-6">
+        <button
+          type="button"
+          class="absolute inset-0"
+          aria-label={props.closeLabel}
+          onClick={() => props.onClose()}
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          class="relative z-10 flex h-dvh max-h-dvh w-full flex-col overflow-hidden border-white/12 bg-[color-mix(in_srgb,var(--color-surface)_98%,#020617)] shadow-[0_28px_90px_rgba(0,0,0,0.42)] sm:h-auto sm:max-h-[min(100dvh-3rem,42rem)] sm:max-w-md sm:rounded-4xl sm:border"
+          data-testid={props.testId}
+        >
+          {props.children}
+        </div>
       </div>
-    </div>
+    </Portal>
   )
 }
 
