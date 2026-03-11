@@ -1,3 +1,4 @@
+import { gameTabIcons } from '@/features/app/game-tab-icons'
 import type { InGameRoute } from '@/shared/routes'
 import { inGameRoutes } from '@/shared/routes'
 import { useGame } from '@/state/game-context'
@@ -65,10 +66,9 @@ export function GameTabBar(props: GameTabBarProps) {
               >
                 <TabGlyph
                   route={route}
-                  active={route !== 'settings' && props.activeRoute === route}
                   class={clsx(
-                    'h-11 w-11 transition-transform duration-200',
-                    route === 'settings' ? 'h-10.5 w-10.5' : '',
+                    'grid place-items-center transition-transform duration-200 [&_svg]:h-11 [&_svg]:w-11 [&_svg]:overflow-visible',
+                    route === 'settings' ? '[&_svg]:h-10.5 [&_svg]:w-10.5' : '',
                     route !== 'settings' && props.activeRoute === route
                       ? 'scale-108'
                       : 'text-current/90 group-active:scale-95',
@@ -89,61 +89,21 @@ export function GameTabBar(props: GameTabBarProps) {
   )
 }
 
-function TabGlyph(props: { route: InGameRoute | 'settings'; active: boolean; class?: string }) {
-  const primaryStroke = () => (props.active ? '2.05' : '1.8')
-  const accentStroke = () => (props.active ? '2.25' : '2')
-
+function TabGlyph(props: { route: InGameRoute | 'settings'; class?: string }) {
   return (
-    <svg
+    <span
       aria-hidden="true"
-      class={props.class}
-      fill="none"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {props.route === 'party' ? (
-        <>
-          <circle cx="12" cy="6.9" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
-          <circle cx="17.1" cy="12" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
-          <circle cx="12" cy="17.1" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
-          <circle cx="6.9" cy="12" r="2.1" stroke="currentColor" stroke-width={primaryStroke()} />
-          <path d="M12 9.2V14.8M9.2 12H14.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-        </>
-      ) : null}
-      {props.route === 'round' ? (
-        <>
-          <circle cx="12" cy="12" r="6.2" stroke="currentColor" stroke-width={primaryStroke()} />
-          <path d="M12 8.7V15.3M8.7 12H15.3" stroke="currentColor" stroke-width={accentStroke()} stroke-linecap="round" />
-        </>
-      ) : null}
-      {props.route === 'results' ? (
-        <>
-          <rect x="5.7" y="11.8" width="3" height="6.2" rx="1.1" stroke="currentColor" stroke-width={primaryStroke()} />
-          <rect x="10.5" y="8.8" width="3" height="9.2" rx="1.1" stroke="currentColor" stroke-width={primaryStroke()} />
-          <rect x="15.3" y="5.8" width="3" height="12.2" rx="1.1" stroke="currentColor" stroke-width={primaryStroke()} />
-        </>
-      ) : null}
-      {props.route === 'history' ? (
-        <>
-          <path
-            d="M7 10.2A5.9 5.9 0 1 1 8.7 16.9"
-            stroke="currentColor"
-            stroke-width={primaryStroke()}
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path d="M6.9 7.2V10.3H10" stroke="currentColor" stroke-width={primaryStroke()} stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M12 9.7V12.1L14.4 12.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
-        </>
-      ) : null}
-      {props.route === 'settings' ? (
-        <>
-          <path d="M6 9H18" stroke="currentColor" stroke-width={primaryStroke()} stroke-linecap="round" />
-          <path d="M6 15H18" stroke="currentColor" stroke-width={primaryStroke()} stroke-linecap="round" />
-          <circle cx="9" cy="9" r="2.1" fill="var(--color-surface)" stroke="currentColor" stroke-width={primaryStroke()} />
-          <circle cx="15" cy="15" r="2.1" fill="var(--color-surface)" stroke="currentColor" stroke-width={primaryStroke()} />
-        </>
-      ) : null}
-    </svg>
+      class={clsx('bg-current', props.class)}
+      style={{
+        '-webkit-mask-image': `url("${gameTabIcons[props.route]}")`,
+        '-webkit-mask-position': 'center',
+        '-webkit-mask-repeat': 'no-repeat',
+        '-webkit-mask-size': 'contain',
+        'mask-image': `url("${gameTabIcons[props.route]}")`,
+        'mask-position': 'center',
+        'mask-repeat': 'no-repeat',
+        'mask-size': 'contain',
+      }}
+    />
   )
 }
