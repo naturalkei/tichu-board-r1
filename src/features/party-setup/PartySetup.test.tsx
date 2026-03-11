@@ -126,6 +126,9 @@ describe('PartySetup', () => {
   it('renders large seat overlays for every table target', async () => {
     render(() => <App />)
 
+    expect(screen.getByTestId('seat-map-board').className).toContain('grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]')
+    expect(screen.getByTestId('seat-north').className).toContain('w-full')
+    expect(screen.getByTestId('seat-east').className).toContain('w-full')
     expect(screen.getByTestId('seat-overlay-north')).toHaveTextContent('N')
     expect(screen.getByTestId('seat-overlay-west')).toHaveTextContent('W')
     expect(screen.getByTestId('seat-overlay-east')).toHaveTextContent('E')
