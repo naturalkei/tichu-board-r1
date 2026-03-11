@@ -4,8 +4,8 @@ export function DialogCloseButton(props: { closeLabel: string; onClose: () => vo
       type="button"
       class={
         props.size === 'lg'
-          ? 'inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/24 text-(--color-fg)'
-          : 'inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-(--color-fg)'
+          ? 'inline-flex h-12 min-h-12 w-12 min-w-12 shrink-0 flex-none items-center justify-center rounded-full border border-white/10 bg-black/24 text-(--color-fg)'
+          : 'inline-flex h-10 min-h-10 w-10 min-w-10 shrink-0 flex-none items-center justify-center rounded-full border border-white/10 bg-black/20 text-(--color-fg)'
       }
       aria-label={props.closeLabel}
       onClick={() => props.onClose()}
